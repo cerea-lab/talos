@@ -196,7 +196,7 @@ namespace Talos
   /*!
     \return The next line.
   */
-  string ConfigStream::GetLine()
+  string ConfigStream::GetFullLine()
   {
     string line;
     std::getline(*this, line);
@@ -207,7 +207,7 @@ namespace Talos
   /*!
     \param line (output) the next line.
   */
-  void ConfigStream::GetLine(string& line)
+  void ConfigStream::GetFullLine(string& line)
   {
     std::getline(*this, line);
   }
@@ -216,7 +216,7 @@ namespace Talos
   /*!
     \return The next line.
   */
-  string ConfigStream::PeekLine()
+  string ConfigStream::PeekFullLine()
   {
     streampos position = this->tellg();
     iostate state = this->rdstate();
@@ -232,7 +232,7 @@ namespace Talos
     \param position (output) the position of the line following the next line.
     \return The next line.
   */
-  string ConfigStream::PeekLine(streampos& position)
+  string ConfigStream::PeekFullLine(streampos& position)
   {
     streampos position_back = this->tellg();
     iostate state = this->rdstate();
@@ -248,7 +248,7 @@ namespace Talos
   /*!
     \param line (output) the next line.
   */
-  void ConfigStream::PeekLine(string& line)
+  void ConfigStream::PeekFullLine(string& line)
   {
     streampos position = this->tellg();
     iostate state = this->rdstate();
@@ -269,9 +269,9 @@ namespace Talos
     string element;
     string::size_type index, length;
 
-    while ( (this->good()) && (Discard(PeekLine(position))) )
+    while ( (this->good()) && (Discard(PeekFullLine(position))) )
       this->seekg(position);
-    element = PeekLine();
+    element = PeekFullLine();
 
     index = element.find_first_not_of(delimiters_);
     if (index != string::npos)
@@ -304,7 +304,7 @@ namespace Talos
     streampos position;
     string line;
 
-    while ( (this->good()) && (Discard(PeekLine(position))) )
+    while ( (this->good()) && (Discard(PeekFullLine(position))) )
       this->seekg(position);
 
     return ((*this) >> element);
@@ -325,9 +325,9 @@ namespace Talos
     initial_position = this->tellg();
     iostate state = this->rdstate();
 
-    while ( (this->good()) && (Discard(PeekLine(position))) )
+    while ( (this->good()) && (Discard(PeekFullLine(position))) )
       this->seekg(position);
-    element = PeekLine();
+    element = PeekFullLine();
 
     index = element.find_first_not_of(delimiters_);
     if (index != string::npos)
@@ -365,7 +365,7 @@ namespace Talos
     initial_position = this->tellg();
     iostate state = this->rdstate();
 
-    while ( (this->good()) && (Discard(PeekLine(position))) )
+    while ( (this->good()) && (Discard(PeekFullLine(position))) )
       this->seekg(position);
 
     success = ((*this) >> element);
