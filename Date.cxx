@@ -145,8 +145,8 @@ namespace Talos
       }
     else if (seconds_ < 0)
       {
-	minutes_ += seconds_ / 60 - 1;
-	seconds_ = 60 + seconds_ % 60;
+	minutes_ += (seconds_ + 1) / 60 - 1;
+	seconds_ = 59 + (seconds_ + 1) % 60;
       }
 
     // Hours.
@@ -157,8 +157,8 @@ namespace Talos
       }
     else if (minutes_ < 0)
       {
-	hour_ += minutes_ / 60 - 1;
-	minutes_ = 60 + minutes_ % 60;
+	hour_ += (minutes_ + 1) / 60 - 1;
+	minutes_ = 59 + (minutes_ + 1) % 60;
       }
 
     // Days.
