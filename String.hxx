@@ -81,7 +81,10 @@ namespace Talos
   template <class T>
   void split_markup(string str, vector<T>& elements, vector<bool>& is_markup,
 		    string delimiters = "$");
-
+  
+  template <class T>
+  void print(const vector<T>& v);
+  
 }  // namespace Talos.
 
 

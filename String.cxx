@@ -431,6 +431,20 @@ namespace Talos
       }    
   }
 
+  //! Displays a vector.
+  /*!
+    \param v the vector to de displayed.
+  */
+  template <class T>
+  void print(const vector<T>& v)
+  {
+    if (v.size() != 0)
+      cout << v[0];
+    for (unsigned int i = 1; i < v.size(); i++)
+      cout << '\t' << v[i];
+    cout << endl;
+  }
+  
 }  // namespace Talos.
 
 
