@@ -96,10 +96,10 @@ namespace Talos
     mant_a = m_a!="" && m_a!="-" && m_a!="+";
     mant_b = m_b!="";
 
-    return ( (mant || exp)
-	     && (!mant || ( (mant_a || mant_b)
-			    && (!mant_a || is_integer(m_a))
-			    && (!mant_b || is_unsigned_integer(m_b)) ) )
+    return ( mant
+	     && ( (mant_a || mant_b)
+		  && (!mant_a || is_integer(m_a))
+		  && (!mant_b || is_unsigned_integer(m_b)) )
 	     && (!exp || is_integer(e)) );
   }
 
