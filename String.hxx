@@ -28,11 +28,11 @@ namespace Talos
   string to_str(const T& input);
 
   string fill(const string& input, int l = 2, char c = ' ',
-	      ostringstream::fmtflags flags = ostringstream::right);
+	      ostringstream::fmtflags flags = ostringstream::left);
 
   template<typename T>
   string to_str_fill(const T& input, int l = 2, char c = ' ',
-		     ostringstream::fmtflags flags = ostringstream::right);
+		     ostringstream::fmtflags flags = ostringstream::left);
 
   template <class T>
   void to_num(const string& s, T& num);
