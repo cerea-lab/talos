@@ -81,6 +81,7 @@ namespace Talos
     void SkipLines(int nb);
 
     bool Find(string element);
+    bool FindFromBeginning(string element);
 
     virtual string GetElement();
     template <class T>

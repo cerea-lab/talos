@@ -522,6 +522,18 @@ namespace Talos
     return elt == element;
   }
 
+  //! Sets the position of the get pointer after a given element.
+  /*!
+    Sets the position of the get pointer exactly after a given element.
+    \param element the element to be found from the beginning of the stream.
+    \return true if the element was found, false otherwise.
+  */
+  bool ExtStream::FindFromBeginning(string element)
+  {
+    this->Rewind();
+    return this->Find(element);
+  }
+
   //! Returns the next valid element.
   /*!
     Returns the next valid element, i.e. the next element that is
