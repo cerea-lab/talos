@@ -64,6 +64,12 @@ namespace Talos
     string PeekFullLine(streampos& position);
     void PeekFullLine(string& line);
 
+    string GetLine();
+    void GetLine(string& line);
+    string PeekLine();
+    string PeekLine(streampos& position);
+    void PeekLine(string& line);
+
     string GetElement();
     template <class T>
     bool GetElement(T& element);

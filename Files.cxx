@@ -257,6 +257,132 @@ namespace Talos
     this->clear(state);
   }
 
+  //! Returns the next valid line.
+  /*!
+    Returns the next valid line, i.e. the next line that is
+    not a line to be discarded and from which comments have been extracted.
+    \return The next valid line.
+  */
+  string ConfigStream::GetLine()
+  {
+    streampos position;
+    bool not_end;
+    string line;
+    string::size_type index(0), index_tmp;
+
+    while ( (this->good()) && (Discard(PeekFullLine(position))) )
+      this->seekg(position);
+    line = GetFullLine();
+
+    while ( (not_end = ( (index_tmp = line.substr(index).find_first_of(comments_))
+			 != string::npos ))
+	    && (delimiters_.find_first_of(line[(index+=index_tmp)-1]) == string::npos)
+	    && (not_end = (++index != line.size())) );
+
+    if (not_end)
+      index --;
+    else
+      index = line.size();
+    
+    while (delimiters_.find_first_of(line[--index]) != string::npos);
+
+    return line.substr(0, index + 1);
+  }
+
+  //! Returns the next valid line.
+  /*!
+    Returns the next valid line, i.e. the next line that is
+    not a line to be discarded and from which comments have been extracted.
+    \param line (output) the next valid line.
+  */
+  void ConfigStream::GetLine(string& line)
+  {
+    streampos position;
+    bool not_end;
+    string::size_type index(0), index_tmp;
+
+    while ( (this->good()) && (Discard(PeekFullLine(position))) )
+      this->seekg(position);
+    GetFullLine(line);
+
+    while ( (not_end = ( (index_tmp = line.substr(index).find_first_of(comments_))
+			 != string::npos ))
+	    && (delimiters_.find_first_of(line[(index+=index_tmp)-1]) == string::npos)
+	    && (not_end = (++index != line.size())) );
+
+    if (not_end)
+      index --;
+    else
+      index = line.size();
+    
+    while (delimiters_.find_first_of(line[--index]) != string::npos);
+
+    line = line.substr(0, index + 1);
+  }
+
+  //! Returns the next valid line without extracting it from the stream.
+  /*!
+    Returns the next valid line, i.e. the next line that is
+    not a line to be discarded and from which comments have been extracted.
+    Nothing is extracted from the stream.
+    \return The next valid line.
+  */
+  string ConfigStream::PeekLine()
+  {
+    string line;
+
+    streampos initial_position = this->tellg();
+    iostate state = this->rdstate();
+
+    line = GetLine();
+
+    this->seekg(initial_position);
+    this->clear(state);
+
+    return line;
+  }
+
+  //! Returns the next valid line without extracting it from the stream.
+  /*!
+    Returns the next valid line, i.e. the next line that is
+    not a line to be discarded and from which comments have been extracted.
+    Nothing is extracted from the stream.
+    \param position (output) the position of the line following the next valid line.
+    \return The valid line.
+  */
+  string ConfigStream::PeekLine(streampos& position)
+  {
+    streampos position_back = this->tellg();
+    iostate state = this->rdstate();
+
+    string line = GetLine();
+
+    position = this->tellg();
+
+    this->seekg(position_back);
+    this->clear(state);
+
+    return line;
+  }
+
+  //! Returns the next valid line without extracting it from the stream.
+  /*!
+    Returns the next valid line, i.e. the next line that is
+    not a line to be discarded and from which comments have been extracted.
+    Nothing is extracted from the stream.
+    \param line (output) the next valid line.
+  */
+  void ConfigStream::PeekLine(string& line)
+  {
+    streampos initial_position = this->tellg();
+    iostate state = this->rdstate();
+
+    GetLine(line);
+
+    this->seekg(initial_position);
+    this->clear(state);
+  }
+
   //! Returns the next valid element.
   /*!
     Returns the next valid element, i.e. the next element that is
