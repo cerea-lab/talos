@@ -157,6 +157,8 @@ namespace Talos
     vector<ConfigStream*>& GetStreams();
     vector<ConfigStream*>::iterator GetCurrent();
 
+    void AddFile(string file);
+
     bool Discard(string line) const;
     ConfigStreams& SkipDiscarded();
 

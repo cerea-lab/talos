@@ -1181,7 +1181,18 @@ namespace Talos
   {
     return current_;
   }
-
+  
+  //! Adds a file to the streams.
+  /*!
+    \param file file to be added.
+  */
+  void ConfigStreams::AddFile(string file)
+  {
+    unsigned int l = current_ - streams_.begin();
+    streams_.push_back(new ConfigStream(file));
+    current_ = streams_.begin() + l;
+  }
+  
   //! Checks whether a line should be discarded.
   /*!
     \param line line to be checked.
