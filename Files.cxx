@@ -135,6 +135,14 @@ namespace Talos
   {
   }
 
+  //! Destructor.
+  /*! Closes the stream.
+   */
+  ExtStream::~ExtStream()
+  {
+    this->close();
+  }
+
   //! Checks whether a line should be discarded.
   /*!
     \param line line to be checked.

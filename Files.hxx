@@ -46,6 +46,8 @@ namespace Talos
 	      string comments = "#%",
 	      string delimiters = " \t:=|\n,;");
 
+    virtual ~ExtStream();
+
     bool Discard(string line) const;
     ExtStream& SkipDiscarded();
 
