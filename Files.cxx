@@ -548,9 +548,10 @@ namespace Talos
   template <class T>
   bool ExtStream::GetElement(T& element)
   {
-    element = this->GetElement();
+    string str = this->GetElement();
+    convert(str, element);
 
-    return (element != "");
+    return (str != "");
   }
 
   //! Returns the next valid element without extracting it from the stream.
@@ -794,8 +795,8 @@ namespace Talos
     \param file_name file to be opened.
   */
   ConfigStream::ConfigStream(string file_name,
-		       string comments,
-		       string delimiters):
+			     string comments,
+			     string delimiters):
     ExtStream(file_name, comments, delimiters)
   {
   }

@@ -285,7 +285,7 @@ namespace Talos
   {
     vect.clear();
 
-    string stmp;
+    T tmp;
     string::size_type index_beg, index_end;
     
     index_beg = str.find_first_not_of(delimiters);
@@ -294,8 +294,8 @@ namespace Talos
       {
 	index_end = str.find_first_of(delimiters, index_beg);
 	convert(str.substr(index_beg, index_end == string::npos ?
-			   string::npos : (index_end - index_beg) ), stmp);
-	vect.push_back(stmp);
+			   string::npos : (index_end - index_beg) ), tmp);
+	vect.push_back(tmp);
 	index_beg = str.find_first_not_of(delimiters, index_end);
       }
   }
