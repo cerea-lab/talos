@@ -279,6 +279,17 @@ namespace Talos
     file_name_ = "";
   }
 
+  //! Checks whether the stream is empty.
+  /*!
+    Checcks whether the stream has still valid elements to be read.
+    \return 'true' is the stream is empty, 'false' otherwise.
+  */
+  bool ExtStream::IsEmpty()
+  {
+    string tmp;
+    return !this->PeekElement(tmp);
+  }
+
   //! Rewinds the stream.
   /*!
     Goes back to the beginning of the stream and clears the control state.

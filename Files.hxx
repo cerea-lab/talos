@@ -65,7 +65,9 @@ namespace Talos
 
     void Open(string file_name, openmode mode = in);
     void Close();
-
+    
+    bool IsEmpty();
+    
     ExtStream& Rewind();
 
     string GetFullLine();
