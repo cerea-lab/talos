@@ -164,6 +164,26 @@ namespace Talos
     return ans;
   }
 
+  //! Finds and replace a substring.
+  /*!
+    \param str base string.
+    \param old_str substring to be replaced.
+    \param new_str substring to be put in place of 'old_str'.
+    \return 'str' where 'old_str' was replaced by 'new'str'.
+  */
+  string find_replace(string str, string old_str, string new_str)
+  {
+    string::size_type index = str.find(old_str);
+    
+    while (index != string::npos)
+      {
+	str.replace(index, old_str.size(), new_str);
+	index = str.find(old_str, index + new_str.size());
+      }
+
+    return str;
+  }
+
 }  // namespace Talos.
 
 

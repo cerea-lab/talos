@@ -49,6 +49,8 @@ namespace Talos
 
   bool is_unsigned_integer(const string& s);
 
+  string find_replace(string str, string old_str, string new_str = "");
+
 }  // namespace Talos.
 
 
