@@ -336,6 +336,100 @@ namespace Talos
     return vect;
   }
   
+  //! Extracts markups from a string.
+  /*!
+    The string is split into markups and elements.
+    \param str string to be split.
+    \param elements (output) vector containing markups (without their tags) and elements of the string.
+    \param is_markup (output) booleans set to true for each markup found in 'elements'.
+    \param delimiters (optional) markup tags. Default: "$".
+    \note A markup is a field delimited by two tags.
+  */
+  template <class T>
+  void split_markup(string str, vector<T>& elements,
+		    vector<bool>& is_markup, string delimiters)
+  {
+    elements.clear();
+
+    string current;
+    T tmp;
+    bool is_mark;
+    string::size_type index_beg, index_end, markup_end;
+    
+    index_beg = 0;
+    
+    while (index_beg != string::npos && index_beg < str.size())
+      {
+	is_mark = false;
+	// Stops at the first delimiter.
+	index_end = str.find_first_of(delimiters, index_beg);
+
+	// No more delimiter.
+	if (index_end == string::npos)
+	  {
+	    current = str.substr(index_beg, string::npos);
+	    markup_end = string::npos;
+	  }
+	// One character left, added later.
+	else if (index_end == str.size() - 1)
+	  {
+	    current = str.substr(index_beg, index_end - index_beg);
+	    markup_end = string::npos;
+	  }
+	// There may have a markup there. Searches for the end of this markup.
+	else
+	  {
+	    current = str.substr(index_beg, index_end - index_beg);
+	    markup_end = str.find_first_of(delimiters, index_end + 1);
+	  }
+
+	// No markup: e.g. "$$" means "$".
+	if (markup_end != string::npos && markup_end - 1 == index_end)
+	  {
+	    current += str[markup_end];
+	    index_end = markup_end;
+	  }
+	// A markup is detected.
+	else if (markup_end != string::npos)
+	  {
+	    // The previous element, which is not a markup, is added.
+	    if (current != "")
+	      if (elements.size() > 0 && !is_markup[elements.size()-1])
+		elements[elements.size()-1] += current;
+	      else
+		{
+		  elements.push_back(current);
+		  is_markup.push_back(false);
+		}
+	    // The markup is extracted.
+	    current = str.substr(index_end, markup_end - index_end + 1);
+	    index_end = markup_end;
+	    is_mark = true;
+	  }
+	// Gets the rest of the string.
+	else if (index_end != string::npos)
+	  current += str.substr(index_end, markup_end);
+
+	// If not a markup, then adds the string to the last stored element
+	// (if it is not a markup itself).
+	if (elements.size() > 0 && !is_markup[elements.size()-1]
+	    && !is_mark)
+	  elements[elements.size()-1] += current;
+	else
+	  {
+	    // Removes markup tags, for markups.
+	    if (is_mark)
+	      current = trim(current, delimiters);
+	    elements.push_back(current);
+	    is_markup.push_back(is_mark);
+	  }
+
+	// Moves forward.
+	index_beg = markup_end == string::npos ? string::npos : index_end + 1;
+
+      }    
+  }
+
 }  // namespace Talos.
 
 
