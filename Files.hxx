@@ -98,6 +98,9 @@ namespace Talos
     bool PeekNumber(T& number);
     void SkipNumbers(int nb);
 
+    string GetValue(string name);
+    string PeekValue(string name);
+
     template <class T>
     bool GetValue(string name, T& value);
     template <class T>

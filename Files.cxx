@@ -582,28 +582,11 @@ namespace Talos
   {
     streampos initial_position, position;
     string element;
-    string::size_type index, length;
 
     initial_position = this->tellg();
     iostate state = this->rdstate();
 
-    while ( (this->good()) && (Discard(PeekFullLine(position))) )
-      this->seekg(position);
-    element = PeekFullLine();
-
-    index = element.find_first_not_of(delimiters_);
-    if (index != string::npos)
-      {
-	length = element.find_first_of(delimiters_, index);
-	length = length==string::npos ? element.size() - index : length - index;
-	element = element.substr(index, length);
-      }
-    else
-      {
-	index = element.size();
-	length = 0;
-	element = "";
-      }
+    element = this->GetElement();
 
     this->seekg(initial_position);
     this->clear(state);
@@ -621,18 +604,12 @@ namespace Talos
   bool ExtStream::PeekElement(T& element)
   {
     streampos initial_position, position;
-    string line;
     bool success;
 
     initial_position = this->tellg();
     iostate state = this->rdstate();
 
-    while ( (this->good()) && (Discard(PeekFullLine(position))) )
-      this->seekg(position);
-
-    this->SkipDelimiters();
-
-    success = ((*this) >> element);
+    success = this->GetElement(element);
 
     this->seekg(initial_position);
     this->clear(state);
@@ -734,6 +711,42 @@ namespace Talos
   {
     for (int i=0; i<nb; i++)
       this->GetNumber();
+  }
+
+  //! Gets the value of a given variable.
+  /*!
+    Gets the value of a given variable, i.e. the next valid
+    (not in a discarded line) element following the variable name.
+    \param name the name of the variable.
+    \return the value of the variable.
+  */
+  string ExtStream::GetValue(string name)
+  {
+    string element;
+    while (this->GetElement(element) && element!=name);
+
+    return this->GetElement();
+  }
+
+  //! Gets the value of a given variable without extracting from the stream.
+  /*!
+    Gets the value of a given variable, i.e. the next valid
+    (not in a discarded line) element following the variable name.
+    Nothing is extracted from the stream.
+    \param name the name of the variable.
+    \return the value associated with the variable.
+  */
+  string ExtStream::PeekValue(string name)
+  {
+    streampos initial_position = this->tellg();
+    iostate state = this->rdstate();    
+
+    string element = this->GetValue(name);
+
+    this->seekg(initial_position);
+    this->clear(state);
+
+    return element;
   }
 
   //! Gets the value of a given variable.
