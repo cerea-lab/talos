@@ -3,6 +3,48 @@ o---------------o
 o---------------o
 
 
+Version 0.3 (2004-10-02)
+-----------
+
+** Improvements:
+
+- Added 'ConfigStreams' to manage several configuration files as a single
+  configuration file.
+- Added the support of markup substitutions for configuration files.
+- Talos now supports exceptions in 'ExtStream' and 'ConfigStream*', e.g. if
+  an element is not found (method 'Find').
+- Added methods:
+   + ConfigStream::SetMarkupTags
+   + ConfigStream::GetMarkupTags
+   + ExtStream::FindFromBeginning
+   + ExtStream::IsEmpty
+   + ExtStream::SkipFullLines
+   + ExtStream::SkipLines
+   + ExtStream::SkipElements
+   + ExtStream::SkipNumbers
+- ExtStream now properly deals with booleans.
+- Added methods:
+   + Date::GetWeekDay
+   + Date::GetNumberOfDays
+   + Date::GetNumberOfHours
+   + Date::GetNumberOfMinutes
+   + Date::GetNumberOfSeconds
+   + Date::Date()
+- Added functions:
+   + string fill(const string&, ...)
+   + print(const vector<T>&)
+   + split_markup
+   + lower_case
+   + upper_case
+- Overloaded 'convert' to convert strings to booleans.
+
+** Bug fixes:
+
+- 'ExtStream::Rewind' failed if a previous operation on the stream
+  failed, e.g. if EOF was read.
+- In 'Date::Adjust': negative seconds and minutes were not well handled.
+
+
 Version 0.2 (2004-04-10)
 -----------
 
