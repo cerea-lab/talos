@@ -37,6 +37,16 @@ namespace Talos
     return output.str();
   }
 
+  string fill(const string& input, int l = 2, char c = ' ',
+	      ios_base& pos(ios_base&) = left)
+  {
+    std::ostringstream output;
+    output.width(l);
+    output.fill(c);
+    output << pos << input;
+    return output.str();
+  }
+
   template <class T>
   void to_num(const string& s, T& num);
 
