@@ -38,21 +38,42 @@ namespace Talos
     return output.str();
   }
 
+  //! Fills a string.
+  /*!
+    \param input string to be filled.
+    \param l (optional) width of the output string. Default: 2.
+    \param c (optional) char with which the string will be filled.
+    Default: ' '.
+    \param flags (optional) format flags. Default: ostringstream::right.
+    \return A string containing 'input' (filled).
+  */
+  string fill(const string& input, int l, char c,
+	      ostringstream::fmtflags flags)
+  {
+    std::ostringstream output;
+    output.width(l);
+    output.fill(c);
+    output.flags(flags);
+    output << input;
+    return output.str();
+  }
+
   //! Converts most types to a filled string.
   /*!
     \param input variable to be converted.
-    \param f char with which the string will be filled.
-    \param l width of the output string.
+    \param l (optional) width of the output string. Default: 2.
+    \param c (optional) char with which the string will be filled.
+    Default: ' '.
     \param flags (optional) format flags. Default: ostringstream::right.
     \return A string containing 'input' (filled).
   */
   template<typename T>
-  string to_str_fill(const T& input, char f, int l,
-		     ostringstream::fmtflags flags = ostringstream::right)
+  string to_str_fill(const T& input, int l, char c,
+		     ostringstream::fmtflags flags)
   {
     ostringstream output;
     output.width(l);
-    output.fill(f);
+    output.fill(c);
     output.flags(flags);
     output << input;
     return output.str();

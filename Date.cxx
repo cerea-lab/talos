@@ -264,17 +264,17 @@ namespace Talos
 	  {
 	    output += format.substr(index_b, index_e - index_b);
 	    if ( format[index_e+1] == 'y')
-	      output += to_str_fill(year_, '0', 4);
+	      output += to_str_fill(year_, 4, '0');
 	    else if ( format[index_e+1] == 'm')
-	      output += to_str_fill(month_, '0', 2);
+	      output += to_str_fill(month_, 2, '0');
 	    else if ( format[index_e+1] == 'd')
-	      output += to_str_fill(day_, '0', 2);
+	      output += to_str_fill(day_, 2, '0');
 	    else if ( format[index_e+1] == 'h')
-	      output += to_str_fill(hour_, '0', 2);
+	      output += to_str_fill(hour_, 2, '0');
 	    else if ( format[index_e+1] == 'i')
-	      output += to_str_fill(minutes_, '0', 2);
+	      output += to_str_fill(minutes_, 2, '0');
 	    else if ( format[index_e+1] == 's')
-	      output += to_str_fill(seconds_, '0', 2);
+	      output += to_str_fill(seconds_, 2, '0');
 	    else
 	      output += format.substr(index_e, 2);
 	    index_b = index_e + 2;

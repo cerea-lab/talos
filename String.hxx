@@ -27,25 +27,12 @@ namespace Talos
   template<typename T>
   string to_str(const T& input);
 
-  template<typename T>
-  std::string to_str_fill(const T& input, int l=2)
-  {
-    std::ostringstream output;
-    output.width(l);
-    output.fill('0');
-    output << input;
-    return output.str();
-  }
-
   string fill(const string& input, int l = 2, char c = ' ',
-	      ios_base& pos(ios_base&) = left)
-  {
-    std::ostringstream output;
-    output.width(l);
-    output.fill(c);
-    output << pos << input;
-    return output.str();
-  }
+	      ostringstream::fmtflags flags = ostringstream::right);
+
+  template<typename T>
+  string to_str_fill(const T& input, int l = 2, char c = ' ',
+		     ostringstream::fmtflags flags = ostringstream::right);
 
   template <class T>
   void to_num(const string& s, T& num);
