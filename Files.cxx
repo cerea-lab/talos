@@ -199,7 +199,9 @@ namespace Talos
   string ConfigStream::GetFullLine()
   {
     string line;
+
     std::getline(*this, line);
+
     return line;
   }
 
@@ -207,9 +209,9 @@ namespace Talos
   /*!
     \param line (output) the next line.
   */
-  void ConfigStream::GetFullLine(string& line)
+  bool ConfigStream::GetFullLine(string& line)
   {
-    std::getline(*this, line);
+    return std::getline(*this, line);
   }
 
   //! Returns the next line without extracting it from the stream.
@@ -220,10 +222,13 @@ namespace Talos
   {
     streampos position = this->tellg();
     iostate state = this->rdstate();
+
     string line;
     std::getline(*this, line);
+
     this->seekg(position);
     this->clear(state);
+
     return line;
   }
 
@@ -236,11 +241,15 @@ namespace Talos
   {
     streampos position_back = this->tellg();
     iostate state = this->rdstate();
+
     string line;
     std::getline(*this, line);
+
     position = this->tellg();
+
     this->seekg(position_back);
     this->clear(state);
+
     return line;
   }
 
@@ -248,13 +257,17 @@ namespace Talos
   /*!
     \param line (output) the next line.
   */
-  void ConfigStream::PeekFullLine(string& line)
+  bool ConfigStream::PeekFullLine(string& line)
   {
     streampos position = this->tellg();
     iostate state = this->rdstate();
-    std::getline(*this, line);
+
+    bool success = std::getline(*this, line);
+
     this->seekg(position);
     this->clear(state);
+
+    return success;
   }
 
   //! Returns the next valid line.
@@ -295,15 +308,15 @@ namespace Talos
     not a line to be discarded and from which comments have been extracted.
     \param line (output) the next valid line.
   */
-  void ConfigStream::GetLine(string& line)
+  bool ConfigStream::GetLine(string& line)
   {
     streampos position;
-    bool not_end;
+    bool not_end, success;
     string::size_type index(0), index_tmp;
 
     while ( (this->good()) && (Discard(PeekFullLine(position))) )
       this->seekg(position);
-    GetFullLine(line);
+    success = GetFullLine(line);
 
     while ( (not_end = ( (index_tmp = line.substr(index).find_first_of(comments_))
 			 != string::npos ))
@@ -318,6 +331,8 @@ namespace Talos
     while (delimiters_.find_first_of(line[--index]) != string::npos);
 
     line = line.substr(0, index + 1);
+
+    return success;
   }
 
   //! Returns the next valid line without extracting it from the stream.
@@ -372,15 +387,17 @@ namespace Talos
     Nothing is extracted from the stream.
     \param line (output) the next valid line.
   */
-  void ConfigStream::PeekLine(string& line)
+  bool ConfigStream::PeekLine(string& line)
   {
     streampos initial_position = this->tellg();
     iostate state = this->rdstate();
 
-    GetLine(line);
+    bool success = GetLine(line);
 
     this->seekg(initial_position);
     this->clear(state);
+
+    return success;
   }
 
   //! Returns the next valid element.

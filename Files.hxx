@@ -59,16 +59,16 @@ namespace Talos
     ConfigStream& Rewind();
 
     string GetFullLine();
-    void GetFullLine(string& line);
+    bool GetFullLine(string& line);
     string PeekFullLine();
     string PeekFullLine(streampos& position);
-    void PeekFullLine(string& line);
+    bool PeekFullLine(string& line);
 
     string GetLine();
-    void GetLine(string& line);
+    bool GetLine(string& line);
     string PeekLine();
     string PeekLine(streampos& position);
-    void PeekLine(string& line);
+    bool PeekLine(string& line);
 
     string GetElement();
     template <class T>
