@@ -30,7 +30,7 @@ namespace Talos
   bool is_empty(istream& stream);
   bool has_element(istream& stream);
 
-  class ConfigStream: public ifstream
+  class ExtStream: public ifstream
   {
   private:
     //! File name associated with the stream.
@@ -41,13 +41,13 @@ namespace Talos
     string delimiters_;
 
   public:
-    ConfigStream();
-    ConfigStream(string file_name,
+    ExtStream();
+    ExtStream(string file_name,
 		 string comments = "#%",
 		 string delimiters = " \t:=|\n");
 
     bool Discard(string line) const;
-    ConfigStream& SkipDiscarded();
+    ExtStream& SkipDiscarded();
 
     void SetDelimiters(string delimiters);
     void SetComments(string comments);
@@ -56,15 +56,15 @@ namespace Talos
     string GetComments() const;
     string GetFileName() const;
 
-    ConfigStream& SkipDelimiters();
+    ExtStream& SkipDelimiters();
     string RemoveDelimiters(const string& str) const;
 
-    ConfigStream& Skip();
+    ExtStream& Skip();
 
     void Open(string file_name, openmode mode = in);
     void Close();
 
-    ConfigStream& Rewind();
+    ExtStream& Rewind();
 
     string GetFullLine();
     bool GetFullLine(string& line);

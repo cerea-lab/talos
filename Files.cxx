@@ -118,7 +118,7 @@ namespace Talos
   //! Default constructor.
   /*! Nothing is performed.
    */
-  ConfigStream::ConfigStream():
+  ExtStream::ExtStream():
     comments_("#%"), delimiters_(" \t")
   {
   }
@@ -127,7 +127,7 @@ namespace Talos
   /*! Opens a file.
     \param file_name file to be opened.
   */
-  ConfigStream::ConfigStream(string file_name,
+  ExtStream::ExtStream(string file_name,
 			     string comments,
 			     string delimiters):
     ifstream(file_name.c_str()), file_name_(file_name),
@@ -139,7 +139,7 @@ namespace Talos
   /*!
     \param line line to be checked.
   */
-  bool ConfigStream::Discard(string line) const
+  bool ExtStream::Discard(string line) const
   {
     size_t first = line.find_first_not_of(delimiters_);
     return ( (first == string::npos)
@@ -151,7 +151,7 @@ namespace Talos
     Extracts discarded lines.
     \return A reference to the current stream.
   */
-  ConfigStream& ConfigStream::SkipDiscarded()
+  ExtStream& ExtStream::SkipDiscarded()
   {
     streampos position;
     while ( (this->good()) && (Discard(PeekFullLine(position))) )
@@ -163,7 +163,7 @@ namespace Talos
   /*!
     \param delimiters delimiters.
   */
-  void ConfigStream::SetDelimiters(string delimiters)
+  void ExtStream::SetDelimiters(string delimiters)
   {
     delimiters_ = delimiters;
   }
@@ -172,7 +172,7 @@ namespace Talos
   /*!
     \param comments the characters that denote a comment line.
   */
-  void ConfigStream::SetComments(string comments)
+  void ExtStream::SetComments(string comments)
   {
     comments_ = comments;
   }
@@ -181,7 +181,7 @@ namespace Talos
   /*!
     \return Delimiters.
   */
-  string ConfigStream::GetDelimiters() const
+  string ExtStream::GetDelimiters() const
   {
     return delimiters_;
   }
@@ -190,7 +190,7 @@ namespace Talos
   /*!
     \return The characters that denote a comment line.
   */
-  string ConfigStream::GetComments() const
+  string ExtStream::GetComments() const
   {
     return comments_;
   }
@@ -199,7 +199,7 @@ namespace Talos
   /*!
     \return The name of the file that was opened.
   */
-  string ConfigStream::GetFileName() const
+  string ExtStream::GetFileName() const
   {
     return file_name_;
   }
@@ -210,7 +210,7 @@ namespace Talos
     is found.
     \return A reference to the current stream.
   */
-  ConfigStream& ConfigStream::SkipDelimiters()
+  ExtStream& ExtStream::SkipDelimiters()
   {
     while ( this->good()
 	    && (delimiters_.find_first_of(char(this->peek())) != string::npos) )
@@ -223,7 +223,7 @@ namespace Talos
     Removes delimiters at the beginning and at the end of a string.
     \param 
   */
-  string ConfigStream::RemoveDelimiters(const string& str) const
+  string ExtStream::RemoveDelimiters(const string& str) const
   {
     string::size_type index = str.find_first_not_of(delimiters_);
     if (index == string::npos)
@@ -237,7 +237,7 @@ namespace Talos
     Extracts discarded lines and delimiters.
     \return A reference to the current stream.
   */
-  ConfigStream& ConfigStream::Skip()
+  ExtStream& ExtStream::Skip()
   {
     this->SkipDiscarded();
     return this->SkipDelimiters();
@@ -250,7 +250,7 @@ namespace Talos
     Default: in.
     \note If a file was previously opened, it is closed and the stream is cleared.
   */
-  void ConfigStream::Open(string file_name, openmode mode)
+  void ExtStream::Open(string file_name, openmode mode)
   {
     this->close();
     this->clear();
@@ -263,7 +263,7 @@ namespace Talos
   /*!
     \note The stream is cleared.
   */
-  void ConfigStream::Close()
+  void ExtStream::Close()
   {
     this->close();
     this->clear();
@@ -276,7 +276,7 @@ namespace Talos
     Goes back to the beginning of the stream and clears the control state.
     \return A reference to the current stream.
   */
-  ConfigStream& ConfigStream::Rewind()
+  ExtStream& ExtStream::Rewind()
   {
     this->seekg(0, ifstream::beg);
     this->clear();
@@ -288,7 +288,7 @@ namespace Talos
   /*!
     \return The next line.
   */
-  string ConfigStream::GetFullLine()
+  string ExtStream::GetFullLine()
   {
     string line;
 
@@ -301,7 +301,7 @@ namespace Talos
   /*!
     \param line (output) the next line.
   */
-  bool ConfigStream::GetFullLine(string& line)
+  bool ExtStream::GetFullLine(string& line)
   {
     return std::getline(*this, line);
   }
@@ -310,7 +310,7 @@ namespace Talos
   /*!
     \return The next line.
   */
-  string ConfigStream::PeekFullLine()
+  string ExtStream::PeekFullLine()
   {
     streampos position = this->tellg();
     iostate state = this->rdstate();
@@ -329,7 +329,7 @@ namespace Talos
     \param position (output) the position of the line following the next line.
     \return The next line.
   */
-  string ConfigStream::PeekFullLine(streampos& position)
+  string ExtStream::PeekFullLine(streampos& position)
   {
     streampos position_back = this->tellg();
     iostate state = this->rdstate();
@@ -349,7 +349,7 @@ namespace Talos
   /*!
     \param line (output) the next line.
   */
-  bool ConfigStream::PeekFullLine(string& line)
+  bool ExtStream::PeekFullLine(string& line)
   {
     streampos position = this->tellg();
     iostate state = this->rdstate();
@@ -368,7 +368,7 @@ namespace Talos
     not a line to be discarded and from which comments have been extracted.
     \return The next valid line.
   */
-  string ConfigStream::GetLine()
+  string ExtStream::GetLine()
   {
     streampos position;
     bool not_end;
@@ -399,7 +399,7 @@ namespace Talos
     not a line to be discarded and from which comments have been extracted.
     \param line (output) the next valid line.
   */
-  bool ConfigStream::GetLine(string& line)
+  bool ExtStream::GetLine(string& line)
   {
     streampos position;
     bool not_end, success;
@@ -432,7 +432,7 @@ namespace Talos
     Nothing is extracted from the stream.
     \return The next valid line.
   */
-  string ConfigStream::PeekLine()
+  string ExtStream::PeekLine()
   {
     string line;
 
@@ -455,7 +455,7 @@ namespace Talos
     \param position (output) the position of the line following the next valid line.
     \return The valid line.
   */
-  string ConfigStream::PeekLine(streampos& position)
+  string ExtStream::PeekLine(streampos& position)
   {
     streampos position_back = this->tellg();
     iostate state = this->rdstate();
@@ -477,7 +477,7 @@ namespace Talos
     Nothing is extracted from the stream.
     \param line (output) the next valid line.
   */
-  bool ConfigStream::PeekLine(string& line)
+  bool ExtStream::PeekLine(string& line)
   {
     streampos initial_position = this->tellg();
     iostate state = this->rdstate();
@@ -496,7 +496,7 @@ namespace Talos
     \param element the element to be found.
     \return true if the element was found, false otherwise.
   */
-  bool ConfigStream::Find(string element)
+  bool ExtStream::Find(string element)
   {
     string elt;
     while (GetElement(elt) && elt!=element);
@@ -510,7 +510,7 @@ namespace Talos
     not in a line to be discarded.
     \return The next valid element.
   */
-  string ConfigStream::GetElement()
+  string ExtStream::GetElement()
   {
     streampos position;
     string element;
@@ -546,7 +546,7 @@ namespace Talos
     \param element (output) the next valid element.
   */
   template <class T>
-  bool ConfigStream::GetElement(T& element)
+  bool ExtStream::GetElement(T& element)
   {
     element = this->GetElement();
 
@@ -559,7 +559,7 @@ namespace Talos
     not in a line to be discarded.
     \return The next valid element.
   */
-  string ConfigStream::PeekElement()
+  string ExtStream::PeekElement()
   {
     streampos initial_position, position;
     string element;
@@ -599,7 +599,7 @@ namespace Talos
     \param element (output) the next valid element.
   */
   template <class T>
-  bool ConfigStream::PeekElement(T& element)
+  bool ExtStream::PeekElement(T& element)
   {
     streampos initial_position, position;
     string line;
@@ -627,7 +627,7 @@ namespace Talos
     not in a line to be discarded.
     \return The next valid number.
   */
-  double ConfigStream::GetNumber()
+  double ExtStream::GetNumber()
   {
     string element;
     while (GetElement(element) && !is_num(element));
@@ -642,7 +642,7 @@ namespace Talos
     \param element (output) the next valid number.
   */
   template <class T>
-  bool ConfigStream::GetNumber(T& number)
+  bool ExtStream::GetNumber(T& number)
   {
     string element;
     bool success;
@@ -659,7 +659,7 @@ namespace Talos
     not in a line to be discarded.
     \return The next valid number.
   */
-  double ConfigStream::PeekNumber()
+  double ExtStream::PeekNumber()
   {
     streampos initial_position = this->tellg();
     iostate state = this->rdstate();
@@ -680,7 +680,7 @@ namespace Talos
     \param number (output) the next valid number.
   */
   template <class T>
-  bool ConfigStream::PeekNumber(T& number)
+  bool ExtStream::PeekNumber(T& number)
   {
     streampos initial_position = this->tellg();
     iostate state = this->rdstate();
@@ -705,7 +705,7 @@ namespace Talos
     \param value value associated with the variable.
   */
   template <class T>
-  bool ConfigStream::GetValue(string name, T& value)
+  bool ExtStream::GetValue(string name, T& value)
   {
     string element;
     while (GetElement(element) && element!=name);
@@ -722,7 +722,7 @@ namespace Talos
     \param value value associated with the variable.
   */
   template <class T>
-  bool ConfigStream::PeekValue(string name, T& value)
+  bool ExtStream::PeekValue(string name, T& value)
   {
     streampos initial_position = this->tellg();
     iostate state = this->rdstate();
@@ -745,7 +745,7 @@ namespace Talos
     \param name the name of the variable.
     \param value value associated with the variable.
   */
-  bool ConfigStream::GetValue(string name, string& value)
+  bool ExtStream::GetValue(string name, string& value)
   {
     string element;
     while (GetElement(element) && element!=name);
@@ -761,7 +761,7 @@ namespace Talos
     \param name the name of the variable.
     \param value value associated with the variable.
   */
-  bool ConfigStream::PeekValue(string name, string& value)
+  bool ExtStream::PeekValue(string name, string& value)
   {
     streampos initial_position = this->tellg();
     iostate state = this->rdstate();
