@@ -96,6 +96,16 @@ namespace Talos
     str >> out;
   }
 
+  //! Sets a string.
+  /*!
+    \param s input string.
+    \param out output string, equal to 's' on exit.
+  */
+  void convert(const string& s, string& out)
+  {
+    out = s;
+  }
+
   //! Converts strings to most types.
   /*!
     \param input string to be converted.
@@ -275,6 +285,7 @@ namespace Talos
   {
     vect.clear();
 
+    string stmp;
     string::size_type index_beg, index_end;
     
     index_beg = str.find_first_not_of(delimiters);
@@ -282,8 +293,9 @@ namespace Talos
     while (index_beg != string::npos)
       {
 	index_end = str.find_first_of(delimiters, index_beg);
-	vect.push_back(convert<T>(str.substr(index_beg,
-					     index_end == string::npos ? string::npos : (index_end - index_beg) )));
+	convert(str.substr(index_beg, index_end == string::npos ?
+			   string::npos : (index_end - index_beg) ), stmp);
+	vect.push_back(stmp);
 	index_beg = str.find_first_not_of(delimiters, index_end);
       }
   }
