@@ -878,6 +878,7 @@ namespace Talos
    */
   ConfigStream::ConfigStream(): ExtStream()
   {
+    markup_tags_ = "<>$";
   }
 
   //! Main constructor.
@@ -886,9 +887,71 @@ namespace Talos
   */
   ConfigStream::ConfigStream(string file_name,
 			     string comments,
-			     string delimiters):
-    ExtStream(file_name, comments, delimiters)
+			     string delimiters,
+			     string markup_tags):
+    ExtStream(file_name, comments, delimiters),
+    markup_tags_(markup_tags)
   {
+  }
+
+  //! Sets the markup tags.
+  /*!
+    \param markup_tags the new markup tags.
+  */
+  void ConfigStream::SetMarkupTags(string markup_tags)
+  {
+    markup_tags_ = markup_tags;
+  }
+
+  //! Returns the markup tags.
+  /*!
+    \return The markup tags.
+  */
+  string ConfigStream::GetMarkupTags() const
+  {
+    return markup_tags_;
+  }
+
+  //! Returns the next valid element.
+  /*!
+    Returns the next valid element, i.e. the next element that is
+    not in a line to be discarded.
+    \return The next valid element.
+    \note Markups are replaced with their values.
+  */
+  string ConfigStream::GetElement()
+  {
+    streampos position;
+    string tmp;
+
+    string element = ExtStream::GetElement();
+
+    streampos initial_position = this->tellg();
+    iostate state = this->rdstate();    
+
+    vector<string> elements;
+    vector<bool> is_markup;
+
+    split_markup(element, elements, is_markup, markup_tags_);
+
+    element = "";
+
+    for (int i = 0; i < int(elements.size()); i++)
+      if (!is_markup[i])
+	element += elements[i];
+      else
+	{
+	  this->Rewind();
+	  tmp = ExtStream::GetElement();
+	  while (tmp != elements[i] && tmp != "")
+	    tmp = ExtStream::GetElement();
+	  element += this->GetElement();
+	}
+
+    this->seekg(initial_position);
+    this->clear(state);
+
+    return element;
   }
 
 }  // namespace Talos.

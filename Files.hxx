@@ -82,7 +82,7 @@ namespace Talos
 
     bool Find(string element);
 
-    string GetElement();
+    virtual string GetElement();
     template <class T>
     bool GetElement(T& element);
     string PeekElement();
@@ -115,11 +115,20 @@ namespace Talos
 
   class ConfigStream: public ExtStream
   {
+  protected:
+    string markup_tags_;
+    
   public:
     ConfigStream();
     ConfigStream(string file_name,
 		 string comments = "#%",
-		 string delimiters = " \t:=|\n,;");
+		 string delimiters = " \t:=|\n,;",
+		 string markup_tags = "<>$");
+
+    void SetMarkupTags(string markup_tags);
+    string GetMarkupTags() const;
+
+    virtual string GetElement();
   };
 
 }  // namespace Talos.
