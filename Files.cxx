@@ -1381,6 +1381,19 @@ namespace Talos
       this->GetFullLine();
   }
 
+  //! Returns the next valid line, without markups substitution.
+  /*!
+    Returns the next valid line, i.e. the next line that is
+    not a line to be discarded and from which comments have been extracted.
+    No markup substitution is performed.
+    \return The next valid line.
+  */
+  string ConfigStreams::GetRawLine()
+  {
+    this->Skip();
+    return (*current_)->ExtStream::GetLine();
+  }
+
   //! Returns the next valid line.
   /*!
     Returns the next valid line, i.e. the next line that is
@@ -1534,6 +1547,20 @@ namespace Talos
   {
     this->Rewind();
     return this->Find(element);
+  }
+
+  //! Returns the next valid element, without markups substitution.
+  /*!
+    Returns the next valid element, i.e. the next element that is
+    not in a line to be discarded. No markup substitution is performed.
+    \return The next valid element.
+  */
+  string ConfigStreams::GetRawElement()
+  {
+    string element;
+    while ((element = (*current_)->ExtStream::GetElement()) == "" && current_ != streams_.end()-1)
+      ++current_;
+    return element;
   }
 
   //! Returns the next valid element.

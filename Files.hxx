@@ -178,6 +178,7 @@ namespace Talos
     bool PeekFullLine(string& line);
     void SkipFullLines(int nb);
 
+    string GetRawLine();
     string GetLine();
     bool GetLine(string& line);
     string PeekLine();
@@ -188,6 +189,7 @@ namespace Talos
     bool Find(string element);
     bool FindFromBeginning(string element);
 
+    string GetRawElement();
     string GetElement();
     template <class T>
     bool GetElement(T& element);
