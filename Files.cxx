@@ -1580,9 +1580,42 @@ namespace Talos
   */
   string ConfigStreams::GetElement()
   {
-    string element;
-    while ((element = (*current_)->GetElement()) == "" && current_ != streams_.end()-1)
-      ++current_;
+    string tmp;
+
+    string element = GetRawElement();
+
+    vector<ConfigStream*>::iterator iter = current_;
+    streampos initial_position = (*current_)->tellg();
+    ifstream::iostate state = (*current_)->rdstate();
+
+    vector<string> elements;
+    vector<bool> is_markup;
+
+    split_markup(element, elements, is_markup, (*current_)->GetMarkupTags());
+
+    element = "";
+
+    for (int i = 0; i < int(elements.size()); i++)
+      if (!is_markup[i])
+	element += elements[i];
+      else
+	{
+	  this->Rewind();
+	  tmp = GetRawElement();
+	  while (tmp != elements[i] && tmp != "")
+	    tmp = GetRawElement();
+	  if (tmp == "")
+	    throw string("Error in ConfigStreams::GetElement: the value of the markup \"")
+	      + elements[i] + string("\" was not found in \"")
+	      + (*current_)->GetFileName() + "\".";
+	  element += this->GetElement();
+	}
+
+    this->Rewind();
+    current_ = iter;
+    (*current_)->clear(state);
+    (*current_)->seekg(initial_position);
+
     return element;
   }
 
