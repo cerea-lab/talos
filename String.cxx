@@ -236,6 +236,32 @@ namespace Talos
     return str.substr(0, index + 1);
   }
 
+  //! Splits a string.
+  /*!
+    The string is split according to delimiters and elements are stored
+    in the vector 'vect'.
+    \param str string to be split.
+    \param vect (output) vector containing elements of the string.
+    \param delimiters (optional) delimiters. Default: " \n\t".
+  */
+  template <class T>
+  void split(string str, vector<T>& vect, string delimiters)
+  {
+    vect.clear();
+
+    string::size_type index_beg, index_end;
+    
+    index_beg = str.find_first_not_of(delimiters);
+    
+    while (index_beg != string::npos)
+      {
+	index_end = str.find_first_of(delimiters, index_beg);
+	vect.push_back(to_num<T>(str.substr(index_beg,
+					    index_end == string::npos ? string::npos : (index_end - index_beg + 1) )));
+	index_beg = str.find_first_not_of(delimiters, index_end);
+      }
+  }
+
 }  // namespace Talos.
 
 

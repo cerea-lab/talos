@@ -57,6 +57,9 @@ namespace Talos
 
   string trim_end(string str, string delimiters = " \n\t");
 
+  template <class T>
+  void split(string str, vector<T>& vect, string delimiters = " \n\t");
+
 }  // namespace Talos.
 
 
