@@ -143,6 +143,7 @@ namespace Talos
     virtual bool GetLine(string& line);
   };
 
+  //! Streams associated with several configuration files.
   class ConfigStreams
   {
   protected:
