@@ -45,6 +45,7 @@ namespace Talos
 
   template <class T>
   void convert(const string& s, T& num);
+  void convert(const string& s, string& num);
 
   template <class T>
   T convert(const string& s);
