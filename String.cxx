@@ -350,6 +350,7 @@ namespace Talos
 		    vector<bool>& is_markup, string delimiters)
   {
     elements.clear();
+    is_markup.clear();
 
     string current;
     T tmp;
