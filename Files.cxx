@@ -179,6 +179,19 @@ namespace Talos
     file_name_ = "";
   }
 
+  //! Rewinds the stream.
+  /*!
+    Goes back to the beginning of the stream and clears the control state.
+    \return A reference to the current stream.
+  */
+  ConfigStream& ConfigStream::Rewind()
+  {
+    this->seekg(0, ifstream::beg);
+    this->clear();
+
+    return *this;
+  }
+
   //! Returns the next line.
   /*!
     \return The next line.
@@ -432,6 +445,86 @@ namespace Talos
     while ((success = GetElement(element)) && !is_num(element));
 
     number = is_num(element) ? to_num<T>(element) : T(0);
+
+    this->seekg(initial_position);
+    this->clear(state);
+
+    return success;
+  }
+
+  //! Gets the value of a given variable.
+  /*!
+    Gets the (numerical) value of a given variable, i.e. the next valid
+    (not in a discarded line) number or element following the variable name.
+    \param name the name of the variable.
+    \param value value associated with the variable.
+  */
+  template <class T>
+  bool ConfigStream::GetValue(string name, T& value)
+  {
+    string element;
+    while (GetElement(element) && element!=name);
+
+    return GetNumber(value);
+  }
+
+  //! Gets the value of a given variable without extracting them from the stream.
+  /*!
+    Gets the (numerical) value of a given variable, i.e. the next valid
+    (not in a discarded line) number or element following the variable name.
+    Nothing is extracted from the stream.
+    \param name the name of the variable.
+    \param value value associated with the variable.
+  */
+  template <class T>
+  bool ConfigStream::PeekValue(string name, T& value)
+  {
+    streampos initial_position = this->tellg();
+    iostate state = this->rdstate();
+
+    string element;
+    while (GetElement(element) && element!=name);
+
+    bool success = GetNumber(value);
+
+    this->seekg(initial_position);
+    this->clear(state);
+
+    return success;
+  }
+
+  //! Gets the value of a given variable.
+  /*!
+    Gets the value of a given variable, i.e. the next valid
+    (not in a discarded line) number or element following the variable name.
+    \param name the name of the variable.
+    \param value value associated with the variable.
+  */
+  bool ConfigStream::GetValue(string name, string& value)
+  {
+    string element;
+    while (GetElement(element) && element!=name);
+
+    return GetElement(value);
+  }
+
+  //! Gets the value of a given variable without extracting them from the stream.
+  /*!
+    Gets the value of a given variable, i.e. the next valid
+    (not in a discarded line) number or element following the variable name.
+    Nothing is extracted from the stream.
+    \param name the name of the variable.
+    \param value value associated with the variable.
+  */
+  bool ConfigStream::PeekValue(string name, string& value)
+  {
+    streampos initial_position = this->tellg();
+    iostate state = this->rdstate();
+
+    string element;
+    while (GetElement(element) && element!=name);
+
+    bool success = GetElement(value);
 
     this->seekg(initial_position);
     this->clear(state);

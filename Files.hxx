@@ -56,6 +56,8 @@ namespace Talos
     void Open(string file_name, openmode mode = in);
     void Close();
 
+    ConfigStream& Rewind();
+
     string GetLine();
     void GetLine(string& line);
     string PeekLine();
@@ -75,6 +77,14 @@ namespace Talos
     double PeekNumber();
     template <class T>
     bool PeekNumber(T& number);
+
+    template <class T>
+    bool GetValue(string name, T& value);
+    template <class T>
+    bool PeekValue(string name, T& value);
+
+    bool GetValue(string name, string& value);
+    bool PeekValue(string name, string& value);
   };
 
 }  // namespace Talos.
