@@ -53,6 +53,9 @@ namespace Talos
     string GetComments() const;
     string GetFileName() const;
 
+    void SkipDelimiters();
+    string RemoveDelimiters(const string& str) const;
+
     void Open(string file_name, openmode mode = in);
     void Close();
 

@@ -151,6 +151,32 @@ namespace Talos
     return file_name_;
   }
 
+  //! Skips delimiters.
+  /*!
+    Extracts following delimiters from the string, until another character
+    is found.
+  */
+  void ConfigStream::SkipDelimiters()
+  {
+    while ( this->good()
+	    && (delimiters_.find_first_of(char(this->peek())) != string::npos) )
+      this->get();
+  }
+
+  //! Removes delimiters at both ends of a string.
+  /*!
+    Removes delimiters at the beginning and at the end of a string.
+    \param 
+  */
+  string ConfigStream::RemoveDelimiters(const string& str) const
+  {
+    string::size_type index = str.find_first_not_of(delimiters_);
+    if (index == string::npos)
+      return "";
+    return str.substr(index,
+		      str.find_last_not_of(delimiters_) - index + 1);
+  }
+
   //! Opens a file.
   /*!
     \param file_name file name.
