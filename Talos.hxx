@@ -24,6 +24,7 @@
 #include <iostream>
 #include <algorithm>
 #include <string>
+#include <fstream>
 #include <sstream>
 
 namespace Talos
