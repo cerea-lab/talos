@@ -363,6 +363,82 @@ namespace Talos
     return success;
   }
 
+  //! Returns the next valid number.
+  /*!
+    Returns the next valid number, i.e. the next number that is
+    not in a line to be discarded.
+    \return The next valid number.
+  */
+  double ConfigStream::GetNumber()
+  {
+    string element;
+    while (GetElement(element) && !is_num(element));
+
+    return is_num(element) ? to_num<double>(element) : 0.;
+  }
+
+  //! Gets the next valid number.
+  /*!
+    Gets the next valid number, i.e. the next number that is
+    not in a line to be discarded.
+    \param element (output) the next valid number.
+  */
+  template <class T>
+  bool ConfigStream::GetNumber(T& number)
+  {
+    string element;
+    bool success;
+    while ((success = GetElement(element)) && !is_num(element));
+
+    number = is_num(element) ? to_num<T>(element) : T(0);
+
+    return success;
+  }
+
+  //! Returns the next valid number without extracting it from the stream.
+  /*!
+    Returns the next valid number, i.e. the next number that is
+    not in a line to be discarded.
+    \return The next valid number.
+  */
+  double ConfigStream::PeekNumber()
+  {
+    streampos initial_position = this->tellg();
+    iostate state = this->rdstate();
+
+    string element;
+    while (GetElement(element) && !is_num(element));
+
+    this->seekg(initial_position);
+    this->clear(state);
+
+    return is_num(element) ? to_num<double>(element) : 0.;
+  }
+
+  //! Gets the next valid number without extracting it from the stream.
+  /*!
+    Gets the next valid number, i.e. the next number that is
+    not in a line to be discarded.
+    \param number (output) the next valid number.
+  */
+  template <class T>
+  bool ConfigStream::PeekNumber(T& number)
+  {
+    streampos initial_position = this->tellg();
+    iostate state = this->rdstate();
+
+    string element;
+    bool success;
+    while ((success = GetElement(element)) && !is_num(element));
+
+    number = is_num(element) ? to_num<T>(element) : T(0);
+
+    this->seekg(initial_position);
+    this->clear(state);
+
+    return success;
+  }
+
 }  // namespace Talos.
 
 

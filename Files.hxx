@@ -68,6 +68,13 @@ namespace Talos
     string PeekElement();
     template <class T>
     bool PeekElement(T& element);
+
+    double GetNumber();
+    template <class T>
+    bool GetNumber(T& number);
+    double PeekNumber();
+    template <class T>
+    bool PeekNumber(T& number);
   };
 
 }  // namespace Talos.
