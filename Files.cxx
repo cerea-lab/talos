@@ -466,7 +466,7 @@ namespace Talos
     streampos initial_position = this->tellg();
     iostate state = this->rdstate();
 
-    line = GetLine();
+    line = this->GetLine();
 
     this->clear(state);
     this->seekg(initial_position);
@@ -487,7 +487,7 @@ namespace Talos
     streampos position_back = this->tellg();
     iostate state = this->rdstate();
 
-    string line = GetLine();
+    string line = this->GetLine();
 
     position = this->tellg();
 
@@ -509,7 +509,7 @@ namespace Talos
     streampos initial_position = this->tellg();
     iostate state = this->rdstate();
 
-    bool success = GetLine(line);
+    bool success = this->GetLine(line);
 
     this->clear(state);
     this->seekg(initial_position);
@@ -1021,6 +1021,86 @@ namespace Talos
     this->seekg(initial_position);
 
     return element;
+  }
+
+  //! Returns the next valid line.
+  /*!
+    Returns the next valid line, i.e. the next line that is
+    not a line to be discarded and from which comments have been extracted.
+    \return The next valid line.
+  */
+  string ConfigStream::GetLine()
+  {
+    string tmp;
+
+    string element = ExtStream::GetLine();
+
+    streampos initial_position = this->tellg();
+    iostate state = this->rdstate();    
+
+    vector<string> elements;
+    vector<bool> is_markup;
+
+    split_markup(element, elements, is_markup, markup_tags_);
+
+    element = "";
+
+    for (int i = 0; i < int(elements.size()); i++)
+      if (!is_markup[i])
+	element += elements[i];
+      else
+	{
+	  this->Rewind();
+	  tmp = ExtStream::GetElement();
+	  while (tmp != elements[i] && tmp != "")
+	    tmp = ExtStream::GetElement();
+	  element += this->GetElement();
+	}
+
+    this->clear(state);
+    this->seekg(initial_position);
+
+    return element;
+  }
+
+  //! Returns the next valid line.
+  /*!
+    Returns the next valid line, i.e. the next line that is
+    not a line to be discarded and from which comments have been extracted.
+    \param line (output) the next valid line.
+  */
+  bool ConfigStream::GetLine(string& line)
+  {
+    string tmp;
+
+    bool success = ExtStream::GetLine(line);
+
+    streampos initial_position = this->tellg();
+    iostate state = this->rdstate();    
+
+    vector<string> elements;
+    vector<bool> is_markup;
+
+    split_markup(line, elements, is_markup, markup_tags_);
+
+    line = "";
+
+    for (int i = 0; i < int(elements.size()); i++)
+      if (!is_markup[i])
+	line += elements[i];
+      else
+	{
+	  this->Rewind();
+	  tmp = ExtStream::GetElement();
+	  while (tmp != elements[i] && tmp != "")
+	    tmp = ExtStream::GetElement();
+	  line += this->GetElement();
+	}
+
+    this->clear(state);
+    this->seekg(initial_position);
+
+    return success;
   }
 
 }  // namespace Talos.

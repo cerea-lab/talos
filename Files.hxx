@@ -77,11 +77,11 @@ namespace Talos
     bool PeekFullLine(string& line);
     void SkipFullLines(int nb);
 
-    string GetLine();
-    bool GetLine(string& line);
-    string PeekLine();
-    string PeekLine(streampos& position);
-    bool PeekLine(string& line);
+    virtual string GetLine();
+    virtual bool GetLine(string& line);
+    virtual string PeekLine();
+    virtual string PeekLine(streampos& position);
+    virtual bool PeekLine(string& line);
     void SkipLines(int nb);
 
     bool Find(string element);
@@ -134,6 +134,9 @@ namespace Talos
     string GetMarkupTags() const;
 
     virtual string GetElement();
+
+    virtual string GetLine();
+    virtual bool GetLine(string& line);
   };
 
 }  // namespace Talos.
