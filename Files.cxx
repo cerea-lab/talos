@@ -536,7 +536,18 @@ namespace Talos
   bool ExtStream::Find(string element)
   {
     string elt;
-    while (GetElement(elt) && elt!=element);
+    try
+      {
+	while (GetElement(elt) && elt!=element);
+      }
+    catch (std::string& str)
+      {
+	return false;
+      }
+    catch (const char* str)
+      {
+	return false;
+      }
 
     return elt == element;
   }
@@ -756,6 +767,10 @@ namespace Talos
     string element;
     while (this->GetElement(element) && element!=name);
 
+    if (element != name)
+      throw string("Error in ExtStream::GetValue: \"")
+	+ name + string("\" not found in \"") + file_name_ + "\".";
+
     return this->GetElement();
   }
 
@@ -793,6 +808,10 @@ namespace Talos
     string element;
     while (GetElement(element) && element!=name);
 
+    if (element != name)
+      throw string("Error in ExtStream::GetValue: \"")
+	+ name + string("\" not found in \"") + file_name_ + "\".";
+
     return GetNumber(value);
   }
 
@@ -812,6 +831,10 @@ namespace Talos
 
     string element;
     while (GetElement(element) && element!=name);
+
+    if (element != name)
+      throw string("Error in ExtStream::PeekValue: \"")
+	+ name + string("\" not found in \"") + file_name_ + "\".";
 
     bool success = GetNumber(value);
 
@@ -833,6 +856,10 @@ namespace Talos
     string element;
     while (GetElement(element) && element!=name);
 
+    if (element != name)
+      throw string("Error in ExtStream::GetValue: \"")
+	+ name + string("\" not found in \"") + file_name_ + "\".";
+
     return GetElement(value);
   }
 
@@ -851,6 +878,10 @@ namespace Talos
 
     string element;
     while (GetElement(element) && element!=name);
+
+    if (element != name)
+      throw string("Error in ExtStream::PeekValue: \"")
+	+ name + string("\" not found in \"") + file_name_ + "\".";
 
     bool success = GetElement(value);
 
@@ -872,6 +903,10 @@ namespace Talos
     string element;
     while (GetElement(element) && element!=name);
 
+    if (element != name)
+      throw string("Error in ExtStream::GetValue: \"")
+	+ name + string("\" not found in \"") + file_name_ + "\".";
+
     return GetElement(value);
   }
 
@@ -890,6 +925,10 @@ namespace Talos
 
     string element;
     while (GetElement(element) && element!=name);
+
+    if (element != name)
+      throw string("Error in ExtStream::PeekValue: \"")
+	+ name + string("\" not found in \"") + file_name_ + "\".";
 
     bool success = GetElement(value);
 
