@@ -59,6 +59,8 @@ namespace Talos
     ConfigStream& SkipDelimiters();
     string RemoveDelimiters(const string& str) const;
 
+    ConfigStream& Skip();
+
     void Open(string file_name, openmode mode = in);
     void Close();
 

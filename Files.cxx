@@ -232,6 +232,17 @@ namespace Talos
 		      str.find_last_not_of(delimiters_) - index + 1);
   }
 
+  //! Skips discarded lines and delimiters.
+  /*!
+    Extracts discarded lines and delimiters.
+    \return A reference to the current stream.
+  */
+  ConfigStream& ConfigStream::Skip()
+  {
+    this->SkipDiscarded();
+    return this->SkipDelimiters();
+  }
+
   //! Opens a file.
   /*!
     \param file_name file name.
