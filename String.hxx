@@ -51,6 +51,12 @@ namespace Talos
 
   string find_replace(string str, string old_str, string new_str = "");
 
+  string trim(string str, string delimiters = " \n\t");
+
+  string trim_beg(string str, string delimiters = " \n\t");
+
+  string trim_end(string str, string delimiters = " \n\t");
+
 }  // namespace Talos.
 
 

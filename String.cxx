@@ -184,6 +184,58 @@ namespace Talos
     return str;
   }
 
+  //! Trims off a string.
+  /*!
+    Removes delimiters at each edge of the string.
+    \param str string to be trimmed off.
+    \param delimiters characters to be removed.
+    \return 'str' trimmed off.
+  */
+  string trim(string str, string delimiters)
+  {
+    string::size_type index_end = str.find_last_not_of(delimiters);
+    string::size_type index_beg = str.find_first_not_of(delimiters);
+
+    if (index_beg == string::npos)
+      return "";
+    
+    return str.substr(index_beg, index_end - index_beg + 1);
+  }
+
+  //! Trims off a string.
+  /*!
+    Removes delimiters at the beginning of the string.
+    \param str string to be trimmed off.
+    \param delimiters characters to be removed.
+    \return 'str' trimmed off at the beginning.
+  */
+  string trim_beg(string str, string delimiters)
+  {
+    string::size_type index = str.find_first_not_of(delimiters);
+
+    if (index == string::npos)
+      return "";
+    
+    return str.substr(index);
+  }
+
+  //! Trims off a string.
+  /*!
+    Removes delimiters at the end of the string.
+    \param str string to be trimmed off.
+    \param delimiters characters to be removed.
+    \return 'str' trimmed off at the end.
+  */
+  string trim_end(string str, string delimiters)
+  {
+    string::size_type index = str.find_last_not_of(delimiters);
+
+    if (index == string::npos)
+      return "";
+
+    return str.substr(0, index + 1);
+  }
+
 }  // namespace Talos.
 
 
