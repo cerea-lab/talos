@@ -29,6 +29,20 @@ namespace Talos
   // DATE //
   //////////
 
+  //! Default constructor.
+  Date::Date():
+    year_(0), month_(0), day_(0),
+    hour_(0), minutes_(0), seconds_(0),
+    month_lengths_(12)
+  {
+    int month_lengths[12] = {31, 28, 31, 30, 31, 30,
+			     31, 31, 30, 31, 30, 31};
+    for (int i=0; i<12; ++i)
+      month_lengths_[i] = month_lengths[i];
+
+    this->Adjust();
+  }
+
   //! Constructor.
   /*!
     \param yyyymmdd date in format YYYYMMDD.
