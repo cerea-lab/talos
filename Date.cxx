@@ -463,11 +463,20 @@ namespace Talos
     this->Adjust();
   }
 
-  //! Returns the number of the day in the year (between 1 and 366).
+  //! Returns the number of the day in the year (between 0 and 365).
   /*!
-    \return The number of the day in the year (between 1 and 366).
+    \return The number of the day in the year (between 0 and 365).
   */
   int Date::GetDayNumber() const
+  {
+    return this->GetNumberOfDays();
+  }
+
+  //! Returns the number of days in the year before the current day.
+  /*!
+    \return The number of days in the year before the current day.
+  */
+  int Date::GetNumberOfDays() const
   {
     int res(0);
     for (int i=1; i<month_; i++)
@@ -493,6 +502,33 @@ namespace Talos
     nb_days_date += date.GetDayNumber();
 
     return nb_days - nb_days_date;
+  }
+
+  //! Returns the number of hours in the year before the current date.
+  /*!
+    \return The number of hours in the year before the current date.
+  */
+  int Date::GetNumberOfHours() const
+  {
+    return this->GetNumberOfDays() * 24 + hour_;
+  }
+
+  //! Returns the number of minutes in the year before the current date.
+  /*!
+    \return The number of minutes in the year before the current date.
+  */
+  int Date::GetNumberOfMinutes() const
+  {
+    return this->GetNumberOfHours() * 60 + minutes_;
+  }
+
+  //! Returns the number of seconds in the year before the current date.
+  /*!
+    \return The number of seconds in the year before the current date.
+  */
+  int Date::GetNumberOfSeconds() const
+  {
+    return this->GetNumberOfMinutes() * 60 + seconds_;
   }
 
 }  // namespace Talos.

@@ -85,7 +85,12 @@ namespace Talos
     void SetSeconds(int sc);
 
     int GetDayNumber() const;
+    int GetNumberOfDays() const;
     int GetDaysFrom(Date date) const;
+
+    int GetNumberOfHours() const;
+    int GetNumberOfMinutes() const;
+    int GetNumberOfSeconds() const;
 
   };
 
