@@ -43,6 +43,23 @@ namespace Talos
     this->Adjust();
   }
 
+  //! Copy constructor.
+  /*!
+    \param date date to be copied.
+  */
+  Date::Date(const Date& date):
+    year_(date.GetYear()), month_(date.GetMonth()), day_(date.GetDay()),
+    hour_(date.GetHour()), minutes_(date.GetMinutes()),
+    seconds_(date.GetSeconds()), month_lengths_(12)
+  {
+    int month_lengths[12] = {31, 28, 31, 30, 31, 30,
+			     31, 31, 30, 31, 30, 31};
+    for (int i = 0; i < 12; ++i)
+      month_lengths_[i] = month_lengths[i];
+
+    this->Adjust();
+  }
+
   //! Constructor.
   /*!
     \param yyyymmdd date in format YYYYMMDD.

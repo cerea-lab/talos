@@ -48,6 +48,7 @@ namespace Talos
 
   public:
     Date();
+    Date(const Date& date);
     Date(int yyyymmdd);
     Date(int yyyy, int mm, int dd = 1,
 	 int hh = 0, int mn = 0, int sc = 0);
