@@ -1411,8 +1411,9 @@ namespace Talos
   */
   string ConfigStreams::GetLine()
   {
-    this->Skip();
-    return (*current_)->GetLine();
+    string line;
+    this->GetLine(line);
+    return line;
   }
 
   //! Returns the next valid line.
@@ -1423,8 +1424,44 @@ namespace Talos
   */
   bool ConfigStreams::GetLine(string& line)
   {
-    this->Skip();
-    return (*current_)->GetLine(line);
+    string tmp;
+
+    line = this->GetRawLine();
+    bool success = (line != "");
+
+    vector<ConfigStream*>::iterator iter = current_;
+    streampos initial_position = (*current_)->tellg();
+    ifstream::iostate state = (*current_)->rdstate();
+
+    vector<string> elements;
+    vector<bool> is_markup;
+
+    split_markup(line, elements, is_markup, (*current_)->GetMarkupTags());
+
+    line = "";
+
+    for (int i = 0; i < int(elements.size()); i++)
+      if (!is_markup[i])
+	line += elements[i];
+      else
+	{
+	  this->Rewind();
+	  tmp = this->GetRawElement();
+	  while (tmp != elements[i] && tmp != "")
+	    tmp = this->GetRawElement();
+	  if (tmp == "")
+	    throw string("Error in ConfigStreams::GetLine: the value of the markup \"")
+	      + elements[i] + string("\" was not found in \"")
+	      + (*current_)->GetFileName() + "\".";
+	  line += this->GetElement();
+	}
+
+    this->Rewind();
+    current_ = iter;
+    (*current_)->clear(state);
+    (*current_)->seekg(initial_position);
+
+    return success;
   }
 
   //! Returns the next valid line without extracting it from the stream.
@@ -1440,8 +1477,7 @@ namespace Talos
     streampos initial_position = (*current_)->tellg();
     ifstream::iostate state = (*current_)->rdstate();
 
-    this->Skip();
-    string line = (*current_)->PeekLine();
+    string line = this->GetLine();
 
     this->Rewind();
     current_ = iter;
@@ -1465,8 +1501,8 @@ namespace Talos
     streampos initial_position = (*current_)->tellg();
     ifstream::iostate state = (*current_)->rdstate();
 
-    this->Skip();
-    string line = (*current_)->PeekLine(position);
+    string line = this->GetLine();
+    position = (*current_)->tellg();
 
     this->Rewind();
     current_ = iter;
@@ -1489,8 +1525,7 @@ namespace Talos
     streampos initial_position = (*current_)->tellg();
     ifstream::iostate state = (*current_)->rdstate();
 
-    this->Skip();
-    bool success = (*current_)->PeekLine(line);
+    bool success = this->GetLine(line);
 
     this->Rewind();
     current_ = iter;
