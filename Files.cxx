@@ -536,18 +536,11 @@ namespace Talos
   bool ExtStream::Find(string element)
   {
     string elt;
-    try
-      {
-	while (GetElement(elt) && elt!=element);
-      }
-    catch (std::string& str)
-      {
-	return false;
-      }
-    catch (const char* str)
-      {
-	return false;
-      }
+    while (GetElement(elt) && elt!=element);
+
+    if (elt == "")
+      throw string("Error in ExtStream::Find: \"")
+	+ element + string("\" not found in \"") + file_name_ + "\".";
 
     return elt == element;
   }
@@ -1493,8 +1486,30 @@ namespace Talos
   bool ConfigStreams::Find(string element)
   {
     bool found;
-    while (!(found = (*current_)->Find(element)) && current_ != streams_.end()-1)
-      ++current_;
+    try
+      {
+	found = (*current_)->Find(element);
+      }
+    catch (...)
+      {
+	found = false;
+      }
+    while (!found && current_ != streams_.end()-1)
+      {
+	++current_;
+	try
+	  {
+	    found = (*current_)->Find(element);
+	  }
+	catch (...)
+	  {
+	    found = false;
+	  }
+      }
+    if (!found)
+      throw string("Error in ConfigStreams::Find: \"")
+	+ element + string("\" not found in \"") + (*current_)->GetFileName()
+	+ "\".";
     return found;
   }
 
