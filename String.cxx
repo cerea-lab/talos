@@ -38,6 +38,26 @@ namespace Talos
     return output.str();
   }
 
+  //! Converts most types to a filled string.
+  /*!
+    \param input variable to be converted.
+    \param f char with which the string will be filled.
+    \param l width of the output string.
+    \param flags (optional) format flags. Default: ostringstream::right.
+    \return A string containing 'input' (filled).
+  */
+  template<typename T>
+  string to_str_fill(const T& input, char f, int l,
+		     ostringstream::fmtflags flags = ostringstream::right)
+  {
+    ostringstream output;
+    output.width(l);
+    output.fill(f);
+    output.flags(flags);
+    output << input;
+    return output.str();
+  }
+
   //! Converts string to most types, specially numbers.
   /*!
     \param input string to be converted.
