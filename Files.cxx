@@ -1646,8 +1646,7 @@ namespace Talos
     streampos initial_position = (*current_)->tellg();
     ifstream::iostate state = (*current_)->rdstate();
 
-    this->Skip();
-    string element = (*current_)->PeekElement();
+    string element = this->GetElement();
 
     this->Rewind();
     current_ = iter;
@@ -1670,8 +1669,7 @@ namespace Talos
     streampos initial_position = (*current_)->tellg();
     ifstream::iostate state = (*current_)->rdstate();
 
-    this->Skip();
-    bool success = (*current_)->PeekElement(element);
+    bool success = this->GetElement(element);
 
     this->Rewind();
     current_ = iter;
@@ -1735,9 +1733,7 @@ namespace Talos
     streampos initial_position = (*current_)->tellg();
     ifstream::iostate state = (*current_)->rdstate();
 
-    double num;
-    while (!(*current_)->PeekNumber(num) && current_ != streams_.end()-1)
-      ++current_;
+    double num = this->GetNumber();
 
     this->Rewind();
     current_ = iter;
@@ -1760,9 +1756,7 @@ namespace Talos
     streampos initial_position = (*current_)->tellg();
     ifstream::iostate state = (*current_)->rdstate();
 
-    bool success;
-    while (!(success = (*current_)->PeekNumber(number)) && current_ != streams_.end()-1)
-      ++current_;
+    bool success = this->GetNumber(number);
 
     this->Rewind();
     current_ = iter;
@@ -1836,7 +1830,7 @@ namespace Talos
   bool ConfigStreams::GetValue(string name, T& value)
   {
     string element;
-    while (GetElement(element) && element!=name);
+    while (this->GetElement(element) && element!=name);
 
     if (element != name)
       throw string("Error in ConfigStreams::GetValue: \"")
@@ -1880,7 +1874,7 @@ namespace Talos
   bool ConfigStreams::GetValue(string name, string& value)
   {
     string element;
-    while (GetElement(element) && element!=name);
+    while (this->GetElement(element) && element!=name);
 
     if (element != name)
       throw string("Error in ConfigStreams::GetValue: \"")
@@ -1923,13 +1917,13 @@ namespace Talos
   bool ConfigStreams::GetValue(string name, bool& value)
   {
     string element;
-    while (GetElement(element) && element!=name);
+    while (this->GetElement(element) && element!=name);
 
     if (element != name)
       throw string("Error in ConfigStreams::GetValue: \"")
 	+ name + string("\" not found in \"") + (*current_)->GetFileName() + "\".";
 
-    return GetElement(value);
+    return this->GetElement(value);
   }
 
   //! Gets the value of a given variable without extracting from the stream.
