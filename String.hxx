@@ -33,6 +33,12 @@ namespace Talos
   template <class T>
   T to_num(const string& s);
 
+  bool is_num(const string& s);
+
+  bool is_integer(const string& s);
+
+  bool is_unsigned_integer(const string& s);
+
 }  // namespace Talos.
 
 

@@ -64,6 +64,77 @@ namespace Talos
     return num;
   }
 
+  //! Checks whether a string is a number.
+  /*!
+    \param str string to be checked.
+    \return true if 'str' is a number, false otherwise.
+  */
+  bool is_num(const string& str)
+  {
+    if (str=="")
+      return false;
+
+    string::size_type pos;
+    string m, e, m_a, m_b;
+
+    pos = str.find_first_of("eE");
+    // Mantissa.
+    m = str.substr(0, pos);
+    // Exponent.
+    e = pos==string::npos ? "" : str.substr(pos + 1);
+
+    pos = m.find_first_of(".");
+    // Mantissa in the form: [m_a].[m_b].
+    m_a = m.substr(0, pos);
+    // Exponent.
+    m_b = pos==string::npos ? "" : m.substr(pos + 1);
+
+    return ( (is_integer(m_a) || (m_a==""))
+	     && (is_unsigned_integer(m_b) || (m_b==""))
+	     && (is_integer(e) || (e=="")) );
+  }
+
+  //! Checks whether a string is an integer.
+  /*!
+    \param str string to be checked.
+    \return true if 'str' is an integer, false otherwise.
+  */
+  bool is_integer(const string& str)
+  {
+    bool ans;
+
+    ans = ( str.size() > 0 && isdigit(str[0]) )
+      || ( str.size() > 1 && (str[0]=='+' || str[0]=='-') );
+
+    unsigned int i(1);
+    while (i<str.size() && ans)
+      {
+	ans = ans && isdigit(str[i]);
+	i++;
+      }
+
+    return ans;
+  }
+
+  //! Checks whether a string is an unsigned integer.
+  /*!
+    \param str string to be checked.
+    \return true if 'str' is an unsigned integer, false otherwise.
+  */
+  bool is_unsigned_integer(const string& str)
+  {
+    bool ans(str.size() > 0);
+
+    unsigned int i(0);
+    while (i<str.size() && ans)
+      {
+	ans = ans && isdigit(str[i]);
+	i++;
+      }
+
+    return ans;
+  }
+
 }  // namespace Talos.
 
 
