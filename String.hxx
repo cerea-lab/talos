@@ -43,6 +43,12 @@ namespace Talos
   template <class T>
   T to_num(const string& s);
 
+  template <class T>
+  void convert(const string& s, T& num);
+
+  template <class T>
+  T convert(const string& s);
+
   bool is_num(const string& s);
 
   bool is_integer(const string& s);

@@ -84,6 +84,32 @@ namespace Talos
     return num;
   }
 
+  //! Converts strings to most types.
+  /*!
+    \param input string to be converted.
+    \param num 'input' converted to 'T'.
+  */
+  template <class T>
+  void convert(const string& s, T& out)
+  {
+    istringstream str(s);
+    str >> out;
+  }
+
+  //! Converts strings to most types.
+  /*!
+    \param input string to be converted.
+    \return 'input' converted to 'T'.
+  */
+  template <class T>
+  T convert(const string& s)
+  {
+    T out;
+    istringstream str(s);
+    str >> out;
+    return out;
+  }
+
   //! Checks whether a string is a number.
   /*!
     \param str string to be checked.
