@@ -179,7 +179,7 @@ namespace Talos
 	year_ += month_ / 12;
 	month_ = month_ % 12;
       }
-    else if (month_ < 0)
+    else if (month_ <= 0)
       {
 	year_ += month_ / 12 - 1;
 	month_ = 12 + month_ % 12;
