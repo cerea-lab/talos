@@ -106,6 +106,28 @@ namespace Talos
     out = s;
   }
 
+  //! Converts a string to a boolean.
+  /*!
+    \param s input string.
+    \param out output boolean.
+  */
+  void convert(const string& s, bool& out)
+  {
+    std::string lower(s);
+    std::transform(lower.begin(), lower.end(), lower.begin(),
+		   (int(*)(int))tolower);
+
+    if (lower == "false" || lower == "f")
+      out = false;
+    else if (lower == "true" || lower == "t")
+      out = true;
+    else
+      {
+	istringstream str(s);
+	str >> out;
+      }
+  }
+
   //! Converts strings to most types.
   /*!
     \param input string to be converted.
@@ -313,7 +335,7 @@ namespace Talos
     split(str, vect, delimiters);
     return vect;
   }
-
+  
 }  // namespace Talos.
 
 
