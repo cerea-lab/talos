@@ -816,6 +816,45 @@ namespace Talos
     return success;
   }
 
+  //! Gets the value of a given variable.
+  /*!
+    Gets the value of a given variable, i.e. the next valid
+    (not in a discarded line) number or element following the variable name.
+    \param name the name of the variable.
+    \param value boolean associated with the variable.
+  */
+  bool ExtStream::GetValue(string name, bool& value)
+  {
+    string element;
+    while (GetElement(element) && element!=name);
+
+    return GetElement(value);
+  }
+
+  //! Gets the value of a given variable without extracting from the stream.
+  /*!
+    Gets the value of a given variable, i.e. the next valid
+    (not in a discarded line) number or element following the variable name.
+    Nothing is extracted from the stream.
+    \param name the name of the variable.
+    \param value boolean associated with the variable.
+  */
+  bool ExtStream::PeekValue(string name, bool& value)
+  {
+    streampos initial_position = this->tellg();
+    iostate state = this->rdstate();
+
+    string element;
+    while (GetElement(element) && element!=name);
+
+    bool success = GetElement(value);
+
+    this->seekg(initial_position);
+    this->clear(state);
+
+    return success;
+  }
+
 
   //////////////////
   // CONFIGSTREAM //

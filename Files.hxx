@@ -105,6 +105,9 @@ namespace Talos
 
     bool GetValue(string name, string& value);
     bool PeekValue(string name, string& value);
+
+    bool GetValue(string name, bool& value);
+    bool PeekValue(string name, bool& value);
   };
 
   class ConfigStream: public ExtStream
