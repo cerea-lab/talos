@@ -70,6 +70,25 @@ namespace Talos
     return length;
   }
 
+  //! Checks whether a stream is empty.
+  /*!
+    \param stream the stream.
+    \return true if the stream is empty, false otherwise.
+  */
+  bool is_empty(istream& stream)
+  {
+    streampos position = stream.tellg();
+    istream::iostate state = stream.rdstate();
+
+    stream.get();
+    bool res = !stream.good();
+
+    stream.clear(state);
+    stream.seekg(position);
+
+    return res;
+  }
+
 
   //////////////////
   // CONFIGSTREAM //
