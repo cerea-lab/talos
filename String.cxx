@@ -74,6 +74,7 @@ namespace Talos
     if (str=="")
       return false;
 
+    bool mant, mant_a, mant_b, exp;
     string::size_type pos;
     string m, e, m_a, m_b;
 
@@ -83,15 +84,23 @@ namespace Talos
     // Exponent.
     e = pos==string::npos ? "" : str.substr(pos + 1);
 
+    exp = pos!=string::npos;
+
     pos = m.find_first_of(".");
     // Mantissa in the form: [m_a].[m_b].
     m_a = m.substr(0, pos);
     // Exponent.
     m_b = pos==string::npos ? "" : m.substr(pos + 1);
 
-    return ( (is_integer(m_a) || (m_a==""))
-	     && (is_unsigned_integer(m_b) || (m_b==""))
-	     && (is_integer(e) || (e=="")) );
+    mant = m!="" && m!="-" && m!="+";
+    mant_a = m_a!="" && m_a!="-" && m_a!="+";
+    mant_b = m_b!="";
+
+    return ( (mant || exp)
+	     && (!mant || ( (mant_a || mant_b)
+			    && (!mant_a || is_integer(m_a))
+			    && (!mant_b || is_unsigned_integer(m_b)) ) )
+	     && (!exp || is_integer(e)) );
   }
 
   //! Checks whether a string is an integer.
