@@ -28,6 +28,7 @@ namespace Talos
   unsigned long file_size(string file_name);
   unsigned long stream_size(istream& stream);
   bool is_empty(istream& stream);
+  bool has_element(istream& stream);
 
   class ConfigStream: public ifstream
   {

@@ -89,6 +89,27 @@ namespace Talos
     return res;
   }
 
+  //! Checks whether a stream contains an element.
+  /*!
+    Checks whether a stream contains an element that may be extracted
+    through 'operator <<'.
+    \param stream the stream.
+    \return true if the stream has an element, false otherwise.
+  */
+  bool has_element(istream& stream)
+  {
+    streampos position = stream.tellg();
+    istream::iostate state = stream.rdstate();
+
+    string element;
+    bool res = (stream >> element);
+
+    stream.clear(state);
+    stream.seekg(position);
+
+    return res;
+  }
+
 
   //////////////////
   // CONFIGSTREAM //
