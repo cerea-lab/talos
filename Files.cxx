@@ -195,12 +195,14 @@ namespace Talos
   /*!
     Extracts following delimiters from the string, until another character
     is found.
+    \return A reference to the current stream.
   */
-  void ConfigStream::SkipDelimiters()
+  ConfigStream& ConfigStream::SkipDelimiters()
   {
     while ( this->good()
 	    && (delimiters_.find_first_of(char(this->peek())) != string::npos) )
       this->get();
+    return *this;
   }
 
   //! Removes delimiters at both ends of a string.
