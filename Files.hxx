@@ -30,6 +30,7 @@ namespace Talos
   bool is_empty(istream& stream);
   bool has_element(istream& stream);
 
+  //! Extended streams.
   class ExtStream: public ifstream
   {
   protected:
@@ -120,6 +121,7 @@ namespace Talos
     bool PeekValue(string name, bool& value);
   };
 
+  //! Streams associated with configuration files.
   class ConfigStream: public ExtStream
   {
   protected:

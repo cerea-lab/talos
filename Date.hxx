@@ -24,6 +24,7 @@
 namespace Talos
 {
 
+  //! Class Date.
   class Date
   {
   private:
