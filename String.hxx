@@ -1,4 +1,4 @@
-// Copyright (C) 2004 Vivien Mallet
+// Copyright (C) 2004-2005 Vivien Mallet
 //
 // This file is part of Talos library.
 // Talos library provides miscellaneous tools to make up for C++
