@@ -548,15 +548,9 @@ namespace Talos
   template <class T>
   bool ConfigStream::GetElement(T& element)
   {
-    streampos position;
-    string line;
+    element = this->GetElement();
 
-    while ( (this->good()) && (Discard(PeekFullLine(position))) )
-      this->seekg(position);
-
-    this->SkipDelimiters();
-
-    return ((*this) >> element);
+    return (element != "");
   }
 
   //! Returns the next valid element without extracting it from the stream.
