@@ -235,12 +235,13 @@ namespace Talos
   string Date::GetDate(const string& format) const
   {
     string output("");
-    string::size_type index_b(0), index_e;
+    string::size_type index_b(0), index_e, tmp;
 
     while ( (index_b != string::npos)
-	    || (index_b < format.size()) )
+	    && (index_b < format.size()) )
       {
-	index_e = index_b + format.substr(index_b).find_first_of("%");
+	tmp = format.substr(index_b).find_first_of("%");
+	index_e = tmp == string::npos ? string::npos : index_b + tmp;
 	if ( (index_e != string::npos) && (index_e != format.size() - 1) )
 	  {
 	    output += format.substr(index_b, index_e - index_b);
