@@ -71,6 +71,7 @@ cout << "Unknown exception..." <<endl;\
 return 1;\
 }
 
+//! Talos namespace.
 namespace Talos
 {
   using namespace std;
