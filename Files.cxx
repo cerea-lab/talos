@@ -536,7 +536,7 @@ namespace Talos
   bool ExtStream::Find(string element)
   {
     string elt;
-    while (GetElement(elt) && elt!=element);
+    while (GetRawElement(elt) && elt!=element);
 
     if (elt == "")
       throw string("Error in ExtStream::Find: \"")
@@ -602,6 +602,21 @@ namespace Talos
   bool ExtStream::GetElement(T& element)
   {
     string str = this->GetElement();
+    convert(str, element);
+
+    return (str != "");
+  }
+
+  //! Gets the next valid element.
+  /*!
+    Gets the next valid element, i.e. the next element that is
+    not in a line to be discarded.
+    \param element (output) the next valid element.
+  */
+  template <class T>
+  bool ExtStream::GetRawElement(T& element)
+  {
+    string str = ExtStream::GetElement();
     convert(str, element);
 
     return (str != "");

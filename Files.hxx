@@ -90,6 +90,8 @@ namespace Talos
     virtual string GetElement();
     template <class T>
     bool GetElement(T& element);
+    template <class T>
+    bool GetRawElement(T& element);
     string PeekElement();
     template <class T>
     bool PeekElement(T& element);
