@@ -297,8 +297,8 @@ namespace Talos
   */
   ExtStream& ExtStream::Rewind()
   {
-    this->seekg(0, ifstream::beg);
     this->clear();
+    this->seekg(0, ifstream::beg);
 
     return *this;
   }
@@ -337,8 +337,8 @@ namespace Talos
     string line;
     std::getline(*this, line);
 
-    this->seekg(position);
     this->clear(state);
+    this->seekg(position);
 
     return line;
   }
@@ -358,8 +358,8 @@ namespace Talos
 
     position = this->tellg();
 
-    this->seekg(position_back);
     this->clear(state);
+    this->seekg(position_back);
 
     return line;
   }
@@ -375,8 +375,8 @@ namespace Talos
 
     bool success = std::getline(*this, line);
 
-    this->seekg(position);
     this->clear(state);
+    this->seekg(position);
 
     return success;
   }
@@ -468,8 +468,8 @@ namespace Talos
 
     line = GetLine();
 
-    this->seekg(initial_position);
     this->clear(state);
+    this->seekg(initial_position);
 
     return line;
   }
@@ -491,8 +491,8 @@ namespace Talos
 
     position = this->tellg();
 
-    this->seekg(position_back);
     this->clear(state);
+    this->seekg(position_back);
 
     return line;
   }
@@ -511,8 +511,8 @@ namespace Talos
 
     bool success = GetLine(line);
 
-    this->seekg(initial_position);
     this->clear(state);
+    this->seekg(initial_position);
 
     return success;
   }
@@ -630,8 +630,8 @@ namespace Talos
 
     element = this->GetElement();
 
-    this->seekg(initial_position);
     this->clear(state);
+    this->seekg(initial_position);
 
     return element;
   }
@@ -653,8 +653,8 @@ namespace Talos
 
     success = this->GetElement(element);
 
-    this->seekg(initial_position);
     this->clear(state);
+    this->seekg(initial_position);
 
     return success;
   }
@@ -715,8 +715,8 @@ namespace Talos
     string element;
     while (GetElement(element) && !is_num(element));
 
-    this->seekg(initial_position);
     this->clear(state);
+    this->seekg(initial_position);
 
     return is_num(element) ? to_num<double>(element) : 0.;
   }
@@ -739,8 +739,8 @@ namespace Talos
 
     number = is_num(element) ? to_num<T>(element) : T(0);
 
-    this->seekg(initial_position);
     this->clear(state);
+    this->seekg(initial_position);
 
     return success;
   }
@@ -789,8 +789,8 @@ namespace Talos
 
     string element = this->GetValue(name);
 
-    this->seekg(initial_position);
     this->clear(state);
+    this->seekg(initial_position);
 
     return element;
   }
@@ -838,8 +838,8 @@ namespace Talos
 
     bool success = GetNumber(value);
 
-    this->seekg(initial_position);
     this->clear(state);
+    this->seekg(initial_position);
 
     return success;
   }
@@ -885,8 +885,8 @@ namespace Talos
 
     bool success = GetElement(value);
 
-    this->seekg(initial_position);
     this->clear(state);
+    this->seekg(initial_position);
 
     return success;
   }
@@ -932,8 +932,8 @@ namespace Talos
 
     bool success = GetElement(value);
 
-    this->seekg(initial_position);
     this->clear(state);
+    this->seekg(initial_position);
 
     return success;
   }
@@ -1017,8 +1017,8 @@ namespace Talos
 	  element += this->GetElement();
 	}
 
-    this->seekg(initial_position);
     this->clear(state);
+    this->seekg(initial_position);
 
     return element;
   }
