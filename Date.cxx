@@ -545,6 +545,30 @@ namespace Talos
     return this->GetNumberOfMinutes() * 60 + seconds_;
   }
 
+  //! Returns the week day.
+  /*! Week days are refered as follows: \par
+    0 is Monday \par
+    1 is Tuesday \par
+    2 is Wednesday \par
+    3 is Thursday \par
+    4 is Friday \par
+    5 is Saturday \par
+    6 is Sunday \par
+    \return The week day number.
+  */
+  int Date::GetWeekDay() const
+  {
+    // 1st January 1900 is a Monday.
+    // Unknown before.
+    if (year_ < 1900)
+      return 0;
+    int day = 0;
+    for (int year = 1900; year < year_; year++)
+      day += LeapYear(year) ? 366 : 365;
+    day += GetNumberOfDays();
+    return day % 7;
+  }
+
 }  // namespace Talos.
 
 

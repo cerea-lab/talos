@@ -93,6 +93,7 @@ namespace Talos
     int GetNumberOfMinutes() const;
     int GetNumberOfSeconds() const;
 
+    int GetWeekDay() const;
   };
 
 }  // namespace Talos.
