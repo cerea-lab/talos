@@ -1007,6 +1007,9 @@ namespace Talos
 	  tmp = ExtStream::GetElement();
 	  while (tmp != elements[i] && tmp != "")
 	    tmp = ExtStream::GetElement();
+	  if (tmp == "")
+	    throw string("Error in ConfigStream::GetElement: the value of the markup \"")
+	      + elements[i] + string("\" was not found in \"") + file_name_ + "\".";
 	  element += this->GetElement();
 	}
 
@@ -1047,6 +1050,9 @@ namespace Talos
 	  tmp = ExtStream::GetElement();
 	  while (tmp != elements[i] && tmp != "")
 	    tmp = ExtStream::GetElement();
+	  if (tmp == "")
+	    throw string("Error in ConfigStream::GetLine: the value of the markup \"")
+	      + elements[i] + string("\" was not found in \"") + file_name_ + "\".";
 	  element += this->GetElement();
 	}
 
@@ -1087,6 +1093,9 @@ namespace Talos
 	  tmp = ExtStream::GetElement();
 	  while (tmp != elements[i] && tmp != "")
 	    tmp = ExtStream::GetElement();
+	  if (tmp == "")
+	    throw string("Error in ConfigStream::GetLine: the value of the markup \"")
+	      + elements[i] + string("\" was not found in \"") + file_name_ + "\".";
 	  line += this->GetElement();
 	}
 
