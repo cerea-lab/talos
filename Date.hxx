@@ -53,6 +53,7 @@ namespace Talos
     Date(int yyyy, int mm, int dd = 1,
 	 int hh = 0, int mn = 0, int sc = 0);
 
+    Date& operator=(const Date&);
     void SetDate(int yyyymmdd);
     void SetDate(int yyyy, int mm, int dd = 1,
 		 int hh = 0, int mn = 0, int sc = 0);

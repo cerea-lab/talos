@@ -103,6 +103,24 @@ namespace Talos
     this->Adjust();
   }
 
+  //! Assignment operator.
+  /*!
+    \param date date to be copied.
+  */
+  Date& Date::operator=(const Date& date)
+  {
+    year_ = date.GetYear();
+    month_ = date.GetMonth();
+    day_ = date.GetDay();
+    hour_ = date.GetHour();
+    minutes_ = date.GetMinutes();
+    seconds_ = date.GetSeconds();
+
+    this->Adjust();
+
+    return *this;
+  }
+
   //! Sets the date.
   /*!
     \param yyyymmdd date in format YYYYMMDD.
