@@ -82,6 +82,10 @@ namespace Talos
     month_ = (yyyymmdd % 10000) / 100;
     day_ = yyyymmdd % 100;
 
+    hour_ = 0;
+    minutes_ = 0;
+    seconds_ = 0;
+
     this->Adjust();
   }
 
