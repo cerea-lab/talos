@@ -54,6 +54,7 @@ namespace Talos
     void SetDate(int yyyy, int mm, int dd = 1,
 		 int hh = 0, int mn = 0, int sc = 0);
 
+    bool LeapYear(int year) const;
     bool LeapYear() const;
 
     int GetDate() const;
@@ -82,6 +83,9 @@ namespace Talos
     void SetHour(int hh);
     void SetMinutes(int mn);
     void SetSeconds(int sc);
+
+    int GetDayNumber() const;
+    int GetDaysFrom(Date date) const;
 
   };
 

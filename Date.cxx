@@ -195,14 +195,24 @@ namespace Talos
 
   }
 
+  //! Is a given year a leap year?
+  /*!
+    \param year year.
+    \return true if the year 'year' is a leap year, false otherwise.
+  */
+  bool Date::LeapYear(int year) const
+  {
+    return ( year % 4 == 0
+	     && ( year % 100 != 0 || year % 400 == 0 ) );
+  }
+
   //! Is the current year a leap year?
   /*!
     \return true if the current year is a leap year, false otherwise.
   */
   bool Date::LeapYear() const
   {
-    return ( year_ % 4 == 0
-	     && ( year_ % 100 != 0 || year_ % 400 == 0 ) );
+    return this->LeapYear(year_);
   }
 
   //! Returns the date in format YYYYMMDD.
@@ -446,6 +456,38 @@ namespace Talos
   {
     seconds_ = sc;
     this->Adjust();
+  }
+
+  //! Returns the number of the day in the year (between 1 and 366).
+  /*!
+    \return The number of the day in the year (between 1 and 366).
+  */
+  int Date::GetDayNumber() const
+  {
+    int res(0);
+    for (int i=1; i<month_; i++)
+      res += month_lengths_[i - 1];
+    return res + day_ - 1;
+  }
+
+  //! Returns the number of days from a given date.
+  /*!
+    \param date the reference date.
+    \return The number of days between 'date' and the current date
+    (positive if the current date is greater than 'date').
+  */
+  int Date::GetDaysFrom(Date date) const
+  {
+    int min_year = min(year_, date.GetYear());
+    int nb_days(0), nb_days_date(0);
+    for (int i=min_year; i<year_; i++)
+      nb_days += this->LeapYear(i) ? 366 : 365;
+    nb_days += this->GetDayNumber();
+    for (int i=min_year; i<date.GetYear(); i++)
+      nb_days_date += this->LeapYear(i) ? 366 : 365;
+    nb_days_date += date.GetDayNumber();
+
+    return nb_days - nb_days_date;
   }
 
 }  // namespace Talos.
