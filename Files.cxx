@@ -146,6 +146,19 @@ namespace Talos
 	     || (comments_.find_first_of(line[first]) != string::npos) );
   }
 
+  //! Skips discarded lines.
+  /*!
+    Extracts discarded lines.
+    \return A reference to the current stream.
+  */
+  ConfigStream& ConfigStream::SkipDiscarded()
+  {
+    streampos position;
+    while ( (this->good()) && (Discard(PeekFullLine(position))) )
+      this->seekg(position);
+    return *this;
+  }
+
   //! Sets the characters considered as delimiters..
   /*!
     \param delimiters delimiters.

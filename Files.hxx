@@ -47,6 +47,7 @@ namespace Talos
 		 string delimiters = " \t:=|");
 
     bool Discard(string line) const;
+    ConfigStream& SkipDiscarded();
 
     void SetDelimiters(string delimiters);
     void SetComments(string comments);
