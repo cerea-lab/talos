@@ -117,10 +117,10 @@ namespace Talos
     std::transform(lower.begin(), lower.end(), lower.begin(),
 		   (int(*)(int))tolower);
 
-    if (lower == "false" || lower == "f")
-      out = false;
-    else if (lower == "true" || lower == "t")
+    if (lower == "true" || lower == "t" || lower == "y" || lower == "yes")
       out = true;
+    else if (lower == "false" || lower == "f" || lower == "n" || lower == "no")
+      out = false;
     else
       {
 	istringstream str(s);
