@@ -490,6 +490,8 @@ namespace Talos
     while ( (this->good()) && (Discard(PeekFullLine(position))) )
       this->seekg(position);
 
+    this->SkipDelimiters();
+
     return ((*this) >> element);
   }
 
@@ -550,6 +552,8 @@ namespace Talos
 
     while ( (this->good()) && (Discard(PeekFullLine(position))) )
       this->seekg(position);
+
+    this->SkipDelimiters();
 
     success = ((*this) >> element);
 
