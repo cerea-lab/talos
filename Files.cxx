@@ -611,7 +611,7 @@ namespace Talos
   */
   string ExtStream::PeekElement()
   {
-    streampos initial_position, position;
+    streampos initial_position;
     string element;
 
     initial_position = this->tellg();
@@ -634,7 +634,7 @@ namespace Talos
   template <class T>
   bool ExtStream::PeekElement(T& element)
   {
-    streampos initial_position, position;
+    streampos initial_position;
     bool success;
 
     initial_position = this->tellg();
@@ -952,7 +952,6 @@ namespace Talos
   */
   string ConfigStream::GetElement()
   {
-    streampos position;
     string tmp;
 
     string element = ExtStream::GetElement();
