@@ -27,6 +27,15 @@
 #include <fstream>
 #include <sstream>
 
+//! To display a message... call Hermes!
+#ifndef ERR
+#define ERR(x) std::cout << "Hermes - " #x << std::endl
+#endif
+//! To display a variable (with its name).
+#ifndef DISP
+#define DISP(x) std::cout << #x ": " << x << std::endl
+#endif
+
 namespace Talos
 {
   using namespace std;
