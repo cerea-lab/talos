@@ -32,6 +32,7 @@ namespace Talos
 }
 
 #include "String.cxx"
+#include "Files.cxx"
 
 #define TALOS_FILE_TALOS_HXX
 #endif
