@@ -26,6 +26,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <vector>
 
 //! To display a message... call Hermes!
 #ifndef ERR
@@ -42,6 +43,7 @@ namespace Talos
 }
 
 #include "String.cxx"
+#include "Date.cxx"
 #include "Files.cxx"
 
 #define TALOS_FILE_TALOS_HXX
