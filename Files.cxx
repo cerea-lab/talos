@@ -400,6 +400,20 @@ namespace Talos
     return success;
   }
 
+  //! Sets the position of the get pointer after a given element.
+  /*!
+    Sets the position of the get pointer exactly after a given element.
+    \param element the element to be found.
+    \return true if the element was found, false otherwise.
+  */
+  bool ConfigStream::Find(string element)
+  {
+    string elt;
+    while (GetElement(elt) && elt!=element);
+
+    return elt == element;
+  }
+
   //! Returns the next valid element.
   /*!
     Returns the next valid element, i.e. the next element that is

@@ -70,6 +70,8 @@ namespace Talos
     string PeekLine(streampos& position);
     bool PeekLine(string& line);
 
+    bool Find(string element);
+
     string GetElement();
     template <class T>
     bool GetElement(T& element);
