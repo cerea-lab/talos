@@ -1103,6 +1103,764 @@ namespace Talos
     return success;
   }
 
+
+  ///////////////////
+  // CONFIGSTREAMS //
+  ///////////////////
+
+  //! Default constructor.
+  /*! Nothing is performed.
+   */
+  ConfigStreams::ConfigStreams():
+    streams_(0), current_(streams_.begin())
+  {
+  }
+
+  //! Main constructor.
+  /*! Opens a set of file.
+    \param files files to be opened.
+  */
+  ConfigStreams::ConfigStreams(const vector<string>& files):
+    streams_(files.size()), current_(streams_.begin())
+  {
+    for (int i = 0; i < int(files.size()); i++)
+      streams_[i] = new ConfigStream(files[i]);
+  }
+
+  //! Constructor.
+  /*! Opens a file.
+    \param file0 file to be opened.
+  */
+  ConfigStreams::ConfigStreams(string file):
+    streams_(1), current_(streams_.begin())
+  {
+    streams_[0] = new ConfigStream(file);
+  }
+
+  //! Constructor.
+  /*! Opens two files.
+    \param file0 first file to be opened.
+    \param file1 second file to be opened.
+  */
+  ConfigStreams::ConfigStreams(string file0, string file1):
+    streams_(2), current_(streams_.begin())
+  {
+    streams_[0] = new ConfigStream(file0);
+    streams_[1] = new ConfigStream(file1);
+  }
+
+  //! Constructor.
+  /*! Opens three files.
+    \param file0 first file to be opened.
+    \param file1 second file to be opened.
+    \param file2 third file to be opened.
+  */
+  ConfigStreams::ConfigStreams(string file0, string file1, string file2):
+    streams_(3), current_(streams_.begin())
+  {
+    streams_[0] = new ConfigStream(file0);
+    streams_[1] = new ConfigStream(file1);
+    streams_[2] = new ConfigStream(file2);
+  }
+
+  //! Destructor.
+  ConfigStreams::~ConfigStreams()
+  {
+    for (current_ = streams_.begin(); current_ != streams_.end(); ++current_)
+      delete (*current_);
+  }
+
+  //! Returns the vector of streams.
+  /*!
+    \return A reference to the vector of ConfigStream.
+  */
+  vector<ConfigStream*>& ConfigStreams::GetStreams()
+  {
+    return streams_;
+  }
+
+  //! Returns the current position in the vector of streams.
+  /*!
+    \return An iterator that points to the current element of the
+    vector of streams.
+  */
+  vector<ConfigStream*>::iterator ConfigStreams::GetCurrent()
+  {
+    return current_;
+  }
+
+  //! Checks whether a line should be discarded.
+  /*!
+    \param line line to be checked.
+  */
+  bool ConfigStreams::Discard(string line) const
+  {
+    return (*current_)->Discard(line);
+  }
+
+  //! Skips discarded lines.
+  /*!
+    Extracts discarded lines.
+    \return A reference to 'this'.
+  */
+  ConfigStreams& ConfigStreams::SkipDiscarded()
+  {
+    (*current_)->SkipDiscarded();
+    while (current_ != streams_.end()-1 && !(*current_)->good())
+      {
+	++current_;
+	(*current_)->SkipDiscarded();
+      }
+    return *this;
+  }
+
+  //! Skips delimiters.
+  /*!
+    Extracts following delimiters from the string, until another character
+    is found.
+    \return A reference to this.
+  */
+  ConfigStreams& ConfigStreams::SkipDelimiters()
+  {
+    (*current_)->SkipDelimiters();
+    while (current_ != streams_.end()-1 && !(*current_)->good())
+      {
+	++current_;
+	(*current_)->SkipDelimiters();
+      }
+    return *this;
+  }
+
+  //! Removes delimiters at both ends of a string.
+  /*!
+    Removes delimiters at the beginning and at the end of a string.
+    \param 
+  */
+  string ConfigStreams::RemoveDelimiters(const string& str) const
+  {
+    return (*current_)->RemoveDelimiters(str);
+  }
+
+  //! Skips discarded lines and delimiters.
+  /*!
+    Extracts discarded lines and delimiters.
+    \return A reference to this.
+  */
+  ConfigStreams& ConfigStreams::Skip()
+  {
+    this->SkipDiscarded();
+    return this->SkipDelimiters();
+  }
+
+  //! Checks whether the streams are empty.
+  /*!
+    Checcks whether the streams have still valid elements to be read.
+    \return 'true' is the streams are empty, 'false' otherwise.
+  */
+  bool ConfigStreams::IsEmpty()
+  {
+    return (*current_)->IsEmpty();
+  }
+
+  //! Rewinds all streams and goes back to the first stream.
+  /*!
+    Goes back to the beginning of each stream, clears the control state and
+    goes back to the first stream.
+    \return A reference to 'this'.
+  */
+  ConfigStreams& ConfigStreams::Rewind()
+  {
+    for (; current_ != streams_.begin(); --current_)
+      (*current_)->Rewind();
+    (*current_)->Rewind();
+    
+    return *this;
+  }
+
+  //! Returns the next line.
+  /*!
+    \return The next line.
+  */
+  string ConfigStreams::GetFullLine()
+  {
+    string line;
+    std::getline(**current_, line);
+
+    if (is_empty(**current_) && current_ != streams_.end()-1)
+      ++current_;
+
+    return line;
+  }
+
+  //! Returns the next line.
+  /*!
+    \param line (output) the next line.
+  */
+  bool ConfigStreams::GetFullLine(string& line)
+  {
+    bool success = std::getline(**current_, line);
+
+    if (is_empty(**current_) && current_ != streams_.end()-1)
+      ++current_;
+
+    return success;
+  }
+
+  //! Returns the next line without extracting it from the stream.
+  /*!
+    \return The next line.
+  */
+  string ConfigStreams::PeekFullLine()
+  {
+    vector<ConfigStream*>::iterator iter = current_;
+    streampos initial_position = (*current_)->tellg();
+    ifstream::iostate state = (*current_)->rdstate();
+
+    string line = (*current_)->PeekFullLine();
+
+    this->Rewind();
+    current_ = iter;
+    (*current_)->clear(state);
+    (*current_)->seekg(initial_position);
+
+    return line;
+  }
+
+  //! Returns the next line without extracting it from the stream.
+  /*!
+    \param position (output) the position of the line following the next line.
+    \return The next line.
+  */
+  string ConfigStreams::PeekFullLine(streampos& position)
+  {
+    vector<ConfigStream*>::iterator iter = current_;
+    streampos initial_position = (*current_)->tellg();
+    ifstream::iostate state = (*current_)->rdstate();
+
+    string line = (*current_)->PeekFullLine(position);
+
+    this->Rewind();
+    current_ = iter;
+    (*current_)->clear(state);
+    (*current_)->seekg(initial_position);
+
+    return line;
+  }
+
+  //! Returns the next line without extracting it from the stream.
+  /*!
+    \param line (output) the next line.
+  */
+  bool ConfigStreams::PeekFullLine(string& line)
+  {
+    vector<ConfigStream*>::iterator iter = current_;
+    streampos initial_position = (*current_)->tellg();
+    ifstream::iostate state = (*current_)->rdstate();
+
+    bool success = (*current_)->PeekFullLine(line);
+
+    this->Rewind();
+    current_ = iter;
+    (*current_)->clear(state);
+    (*current_)->seekg(initial_position);
+
+    return success;
+  }
+
+  //! Skips full lines.
+  /*!
+    \param nb number of lines to be skipped.
+  */
+  void ConfigStreams::SkipFullLines(int nb)
+  {
+    for (int i = 0; i < nb; i++)
+      this->GetFullLine();
+  }
+
+  //! Returns the next valid line.
+  /*!
+    Returns the next valid line, i.e. the next line that is
+    not a line to be discarded and from which comments have been extracted.
+    \return The next valid line.
+  */
+  string ConfigStreams::GetLine()
+  {
+    this->Skip();
+    return (*current_)->GetLine();
+  }
+
+  //! Returns the next valid line.
+  /*!
+    Returns the next valid line, i.e. the next line that is
+    not a line to be discarded and from which comments have been extracted.
+    \param line (output) the next valid line.
+  */
+  bool ConfigStreams::GetLine(string& line)
+  {
+    this->Skip();
+    return (*current_)->GetLine(line);
+  }
+
+  //! Returns the next valid line without extracting it from the stream.
+  /*!
+    Returns the next valid line, i.e. the next line that is
+    not a line to be discarded and from which comments have been extracted.
+    Nothing is extracted from the stream.
+    \return The next valid line.
+  */
+  string ConfigStreams::PeekLine()
+  {
+    vector<ConfigStream*>::iterator iter = current_;
+    streampos initial_position = (*current_)->tellg();
+    ifstream::iostate state = (*current_)->rdstate();
+
+    this->Skip();
+    string line = (*current_)->PeekLine();
+
+    this->Rewind();
+    current_ = iter;
+    (*current_)->clear(state);
+    (*current_)->seekg(initial_position);
+
+    return line;
+  }
+
+  //! Returns the next valid line without extracting it from the stream.
+  /*!
+    Returns the next valid line, i.e. the next line that is
+    not a line to be discarded and from which comments have been extracted.
+    Nothing is extracted from the stream.
+    \param position (output) the position of the line following the next valid line.
+    \return The valid line.
+  */
+  string ConfigStreams::PeekLine(streampos& position)
+  {
+    vector<ConfigStream*>::iterator iter = current_;
+    streampos initial_position = (*current_)->tellg();
+    ifstream::iostate state = (*current_)->rdstate();
+
+    this->Skip();
+    string line = (*current_)->PeekLine(position);
+
+    this->Rewind();
+    current_ = iter;
+    (*current_)->clear(state);
+    (*current_)->seekg(initial_position);
+
+    return line;
+  }
+
+  //! Returns the next valid line without extracting it from the stream.
+  /*!
+    Returns the next valid line, i.e. the next line that is
+    not a line to be discarded and from which comments have been extracted.
+    Nothing is extracted from the stream.
+    \param line (output) the next valid line.
+  */
+  bool ConfigStreams::PeekLine(string& line)
+  {
+    vector<ConfigStream*>::iterator iter = current_;
+    streampos initial_position = (*current_)->tellg();
+    ifstream::iostate state = (*current_)->rdstate();
+
+    this->Skip();
+    bool success = (*current_)->PeekLine(line);
+
+    this->Rewind();
+    current_ = iter;
+    (*current_)->clear(state);
+    (*current_)->seekg(initial_position);
+
+    return success;
+  }
+
+  //! Skips valid lines.
+  /*!
+    \param nb number of lines to be skipped.
+  */
+  void ConfigStreams::SkipLines(int nb)
+  {
+    for (int i = 0; i < nb; i++)
+      this->GetLine();
+  }
+
+  //! Sets the position of the get pointer after a given element.
+  /*!
+    Sets the position of the get pointer exactly after a given element.
+    \param element the element to be found.
+    \return true if the element was found, false otherwise.
+  */
+  bool ConfigStreams::Find(string element)
+  {
+    bool found;
+    while (!(found = (*current_)->Find(element)) && current_ != streams_.end()-1)
+      ++current_;
+    return found;
+  }
+
+  //! Sets the position of the get pointer after a given element.
+  /*!
+    Sets the position of the get pointer exactly after a given element.
+    \param element the element to be found from the beginning of the stream.
+    \return true if the element was found, false otherwise.
+  */
+  bool ConfigStreams::FindFromBeginning(string element)
+  {
+    this->Rewind();
+    return this->Find(element);
+  }
+
+  //! Returns the next valid element.
+  /*!
+    Returns the next valid element, i.e. the next element that is
+    not in a line to be discarded.
+    \return The next valid element.
+  */
+  string ConfigStreams::GetElement()
+  {
+    string element;
+    while ((element = (*current_)->GetElement()) == "" && current_ != streams_.end()-1)
+      ++current_;
+    return element;
+  }
+
+  //! Gets the next valid element.
+  /*!
+    Gets the next valid element, i.e. the next element that is
+    not in a line to be discarded.
+    \param element (output) the next valid element.
+  */
+  template <class T>
+  bool ConfigStreams::GetElement(T& element)
+  {
+    string str = this->GetElement();
+    convert(str, element);
+
+    return (str != "");
+  }
+
+  //! Returns the next valid element without extracting it from the stream.
+  /*!
+    Returns the next valid element, i.e. the next element that is
+    not in a line to be discarded.
+    \return The next valid element.
+  */
+  string ConfigStreams::PeekElement()
+  {
+    vector<ConfigStream*>::iterator iter = current_;
+    streampos initial_position = (*current_)->tellg();
+    ifstream::iostate state = (*current_)->rdstate();
+
+    this->Skip();
+    string element = (*current_)->PeekElement();
+
+    this->Rewind();
+    current_ = iter;
+    (*current_)->clear(state);
+    (*current_)->seekg(initial_position);
+
+    return element;
+  }
+
+  //! Gets the next valid element without extracting it from the stream.
+  /*!
+    Gets the next valid element, i.e. the next element that is
+    not in a line to be discarded.
+    \param element (output) the next valid element.
+  */
+  template <class T>
+  bool ConfigStreams::PeekElement(T& element)
+  {
+    vector<ConfigStream*>::iterator iter = current_;
+    streampos initial_position = (*current_)->tellg();
+    ifstream::iostate state = (*current_)->rdstate();
+
+    this->Skip();
+    bool success = (*current_)->PeekElement(element);
+
+    this->Rewind();
+    current_ = iter;
+    (*current_)->clear(state);
+    (*current_)->seekg(initial_position);
+
+    return success;
+  }
+
+  //! Skips valid elements.
+  /*!
+    \param nb number of valid elements to be skipped.
+  */
+  void ConfigStreams::SkipElements(int nb)
+  {
+    for (int i = 0; i < nb; i++)
+      this->GetElement();
+  }
+
+  //! Returns the next valid number.
+  /*!
+    Returns the next valid number, i.e. the next number that is
+    not in a line to be discarded.
+    \return The next valid number.
+  */
+  double ConfigStreams::GetNumber()
+  {
+    string element;
+    while (this->GetElement(element) && !is_num(element));
+
+    return is_num(element) ? to_num<double>(element) : 0.;
+  }
+
+  //! Gets the next valid number.
+  /*!
+    Gets the next valid number, i.e. the next number that is
+    not in a line to be discarded.
+    \param element (output) the next valid number.
+  */
+  template <class T>
+  bool ConfigStreams::GetNumber(T& number)
+  {
+    string element;
+    bool success;
+    while ((success = this->GetElement(element)) && !is_num(element));
+
+    number = is_num(element) ? to_num<T>(element) : T(0);
+
+    return success;
+  }
+
+  //! Returns the next valid number without extracting it from the stream.
+  /*!
+    Returns the next valid number, i.e. the next number that is
+    not in a line to be discarded.
+    \return The next valid number.
+  */
+  double ConfigStreams::PeekNumber()
+  {
+    vector<ConfigStream*>::iterator iter = current_;
+    streampos initial_position = (*current_)->tellg();
+    ifstream::iostate state = (*current_)->rdstate();
+
+    double num;
+    while (!(*current_)->PeekNumber(num) && current_ != streams_.end()-1)
+      ++current_;
+
+    this->Rewind();
+    current_ = iter;
+    (*current_)->clear(state);
+    (*current_)->seekg(initial_position);
+
+    return num;
+  }
+
+  //! Gets the next valid number without extracting it from the stream.
+  /*!
+    Gets the next valid number, i.e. the next number that is
+    not in a line to be discarded.
+    \param number (output) the next valid number.
+  */
+  template <class T>
+  bool ConfigStreams::PeekNumber(T& number)
+  {
+    vector<ConfigStream*>::iterator iter = current_;
+    streampos initial_position = (*current_)->tellg();
+    ifstream::iostate state = (*current_)->rdstate();
+
+    bool success;
+    while (!(success = (*current_)->PeekNumber(number)) && current_ != streams_.end()-1)
+      ++current_;
+
+    this->Rewind();
+    current_ = iter;
+    (*current_)->clear(state);
+    (*current_)->seekg(initial_position);
+
+    return success;
+  }
+
+  //! Skips numbers.
+  /*!
+    \param nb number of numbers to be skipped.
+  */
+  void ConfigStreams::SkipNumbers(int nb)
+  {
+    for (int i = 0; i < nb; i++)
+      this->GetNumber();
+  }
+
+  //! Gets the value of a given variable.
+  /*!
+    Gets the value of a given variable, i.e. the next valid
+    (not in a discarded line) element following the variable name.
+    \param name the name of the variable.
+    \return the value of the variable.
+  */
+  string ConfigStreams::GetValue(string name)
+  {
+    string element;
+    while (this->GetElement(element) && element!=name);
+
+    if (element != name)
+      throw string("Error in ConfigStreams::GetValue: \"")
+	+ name + string("\" not found in \"") + (*current_)->GetFileName() + "\".";
+
+    return this->GetElement();
+  }
+
+  //! Gets the value of a given variable without extracting from the stream.
+  /*!
+    Gets the value of a given variable, i.e. the next valid
+    (not in a discarded line) element following the variable name.
+    Nothing is extracted from the stream.
+    \param name the name of the variable.
+    \return the value associated with the variable.
+  */
+  string ConfigStreams::PeekValue(string name)
+  {
+    vector<ConfigStream*>::iterator iter = current_;
+    streampos initial_position = (*current_)->tellg();
+    ifstream::iostate state = (*current_)->rdstate();
+
+    string element = this->GetValue(name);
+
+    this->Rewind();
+    current_ = iter;
+    (*current_)->clear(state);
+    (*current_)->seekg(initial_position);
+
+    return element;
+  }
+
+  //! Gets the value of a given variable.
+  /*!
+    Gets the (numerical) value of a given variable, i.e. the next valid
+    (not in a discarded line) number or element following the variable name.
+    \param name the name of the variable.
+    \param value value associated with the variable.
+  */
+  template <class T>
+  bool ConfigStreams::GetValue(string name, T& value)
+  {
+    string element;
+    while (GetElement(element) && element!=name);
+
+    if (element != name)
+      throw string("Error in ConfigStreams::GetValue: \"")
+	+ name + string("\" not found in \"") + (*current_)->GetFileName() + "\".";
+
+    return GetNumber(value);
+  }
+
+  //! Gets the value of a given variable without extracting them from the stream.
+  /*!
+    Gets the (numerical) value of a given variable, i.e. the next valid
+    (not in a discarded line) number or element following the variable name.
+    Nothing is extracted from the stream.
+    \param name the name of the variable.
+    \param value value associated with the variable.
+  */
+  template <class T>
+  bool ConfigStreams::PeekValue(string name, T& value)
+  {
+    vector<ConfigStream*>::iterator iter = current_;
+    streampos initial_position = (*current_)->tellg();
+    ifstream::iostate state = (*current_)->rdstate();
+
+    bool success = this->GetValue(name, value);
+
+    this->Rewind();
+    current_ = iter;
+    (*current_)->clear(state);
+    (*current_)->seekg(initial_position);
+
+    return success;
+  }
+
+  //! Gets the value of a given variable.
+  /*!
+    Gets the value of a given variable, i.e. the next valid
+    (not in a discarded line) number or element following the variable name.
+    \param name the name of the variable.
+    \param value value associated with the variable.
+  */
+  bool ConfigStreams::GetValue(string name, string& value)
+  {
+    string element;
+    while (GetElement(element) && element!=name);
+
+    if (element != name)
+      throw string("Error in ConfigStreams::GetValue: \"")
+	+ name + string("\" not found in \"") + (*current_)->GetFileName() + "\".";
+
+    return GetElement(value);
+  }
+
+  //! Gets the value of a given variable without extracting them from the stream.
+  /*!
+    Gets the value of a given variable, i.e. the next valid
+    (not in a discarded line) number or element following the variable name.
+    Nothing is extracted from the stream.
+    \param name the name of the variable.
+    \param value value associated with the variable.
+  */
+  bool ConfigStreams::PeekValue(string name, string& value)
+  {
+    vector<ConfigStream*>::iterator iter = current_;
+    streampos initial_position = (*current_)->tellg();
+    ifstream::iostate state = (*current_)->rdstate();
+
+    bool success = this->GetValue(name, value);
+
+    this->Rewind();
+    current_ = iter;
+    (*current_)->clear(state);
+    (*current_)->seekg(initial_position);
+
+    return success;
+  }
+
+  //! Gets the value of a given variable.
+  /*!
+    Gets the value of a given variable, i.e. the next valid
+    (not in a discarded line) number or element following the variable name.
+    \param name the name of the variable.
+    \param value boolean associated with the variable.
+  */
+  bool ConfigStreams::GetValue(string name, bool& value)
+  {
+    string element;
+    while (GetElement(element) && element!=name);
+
+    if (element != name)
+      throw string("Error in ConfigStreams::GetValue: \"")
+	+ name + string("\" not found in \"") + (*current_)->GetFileName() + "\".";
+
+    return GetElement(value);
+  }
+
+  //! Gets the value of a given variable without extracting from the stream.
+  /*!
+    Gets the value of a given variable, i.e. the next valid
+    (not in a discarded line) number or element following the variable name.
+    Nothing is extracted from the stream.
+    \param name the name of the variable.
+    \param value boolean associated with the variable.
+  */
+  bool ConfigStreams::PeekValue(string name, bool& value)
+  {
+    vector<ConfigStream*>::iterator iter = current_;
+    streampos initial_position = (*current_)->tellg();
+    ifstream::iostate state = (*current_)->rdstate();
+
+    bool success = this->GetValue(name, value);
+
+    this->Rewind();
+    current_ = iter;
+    (*current_)->clear(state);
+    (*current_)->seekg(initial_position);
+
+    return success;
+  }
+
 }  // namespace Talos.
 
 

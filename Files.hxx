@@ -139,6 +139,84 @@ namespace Talos
     virtual bool GetLine(string& line);
   };
 
+  class ConfigStreams
+  {
+  protected:
+    vector<ConfigStream*> streams_;
+    vector<ConfigStream*>::iterator current_;
+
+  public:
+    ConfigStreams();
+    ConfigStreams(const vector<string>& files);
+    ConfigStreams(string file0);
+    ConfigStreams(string file0, string file1);
+    ConfigStreams(string file0, string file1, string file2);
+
+    ~ConfigStreams();
+
+    vector<ConfigStream*>& GetStreams();
+    vector<ConfigStream*>::iterator GetCurrent();
+
+    bool Discard(string line) const;
+    ConfigStreams& SkipDiscarded();
+
+    ConfigStreams& SkipDelimiters();
+    string RemoveDelimiters(const string& str) const;
+
+    ConfigStreams& Skip();
+
+    bool IsEmpty();
+    
+    ConfigStreams& Rewind();
+
+    string GetFullLine();
+    bool GetFullLine(string& line);
+    string PeekFullLine();
+    string PeekFullLine(streampos& position);
+    bool PeekFullLine(string& line);
+    void SkipFullLines(int nb);
+
+    string GetLine();
+    bool GetLine(string& line);
+    string PeekLine();
+    string PeekLine(streampos& position);
+    bool PeekLine(string& line);
+    void SkipLines(int nb);
+
+    bool Find(string element);
+    bool FindFromBeginning(string element);
+
+    string GetElement();
+    template <class T>
+    bool GetElement(T& element);
+    string PeekElement();
+    template <class T>
+    bool PeekElement(T& element);
+    void SkipElements(int nb);
+
+    double GetNumber();
+    template <class T>
+    bool GetNumber(T& number);
+    double PeekNumber();
+    template <class T>
+    bool PeekNumber(T& number);
+    void SkipNumbers(int nb);
+
+    string GetValue(string name);
+    string PeekValue(string name);
+
+    template <class T>
+    bool GetValue(string name, T& value);
+    template <class T>
+    bool PeekValue(string name, T& value);
+
+    bool GetValue(string name, string& value);
+    bool PeekValue(string name, string& value);
+
+    bool GetValue(string name, bool& value);
+    bool PeekValue(string name, bool& value);
+  };
+
 }  // namespace Talos.
 
 
