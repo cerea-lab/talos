@@ -283,7 +283,7 @@ namespace Talos
       {
 	index_end = str.find_first_of(delimiters, index_beg);
 	vect.push_back(convert<T>(str.substr(index_beg,
-					     index_end == string::npos ? string::npos : (index_end - index_beg + 1) )));
+					     index_end == string::npos ? string::npos : (index_end - index_beg) )));
 	index_beg = str.find_first_not_of(delimiters, index_end);
       }
   }
