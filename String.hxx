@@ -59,7 +59,10 @@ namespace Talos
 
   template <class T>
   T convert(const string& s);
-
+  
+  string lower_case(string str);
+  string upper_case(string str);
+  
   bool is_num(const string& s);
 
   bool is_integer(const string& s);

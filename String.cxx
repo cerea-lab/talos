@@ -142,6 +142,32 @@ namespace Talos
     return out;
   }
 
+  //! Converts a string to lower-case string.
+  /*!
+    \param str string to be converted.
+    \return 'str' in lower case.
+  */
+  string lower_case(string str)
+  {
+    string lower(str);
+    std::transform(lower.begin(), lower.end(), lower.begin(),
+		   (int(*)(int))tolower);
+    return lower;
+  }
+
+  //! Converts a string to upper-case string.
+  /*!
+    \param str string to be converted.
+    \return 'str' in upper case.
+  */
+  string upper_case(string str)
+  {
+    string upper(str);
+    std::transform(upper.begin(), upper.end(), upper.begin(),
+		   (int(*)(int))toupper);
+    return upper;
+  }
+
   //! Checks whether a string is a number.
   /*!
     \param str string to be checked.
