@@ -150,6 +150,190 @@ namespace Talos
     file_name_ = "";
   }
 
+  //! Returns the next line.
+  /*!
+    \return The next line.
+  */
+  string ConfigStream::GetLine()
+  {
+    string line;
+    std::getline(*this, line);
+    return line;
+  }
+
+  //! Returns the next line.
+  /*!
+    \param line (output) the next line.
+  */
+  void ConfigStream::GetLine(string& line)
+  {
+    std::getline(*this, line);
+  }
+
+  //! Returns the next line without extracting it from the stream.
+  /*!
+    \return The next line.
+  */
+  string ConfigStream::PeekLine()
+  {
+    streampos position = this->tellg();
+    iostate state = this->rdstate();
+    string line;
+    std::getline(*this, line);
+    this->seekg(position);
+    this->clear(state);
+    return line;
+  }
+
+  //! Returns the next line without extracting it from the stream.
+  /*!
+    \param position (output) the position of the line following the next line.
+    \return The next line.
+  */
+  string ConfigStream::PeekLine(streampos& position)
+  {
+    streampos position_back = this->tellg();
+    iostate state = this->rdstate();
+    string line;
+    std::getline(*this, line);
+    position = this->tellg();
+    this->seekg(position_back);
+    this->clear(state);
+    return line;
+  }
+
+  //! Returns the next line without extracting it from the stream.
+  /*!
+    \param line (output) the next line.
+  */
+  void ConfigStream::PeekLine(string& line)
+  {
+    streampos position = this->tellg();
+    iostate state = this->rdstate();
+    std::getline(*this, line);
+    this->seekg(position);
+    this->clear(state);
+  }
+
+  //! Returns the next valid element.
+  /*!
+    Returns the next valid element, i.e. the next element that is
+    not in a line to be discarded.
+    \return The next valid element.
+  */
+  string ConfigStream::GetElement()
+  {
+    streampos position;
+    string element;
+    string::size_type index, length;
+
+    while ( (this->good()) && (Discard(PeekLine(position))) )
+      this->seekg(position);
+    element = PeekLine();
+
+    index = element.find_first_not_of(delimiters_);
+    if (index != string::npos)
+      {
+	length = element.find_first_of(delimiters_, index);
+	length = length==string::npos ? element.size() - index : length - index;
+	element = element.substr(index, length);
+      }
+    else
+      {
+	index = element.size();
+	length = 0;
+	element = "";
+      }
+
+    this->seekg(index + length, ifstream::cur);
+
+    return element;
+  }
+
+  //! Gets the next valid element.
+  /*!
+    Gets the next valid element, i.e. the next element that is
+    not in a line to be discarded.
+    \param element (output) the next valid element.
+  */
+  template <class T>
+  bool ConfigStream::GetElement(T& element)
+  {
+    streampos position;
+    string line;
+
+    while ( (this->good()) && (Discard(PeekLine(position))) )
+      this->seekg(position);
+
+    return ((*this) >> element);
+  }
+
+  //! Returns the next valid element without extracting it from the stream.
+  /*!
+    Returns the next valid element, i.e. the next element that is
+    not in a line to be discarded.
+    \return The next valid element.
+  */
+  string ConfigStream::PeekElement()
+  {
+    streampos initial_position, position;
+    string element;
+    string::size_type index, length;
+
+    initial_position = this->tellg();
+    iostate state = this->rdstate();
+
+    while ( (this->good()) && (Discard(PeekLine(position))) )
+      this->seekg(position);
+    element = PeekLine();
+
+    index = element.find_first_not_of(delimiters_);
+    if (index != string::npos)
+      {
+	length = element.find_first_of(delimiters_, index);
+	length = length==string::npos ? element.size() - index : length - index;
+	element = element.substr(index, length);
+      }
+    else
+      {
+	index = element.size();
+	length = 0;
+	element = "";
+      }
+
+    this->seekg(initial_position);
+    this->clear(state);
+
+    return element;
+  }
+
+  //! Gets the next valid element without extracting it from the stream.
+  /*!
+    Gets the next valid element, i.e. the next element that is
+    not in a line to be discarded.
+    \param element (output) the next valid element.
+  */
+  template <class T>
+  bool ConfigStream::PeekElement(T& element)
+  {
+    streampos initial_position, position;
+    string line;
+    bool success;
+
+    initial_position = this->tellg();
+    iostate state = this->rdstate();
+
+    while ( (this->good()) && (Discard(PeekLine(position))) )
+      this->seekg(position);
+
+    success = ((*this) >> element);
+
+    this->seekg(initial_position);
+    this->clear(state);
+
+    return success;
+  }
+
 }  // namespace Talos.
 
 

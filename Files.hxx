@@ -53,6 +53,19 @@ namespace Talos
 
     void Open(string file_name, openmode mode = in);
     void Close();
+
+    string GetLine();
+    void GetLine(string& line);
+    string PeekLine();
+    string PeekLine(streampos& position);
+    void PeekLine(string& line);
+
+    string GetElement();
+    template <class T>
+    bool GetElement(T& element);
+    string PeekElement();
+    template <class T>
+    bool PeekElement(T& element);
   };
 
 }  // namespace Talos.
