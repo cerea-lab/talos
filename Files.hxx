@@ -44,7 +44,7 @@ namespace Talos
     ConfigStream();
     ConfigStream(string file_name,
 		 string comments = "#%",
-		 string delimiters = " \t:=|");
+		 string delimiters = " \t:=|\n");
 
     bool Discard(string line) const;
     ConfigStream& SkipDiscarded();
