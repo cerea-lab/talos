@@ -288,6 +288,20 @@ namespace Talos
       }
   }
 
+  //! Splits a string.
+  /*!
+    The string is split according to delimiters.
+    \param str string to be split.
+    \param delimiters (optional) delimiters. Default: " \n\t".
+    \return A vector containing elements of the string.
+  */
+  vector<string> split(string str, string delimiters)
+  {
+    vector<string> vect;
+    split(str, vect, delimiters);
+    return vect;
+  }
+
 }  // namespace Talos.
 
 
