@@ -41,6 +41,35 @@ namespace Talos
     return ans;
   }
 
+  //! Returns a file size.
+  /*!
+    \param file_name file name.
+    \return the file size in bytes.
+  */
+  unsigned long file_size(string file_name)
+  {
+    ifstream file_stream(file_name.c_str(), ifstream::in);
+    streampos position = file_stream.tellg();
+    file_stream.seekg(0, ios::end);
+
+    return (file_stream.tellg() - position);
+  }
+
+  //! Returns a stream size.
+  /*!
+    \param stream the stream.
+    \return the stream size in bytes.
+  */
+  unsigned long stream_size(istream& stream)
+  {
+    streampos position = stream.tellg();
+    stream.seekg(0, ios::end);
+    unsigned long length = stream.tellg() - position;
+    stream.seekg(position, ios::beg);
+
+    return length;
+  }
+
 
   //////////////////
   // CONFIGSTREAM //
