@@ -375,8 +375,7 @@ namespace Talos
     string line;
     string::size_type index(0), index_tmp;
 
-    while ( (this->good()) && (Discard(PeekFullLine(position))) )
-      this->seekg(position);
+    this->Skip();
     line = GetFullLine();
 
     while ( (not_end = ( (index_tmp = line.substr(index).find_first_of(comments_))
