@@ -113,7 +113,7 @@ namespace Talos
     ConfigStream();
     ConfigStream(string file_name,
 		 string comments = "#%",
-		 string delimiters = " \t:=|\n");
+		 string delimiters = " \t:=|\n,;/");
   };
 
 }  // namespace Talos.

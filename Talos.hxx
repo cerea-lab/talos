@@ -34,7 +34,7 @@
 #endif
 //! To display a variable (with its name).
 #ifndef DISP
-#define DISP(x) std::cout << #x ": " << x << std::endl
+#define DISP(x) std::cout << #x ": " << (x) << std::endl
 #endif
 
 namespace Talos
