@@ -370,7 +370,6 @@ namespace Talos
   */
   string ExtStream::GetLine()
   {
-    streampos position;
     bool not_end;
     string line;
     string::size_type index(0), index_tmp;
@@ -401,7 +400,6 @@ namespace Talos
   */
   bool ExtStream::GetLine(string& line)
   {
-    streampos position;
     bool not_end, success;
     string::size_type index(0), index_tmp;
 
