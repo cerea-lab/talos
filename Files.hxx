@@ -71,12 +71,14 @@ namespace Talos
     string PeekFullLine();
     string PeekFullLine(streampos& position);
     bool PeekFullLine(string& line);
+    void SkipFullLines(int nb);
 
     string GetLine();
     bool GetLine(string& line);
     string PeekLine();
     string PeekLine(streampos& position);
     bool PeekLine(string& line);
+    void SkipLines(int nb);
 
     bool Find(string element);
 
@@ -86,6 +88,7 @@ namespace Talos
     string PeekElement();
     template <class T>
     bool PeekElement(T& element);
+    void SkipElements(int nb);
 
     double GetNumber();
     template <class T>
@@ -93,6 +96,7 @@ namespace Talos
     double PeekNumber();
     template <class T>
     bool PeekNumber(T& number);
+    void SkipNumbers(int nb);
 
     template <class T>
     bool GetValue(string name, T& value);

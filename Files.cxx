@@ -362,6 +362,16 @@ namespace Talos
     return success;
   }
 
+  //! Skips full lines.
+  /*!
+    \param nb number of lines to be skipped.
+  */
+  void ExtStream::SkipFullLines(int nb)
+  {
+    for (int i=0; i<nb; i++)
+      this->GetFullLine();
+  }
+
   //! Returns the next valid line.
   /*!
     Returns the next valid line, i.e. the next line that is
@@ -486,6 +496,16 @@ namespace Talos
     this->clear(state);
 
     return success;
+  }
+
+  //! Skips valid lines.
+  /*!
+    \param nb number of lines to be skipped.
+  */
+  void ExtStream::SkipLines(int nb)
+  {
+    for (int i=0; i<nb; i++)
+      this->GetLine();
   }
 
   //! Sets the position of the get pointer after a given element.
@@ -620,6 +640,16 @@ namespace Talos
     return success;
   }
 
+  //! Skips valid elements.
+  /*!
+    \param nb number of valid elements to be skipped.
+  */
+  void ExtStream::SkipElements(int nb)
+  {
+    for (int i=0; i<nb; i++)
+      this->GetElement();
+  }
+
   //! Returns the next valid number.
   /*!
     Returns the next valid number, i.e. the next number that is
@@ -694,6 +724,16 @@ namespace Talos
     this->clear(state);
 
     return success;
+  }
+
+  //! Skips numbers.
+  /*!
+    \param nb number of numbers to be skipped.
+  */
+  void ExtStream::SkipNumbers(int nb)
+  {
+    for (int i=0; i<nb; i++)
+      this->GetNumber();
   }
 
   //! Gets the value of a given variable.
