@@ -32,7 +32,7 @@ namespace Talos
 
   class ExtStream: public ifstream
   {
-  private:
+  protected:
     //! File name associated with the stream.
     string file_name_;
     //! Characters that denote a comment line.
@@ -43,8 +43,8 @@ namespace Talos
   public:
     ExtStream();
     ExtStream(string file_name,
-		 string comments = "#%",
-		 string delimiters = " \t:=|\n");
+	      string comments = "#%",
+	      string delimiters = " \t:=|\n");
 
     bool Discard(string line) const;
     ExtStream& SkipDiscarded();
@@ -101,6 +101,15 @@ namespace Talos
 
     bool GetValue(string name, string& value);
     bool PeekValue(string name, string& value);
+  };
+
+  class ConfigStream: public ExtStream
+  {
+  public:
+    ConfigStream();
+    ConfigStream(string file_name,
+		 string comments = "#%",
+		 string delimiters = " \t:=|\n");
   };
 
 }  // namespace Talos.

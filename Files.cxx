@@ -111,9 +111,9 @@ namespace Talos
   }
 
 
-  //////////////////
-  // CONFIGSTREAM //
-  //////////////////
+  ///////////////
+  // EXTSTREAM //
+  ///////////////
 
   //! Default constructor.
   /*! Nothing is performed.
@@ -128,8 +128,8 @@ namespace Talos
     \param file_name file to be opened.
   */
   ExtStream::ExtStream(string file_name,
-			     string comments,
-			     string delimiters):
+		       string comments,
+		       string delimiters):
     ifstream(file_name.c_str()), file_name_(file_name),
     comments_(comments), delimiters_(delimiters)
   {
@@ -775,6 +775,29 @@ namespace Talos
     this->clear(state);
 
     return success;
+  }
+
+
+  //////////////////
+  // CONFIGSTREAM //
+  //////////////////
+
+  //! Default constructor.
+  /*! Nothing is performed.
+   */
+  ConfigStream::ConfigStream(): ExtStream()
+  {
+  }
+
+  //! Main constructor.
+  /*! Opens a file.
+    \param file_name file to be opened.
+  */
+  ConfigStream::ConfigStream(string file_name,
+		       string comments,
+		       string delimiters):
+    ExtStream(file_name, comments, delimiters)
+  {
   }
 
 }  // namespace Talos.
