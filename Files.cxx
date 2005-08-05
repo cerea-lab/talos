@@ -130,7 +130,7 @@ namespace Talos
   ExtStream::ExtStream(string file_name,
 		       string comments,
 		       string delimiters):
-    ifstream(file_name.c_str()), file_name_(file_name),
+    ifstream(file_name.c_str(), ifstream::binary), file_name_(file_name),
     comments_(comments), delimiters_(delimiters)
   {
   }
