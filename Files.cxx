@@ -162,7 +162,7 @@ namespace Talos
   ExtStream& ExtStream::SkipDiscarded()
   {
     streampos position;
-    while ( (this->good()) && (Discard(PeekFullLine(position))) )
+    while ( (!is_empty(*this)) && (Discard(PeekFullLine(position))) )
       this->seekg(position);
     return *this;
   }
@@ -569,7 +569,7 @@ namespace Talos
     string element;
     string::size_type index, length;
 
-    while ( (this->good()) && (Discard(PeekFullLine(position))) )
+    while ( (!is_empty(*this)) && (Discard(PeekFullLine(position))) )
       this->seekg(position);
     element = PeekFullLine();
 
