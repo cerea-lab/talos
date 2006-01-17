@@ -143,10 +143,16 @@ namespace Talos
     else if (lower == "false" || lower == "f" || lower == "n" || lower == "no")
       out = false;
     else
+#ifdef TALOS_DO_NOT_CHECK_BOOLEAN
       {
 	istringstream str(s);
 	str >> out;
       }
+#else
+    throw string("Unable to convert \"") + s
+      + string("\" to a Boolean. Acceptable strings (case insensitive)")
+      + string(" are: true, t, yes, y, false, f, no, n.");
+#endif
   }
 
   //! Converts strings to most types.
