@@ -91,6 +91,7 @@ namespace Talos
     int GetDayNumber() const;
     int GetNumberOfDays() const;
     int GetDaysFrom(Date date) const;
+    double GetSecondsFrom(Date date) const;
 
     int GetNumberOfHours() const;
     int GetNumberOfMinutes() const;

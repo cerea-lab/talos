@@ -553,6 +553,29 @@ namespace Talos
     return nb_days - nb_days_date;
   }
 
+  //! Returns the number of seconds from a given date.
+  /*!
+    \param date the reference date.
+    \return The number of seconds between 'date' and the current date
+    (positive if the current date is greater than 'date').
+  */
+  double Date::GetSecondsFrom(Date date) const
+  {
+    int min_year = min(year_, date.GetYear());
+    int nb_days(0), nb_days_date(0);
+    for (int i=min_year; i<year_; i++)
+      nb_days += this->LeapYear(i) ? 366 : 365;
+    nb_days += this->GetDayNumber();
+    for (int i=min_year; i<date.GetYear(); i++)
+      nb_days_date += this->LeapYear(i) ? 366 : 365;
+    nb_days_date += date.GetDayNumber();
+
+    return 86400. * double(nb_days - nb_days_date)
+      + 3600. * double(hour_ - date.GetHour())
+      + 60. * double(minutes_ - date.GetMinutes())
+      + double(seconds_ - date.GetSeconds());
+  }
+
   //! Returns the number of hours in the year before the current date.
   /*!
     \return The number of hours in the year before the current date.
