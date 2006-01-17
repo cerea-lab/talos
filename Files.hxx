@@ -41,6 +41,9 @@ namespace Talos
     //! Characters considered as delimiters.
     string delimiters_;
 
+    //! Field currently searched.
+    string searching_;
+
   public:
     ExtStream();
     ExtStream(string file_name,
@@ -126,6 +129,7 @@ namespace Talos
   {
   protected:
     string markup_tags_;
+    string section_;
     
   public:
     ConfigStream();
@@ -134,13 +138,25 @@ namespace Talos
 		 string delimiters = " \t:=|\n,;",
 		 string markup_tags = "<>$");
 
+    void NoSection();
+    void SetSection(string section);
+    string GetSection() const;
+
     void SetMarkupTags(string markup_tags);
     string GetMarkupTags() const;
+
+    bool IsEmpty();
+
+    bool Find(string element);
+    bool FindFromBeginning(string element);
 
     virtual string GetElement();
 
     virtual string GetLine();
     virtual bool GetLine(string& line);
+
+  private:
+    bool IsSection(string str) const;
   };
 
   //! Streams associated with several configuration files.
@@ -149,6 +165,8 @@ namespace Talos
   protected:
     vector<ConfigStream*> streams_;
     vector<ConfigStream*>::iterator current_;
+
+    string section_;
 
   public:
     ConfigStreams();
@@ -163,6 +181,10 @@ namespace Talos
     vector<ConfigStream*>::iterator GetCurrent();
 
     void AddFile(string file);
+
+    void NoSection();
+    void SetSection(string section);
+    string GetSection() const;
 
     bool Discard(string line) const;
     ConfigStreams& SkipDiscarded();
@@ -224,6 +246,9 @@ namespace Talos
 
     bool GetValue(string name, bool& value);
     bool PeekValue(string name, bool& value);
+
+  private:
+    bool IsSection(string str) const;
   };
 
 }  // namespace Talos.

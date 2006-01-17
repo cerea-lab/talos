@@ -119,7 +119,7 @@ namespace Talos
   /*! Nothing is performed.
    */
   ExtStream::ExtStream():
-    comments_("#%"), delimiters_(" \t")
+    comments_("#%"), delimiters_(" \t"), searching_("")
   {
   }
 
@@ -131,7 +131,7 @@ namespace Talos
 		       string comments,
 		       string delimiters):
     ifstream(file_name.c_str(), ifstream::binary), file_name_(file_name),
-    comments_(comments), delimiters_(delimiters)
+    comments_(comments), delimiters_(delimiters), searching_("")
   {
   }
 
@@ -535,12 +535,16 @@ namespace Talos
   */
   bool ExtStream::Find(string element)
   {
+    searching_ = element;
+
     string elt;
-    while (GetRawElement(elt) && elt!=element);
+    while (this->GetElement(elt) && elt!=element);
 
     if (elt == "")
       throw string("Error in ExtStream::Find: \"")
 	+ element + string("\" not found in \"") + file_name_ + "\".";
+
+    searching_ = "";
 
     return elt == element;
   }
@@ -772,12 +776,16 @@ namespace Talos
   */
   string ExtStream::GetValue(string name)
   {
+    searching_ = name;
+
     string element;
     while (this->GetElement(element) && element!=name);
 
     if (element != name)
       throw string("Error in ExtStream::GetValue: \"")
 	+ name + string("\" not found in \"") + file_name_ + "\".";
+
+    searching_ = "";
 
     return this->GetElement();
   }
@@ -813,12 +821,16 @@ namespace Talos
   template <class T>
   bool ExtStream::GetValue(string name, T& value)
   {
+    searching_ = name;
+
     string element;
     while (GetElement(element) && element!=name);
 
     if (element != name)
       throw string("Error in ExtStream::GetValue: \"")
 	+ name + string("\" not found in \"") + file_name_ + "\".";
+
+    searching_ = "";
 
     return GetNumber(value);
   }
@@ -834,6 +846,8 @@ namespace Talos
   template <class T>
   bool ExtStream::PeekValue(string name, T& value)
   {
+    searching_ = name;
+
     streampos initial_position = this->tellg();
     iostate state = this->rdstate();
 
@@ -849,6 +863,8 @@ namespace Talos
     this->clear(state);
     this->seekg(initial_position);
 
+    searching_ = "";
+
     return success;
   }
 
@@ -861,12 +877,16 @@ namespace Talos
   */
   bool ExtStream::GetValue(string name, string& value)
   {
+    searching_ = name;
+
     string element;
     while (GetElement(element) && element!=name);
 
     if (element != name)
       throw string("Error in ExtStream::GetValue: \"")
 	+ name + string("\" not found in \"") + file_name_ + "\".";
+
+    searching_ = "";
 
     return GetElement(value);
   }
@@ -881,6 +901,8 @@ namespace Talos
   */
   bool ExtStream::PeekValue(string name, string& value)
   {
+    searching_ = name;
+
     streampos initial_position = this->tellg();
     iostate state = this->rdstate();
 
@@ -896,6 +918,8 @@ namespace Talos
     this->clear(state);
     this->seekg(initial_position);
 
+    searching_ = "";
+
     return success;
   }
 
@@ -908,12 +932,16 @@ namespace Talos
   */
   bool ExtStream::GetValue(string name, bool& value)
   {
+    searching_ = name;
+
     string element;
     while (GetElement(element) && element!=name);
 
     if (element != name)
       throw string("Error in ExtStream::GetValue: \"")
 	+ name + string("\" not found in \"") + file_name_ + "\".";
+
+    searching_ = "";
 
     return GetElement(value);
   }
@@ -928,6 +956,8 @@ namespace Talos
   */
   bool ExtStream::PeekValue(string name, bool& value)
   {
+    searching_ = name;
+
     streampos initial_position = this->tellg();
     iostate state = this->rdstate();
 
@@ -942,6 +972,8 @@ namespace Talos
 
     this->clear(state);
     this->seekg(initial_position);
+
+    searching_ = "";
 
     return success;
   }
@@ -957,6 +989,7 @@ namespace Talos
   ConfigStream::ConfigStream(): ExtStream()
   {
     markup_tags_ = "<>$";
+    section_ = "";
   }
 
   //! Main constructor.
@@ -970,6 +1003,39 @@ namespace Talos
     ExtStream(file_name, comments, delimiters),
     markup_tags_(markup_tags)
   {
+    section_ = "";
+  }
+
+  //! Deselects the section.
+  /*!
+    Deselects the section (this is equivalent to SetSection("")).
+   */
+  void ConfigStream::NoSection()
+  {
+    section_ = "";
+  }
+
+  //! Sets the current section.
+  /*!
+    \param section current section.
+  */
+  void ConfigStream::SetSection(string section)
+  {
+    section_ = "";
+    if (section != "")
+      {
+	this->FindFromBeginning(section);
+	section_ = section;
+      }
+  }
+
+  //! Returns the current section.
+  /*!
+    \return The current section.
+  */
+  string ConfigStream::GetSection() const
+  {
+    return section_;
   }
 
   //! Sets the markup tags.
@@ -988,6 +1054,68 @@ namespace Talos
   string ConfigStream::GetMarkupTags() const
   {
     return markup_tags_;
+  }
+
+  //! Checks whether the stream or the current section is empty.
+  /*!
+    If no section has been selected, this method checks whether the stream has
+    still valid elements to be read. If the stream is bound to a given
+    section, this method checks whether there remains at least one element
+    in the section.
+    \return 'true' is the stream is empty, 'false' otherwise.
+  */
+  bool ConfigStream::IsEmpty()
+  {
+    streampos initial_position;
+    bool success;
+
+    initial_position = this->tellg();
+    iostate state = this->rdstate();
+
+    string element = ExtStream::GetElement();
+    success = element != "";
+
+    this->clear(state);
+    this->seekg(initial_position);
+
+    return !success || (section_ != "" && IsSection(element));
+  }
+
+  //! Sets the position of the get pointer after a given element.
+  /*!
+    Sets the position of the get pointer exactly after a given element.
+    \param element the element to be found.
+    \return true if the element was found, false otherwise.
+    \note The scope of the search is only the current section if any.
+  */
+  bool ConfigStream::Find(string element)
+  {
+    this->searching_ = element;
+
+    string elt;
+    while (ExtStream::GetElement(elt) && elt!=element);
+
+    if (elt == "")
+      throw string("Error in ConfigStream::Find: \"")
+	+ element + string("\" not found in \"") + this->file_name_ + "\".";
+
+    this->searching_ = "";
+
+    return elt == element;
+  }
+
+  //! Sets the position of the get pointer after a given element.
+  /*!
+    Sets the position of the get pointer exactly after a given element.
+    \param element the element to be found from the beginning of the stream.
+    \return true if the element was found, false otherwise.
+    \note The current section (if any) is unset.
+  */
+  bool ConfigStream::FindFromBeginning(string element)
+  {
+    NoSection();
+    this->Rewind();
+    return this->Find(element);
   }
 
   //! Returns the next valid element.
@@ -1030,6 +1158,17 @@ namespace Talos
 
     this->clear(state);
     this->seekg(initial_position);
+
+    if (!section_.empty() && IsSection(element))
+      {
+	string message = string("End of section \"") + section_
+	  + string("\" has been reached in file \"") + this->file_name_
+	  + "\".";
+	if (this->searching_ != "")
+	  message += string("\nUnable to find \"")
+	    + this->searching_ + string("\".");
+	throw message;
+      }
 
     return element;
   }
@@ -1120,6 +1259,16 @@ namespace Talos
     return success;
   }
 
+  //! Checks whether a string is a section flag.
+  /*!
+    \param str string to be tested.
+    \return True if 'str' is a section flag, false otherwise.
+  */
+  bool ConfigStream::IsSection(string str) const
+  {
+    return str[0] == '[' && str[str.size()-1] == ']';
+  }
+
 
   ///////////////////
   // CONFIGSTREAMS //
@@ -1129,7 +1278,7 @@ namespace Talos
   /*! Nothing is performed.
    */
   ConfigStreams::ConfigStreams():
-    streams_(0), current_(streams_.begin())
+    streams_(0), current_(streams_.begin()), section_("")
   {
   }
 
@@ -1138,7 +1287,7 @@ namespace Talos
     \param files files to be opened.
   */
   ConfigStreams::ConfigStreams(const vector<string>& files):
-    streams_(files.size()), current_(streams_.begin())
+    streams_(files.size()), current_(streams_.begin()), section_("")
   {
     for (int i = 0; i < int(files.size()); i++)
       streams_[i] = new ConfigStream(files[i]);
@@ -1149,7 +1298,7 @@ namespace Talos
     \param file0 file to be opened.
   */
   ConfigStreams::ConfigStreams(string file):
-    streams_(1), current_(streams_.begin())
+    streams_(1), current_(streams_.begin()), section_("")
   {
     streams_[0] = new ConfigStream(file);
   }
@@ -1160,7 +1309,7 @@ namespace Talos
     \param file1 second file to be opened.
   */
   ConfigStreams::ConfigStreams(string file0, string file1):
-    streams_(2), current_(streams_.begin())
+    streams_(2), current_(streams_.begin()), section_("")
   {
     streams_[0] = new ConfigStream(file0);
     streams_[1] = new ConfigStream(file1);
@@ -1173,7 +1322,7 @@ namespace Talos
     \param file2 third file to be opened.
   */
   ConfigStreams::ConfigStreams(string file0, string file1, string file2):
-    streams_(3), current_(streams_.begin())
+    streams_(3), current_(streams_.begin()), section_("")
   {
     streams_[0] = new ConfigStream(file0);
     streams_[1] = new ConfigStream(file1);
@@ -1217,6 +1366,43 @@ namespace Talos
     current_ = streams_.begin() + l;
   }
   
+  //! Deselects the section.
+  /*!
+    Deselects the section (this is equivalent to SetSection("")) and rewinds
+    the stream.
+   */
+  void ConfigStreams::NoSection()
+  {
+    section_ = "";
+    for (current_ = streams_.begin(); current_ != streams_.end(); ++current_)
+      (*current_)->SetSection(section_);
+  }
+
+  //! Sets the current section.
+  /*!
+    \param section current section.
+  */
+  void ConfigStreams::SetSection(string section)
+  {
+    section_ = section;
+    for (current_ = streams_.begin(); current_ != streams_.end(); ++current_)
+      (*current_)->SetSection("");
+    this->FindFromBeginning(section_);
+    current_ = streams_.begin();
+    for (current_ = streams_.begin(); current_ != streams_.end(); ++current_)
+      (*current_)->SetSection(section_);
+    current_ = streams_.begin();
+  }
+
+  //! Returns the current section.
+  /*!
+    \return The current section.
+  */
+  string ConfigStreams::GetSection() const
+  {
+    return section_;
+  }
+
   //! Checks whether a line should be discarded.
   /*!
     \param line line to be checked.
@@ -1298,10 +1484,10 @@ namespace Talos
   */
   ConfigStreams& ConfigStreams::Rewind()
   {
-    for (; current_ != streams_.begin(); --current_)
+    for (current_ = streams_.begin(); current_ != streams_.end(); ++current_)
       (*current_)->Rewind();
-    (*current_)->Rewind();
-    
+    current_ = streams_.begin();
+
     return *this;
   }
 
@@ -1604,7 +1790,7 @@ namespace Talos
   */
   bool ConfigStreams::FindFromBeginning(string element)
   {
-    this->Rewind();
+  this->Rewind();
     return this->Find(element);
   }
 
@@ -1665,6 +1851,11 @@ namespace Talos
     current_ = iter;
     (*current_)->clear(state);
     (*current_)->seekg(initial_position);
+
+    if (!section_.empty() && IsSection(element))
+      throw string("End of section \"") + section_
+	+ string("\" has been reached in file \"")
+	+ (*current_)->GetFileName() + "\".";
 
     return element;
   }
@@ -1998,6 +2189,16 @@ namespace Talos
     (*current_)->seekg(initial_position);
 
     return success;
+  }
+
+  //! Checks whether a string is a section flag.
+  /*!
+    \param str string to be tested.
+    \return True if 'str' is a section flag, false otherwise.
+  */
+  bool ConfigStreams::IsSection(string str) const
+  {
+    return str[0] == '[' && str[str.size()-1] == ']';
   }
 
 }  // namespace Talos.
