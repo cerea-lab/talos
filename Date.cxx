@@ -60,6 +60,22 @@ namespace Talos
     this->Adjust();
   }
 
+  //! Copy constructor.
+  /*!
+    \param date  date in format YYYY, YYYYMM, YYYYMMDD, YYYYMMDDHH,
+    YYYYMMDDHHMM or YYYYMMDDHHMMSS, with each item (YYYY, MM, DD, etc.)
+    possibly delimited with any character(s).
+  */
+  Date::Date(string date): month_lengths_(12)
+  {
+    int month_lengths[12] = {31, 28, 31, 30, 31, 30,
+			     31, 31, 30, 31, 30, 31};
+    for (int i = 0; i < 12; ++i)
+      month_lengths_[i] = month_lengths[i];
+
+    this->SetDate(date);
+  }
+
   //! Constructor.
   /*!
     \param yyyymmdd date in format YYYYMMDD.
@@ -121,6 +137,19 @@ namespace Talos
     return *this;
   }
 
+  //! Assignment operator.
+  /*!
+    \param date  date in format YYYY, YYYYMM, YYYYMMDD, YYYYMMDDHH,
+    YYYYMMDDHHMM or YYYYMMDDHHMMSS, with each item (YYYY, MM, DD, etc.)
+    possibly delimited with any character(s).
+  */
+  Date& Date::operator=(string date)
+  {
+    SetDate(date);
+
+    return *this;
+  }
+
   //! Sets the date.
   /*!
     \param yyyymmdd date in format YYYYMMDD.
@@ -136,6 +165,73 @@ namespace Talos
     seconds_ = 0;
 
     this->Adjust();
+  }
+
+  //! Sets the date.
+  /*!
+    \param date  date in format YYYY, YYYYMM, YYYYMMDD, YYYYMMDDHH,
+    YYYYMMDDHHMM or YYYYMMDDHHMMSS, with each item (YYYY, MM, DD, etc.)
+    possibly delimited with any character(s).
+  */
+  void Date::SetDate(string date)
+  {
+    vector<string> split_date;
+    string item = "";
+    int code;
+    // Parses the string to split items.
+    for (unsigned int i = 0; i < date.size(); i++)
+      {
+	code = int(date[i]);
+	// If the current character is an integer.
+	if (code > 47 && code < 58)
+	  item += date[i];
+	else if (!item.empty())
+	  {
+	    split_date.push_back(item);
+	    item = "";
+	  }
+      }
+    if (!item.empty())
+      split_date.push_back(item);
+
+    // Checks that the date can be parsed.
+    string compressed_date;
+    if (split_date.size() == 0)
+      throw string("Badly formatted date: \"") + date + string("\".");
+    if (split_date[0].size() < 4)
+      throw string("Badly formatted date: \"") + date + string("\".");
+    for (unsigned int i = 0; i < split_date.size(); i++)
+      {
+	if (split_date[i].size() % 2 != 0 || !is_integer(split_date[i]))
+	  throw string("Badly formatted date: \"") + date + string("\".");
+	compressed_date += split_date[i];
+      }
+
+    // Year is at least provided.
+    year_ = to_num<int>(compressed_date.substr(0, 4));
+
+    // Initialization (in case the date is not specified up to seconds).
+    month_ = 1;
+    day_ = 1;
+    hour_ = 0;
+    minutes_ = 0;
+    seconds_ = 0;
+
+    // Retrieves all information.
+    unsigned int length = compressed_date.size();
+    if (length >= 6)
+      month_ = to_num<int>(compressed_date.substr(4, 2));
+    if (length >= 8)
+      day_ = to_num<int>(compressed_date.substr(6, 2));
+    if (length >= 10)
+      hour_ = to_num<int>(compressed_date.substr(8, 2));
+    if (length >= 12)
+      minutes_ = to_num<int>(compressed_date.substr(10, 2));
+    if (length >= 14)
+      seconds_ = to_num<int>(compressed_date.substr(12, 2));
+
+    if (!IsValid())
+      throw string("Date \"") + date + string("\" is invalid.");
   }
 
   //! Sets the date.
@@ -167,6 +263,21 @@ namespace Talos
       month_lengths_[1] = 29;
     else
       month_lengths_[1] = 28;
+  }
+
+  //! Checks whether a date is valid.
+  /*!
+    \return True is the current date is valid, false otherwise.
+   */
+  bool Date::IsValid()
+  {
+    this->LeapYearAdjust();
+
+    // Month.
+    return month_ > 0 && month_ < 13
+      && day_ > 0 && day_ < month_lengths_[month_ - 1] + 1
+      && minutes_ > -1 && minutes_ < 60
+      && seconds_ > -1 && seconds_ < 60;
   }
 
   //! Adjusts the date to make it valid.

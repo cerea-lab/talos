@@ -44,16 +44,20 @@ namespace Talos
     vector<int> month_lengths_;
 
     void LeapYearAdjust();
+    bool IsValid();
     void Adjust();
 
   public:
     Date();
     Date(const Date& date);
+    Date(string date);
     Date(int yyyymmdd);
     Date(int yyyy, int mm, int dd = 1,
 	 int hh = 0, int mn = 0, int sc = 0);
 
     Date& operator=(const Date&);
+    Date& operator=(string date);
+    void SetDate(string date);
     void SetDate(int yyyymmdd);
     void SetDate(int yyyy, int mm, int dd = 1,
 		 int hh = 0, int mn = 0, int sc = 0);
