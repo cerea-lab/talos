@@ -39,7 +39,7 @@ namespace Talos
     //! Minutes.
     int minutes_;
     //! Seconds.
-    int seconds_;
+    double seconds_;
     //! Month lengths;
     vector<int> month_lengths_;
 
@@ -53,14 +53,14 @@ namespace Talos
     Date(string date);
     Date(int yyyymmdd);
     Date(int yyyy, int mm, int dd = 1,
-	 int hh = 0, int mn = 0, int sc = 0);
+	 int hh = 0, int mn = 0, double sc = 0);
 
     Date& operator=(const Date&);
     Date& operator=(string date);
     void SetDate(string date);
     void SetDate(int yyyymmdd);
     void SetDate(int yyyy, int mm, int dd = 1,
-		 int hh = 0, int mn = 0, int sc = 0);
+		 int hh = 0, int mn = 0, double sc = 0);
 
     bool LeapYear(int year) const;
     bool LeapYear() const;
@@ -76,21 +76,21 @@ namespace Talos
     int GetDay() const;
     int GetHour() const;
     int GetMinutes() const;
-    int GetSeconds() const;
+    double GetSeconds() const;
 
     void AddYears(int nb_yy);
     void AddMonths(int nb_mm);
     void AddDays(int nb_dd);
     void AddHours(int nb_hh);
     void AddMinutes(int nb_mn);
-    void AddSeconds(int nb_sc);
+    void AddSeconds(double nb_sc);
 
     void SetYear(int yyyy);
     void SetMonth(int mm);
     void SetDay(int dd);
     void SetHour(int hh);
     void SetMinutes(int mn);
-    void SetSeconds(int sc);
+    void SetSeconds(double sc);
 
     int GetDayNumber() const;
     int GetNumberOfDays() const;
@@ -99,7 +99,7 @@ namespace Talos
 
     int GetNumberOfHours() const;
     int GetNumberOfMinutes() const;
-    int GetNumberOfSeconds() const;
+    double GetNumberOfSeconds() const;
 
     int GetWeekDay() const;
   };

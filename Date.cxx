@@ -106,7 +106,7 @@ namespace Talos
     \param sc seconds.
   */
   Date::Date(int yyyy, int mm, int dd,
-	     int hh, int mn, int sc):
+	     int hh, int mn, double sc):
     year_(yyyy), month_(mm), day_(dd),
     hour_(hh), minutes_(mn), seconds_(sc),
     month_lengths_(12)
@@ -162,7 +162,7 @@ namespace Talos
 
     hour_ = 0;
     minutes_ = 0;
-    seconds_ = 0;
+    seconds_ = 0.;
 
     this->Adjust();
   }
@@ -215,7 +215,7 @@ namespace Talos
     day_ = 1;
     hour_ = 0;
     minutes_ = 0;
-    seconds_ = 0;
+    seconds_ = 0.;
 
     // Retrieves all information.
     unsigned int length = compressed_date.size();
@@ -228,7 +228,7 @@ namespace Talos
     if (length >= 12)
       minutes_ = to_num<int>(compressed_date.substr(10, 2));
     if (length >= 14)
-      seconds_ = to_num<int>(compressed_date.substr(12, 2));
+      seconds_ = to_num<double>(compressed_date.substr(12, 2));
 
     if (!IsValid())
       throw string("Date \"") + date + string("\" is invalid.");
@@ -244,7 +244,7 @@ namespace Talos
     \param sc seconds.
   */
   void Date::SetDate(int yyyy, int mm, int dd,
-		     int hh, int mn, int sc)
+		     int hh, int mn, double sc)
   {
     year_ = yyyy;
     month_ = mm;
@@ -277,22 +277,22 @@ namespace Talos
     return month_ > 0 && month_ < 13
       && day_ > 0 && day_ < month_lengths_[month_ - 1] + 1
       && minutes_ > -1 && minutes_ < 60
-      && seconds_ > -1 && seconds_ < 60;
+      && seconds_ >= 0. && seconds_ < 60.;
   }
 
   //! Adjusts the date to make it valid.
   void Date::Adjust()
   {
     // Minutes.
-    if (seconds_ > 59)
+    if (seconds_ >= 60.)
       {
-	minutes_ += seconds_ / 60;
-	seconds_ = seconds_ % 60;
+	minutes_ += int(seconds_ / 60.);
+	seconds_ -= double(int(seconds_ / 60.)) * 60.;
       }
-    else if (seconds_ < 0)
+    if (seconds_ < 0.)
       {
-	minutes_ += (seconds_ + 1) / 60 - 1;
-	seconds_ = 59 + (seconds_ + 1) % 60;
+	minutes_ += int(seconds_ / 60.) - 1;
+	seconds_ -= double(int(seconds_ / 60.) - 1) * 60.;
       }
 
     // Hours.
@@ -498,7 +498,7 @@ namespace Talos
   /*!
     \return The seconds.
   */
-  int Date::GetSeconds() const
+  double Date::GetSeconds() const
   {
     return seconds_;
   }
@@ -557,7 +557,7 @@ namespace Talos
   /*!
     \param nb_sc number of seconds.
   */
-  void Date::AddSeconds(int nb_sc)
+  void Date::AddSeconds(double nb_sc)
   {
     seconds_ += nb_sc;
     this->Adjust();
@@ -617,7 +617,7 @@ namespace Talos
   /*!
     \param sc seconds.
   */
-  void Date::SetSeconds(int sc)
+  void Date::SetSeconds(double sc)
   {
     seconds_ = sc;
     this->Adjust();
@@ -709,9 +709,9 @@ namespace Talos
   /*!
     \return The number of seconds in the year before the current date.
   */
-  int Date::GetNumberOfSeconds() const
+  double Date::GetNumberOfSeconds() const
   {
-    return this->GetNumberOfMinutes() * 60 + seconds_;
+    return double(this->GetNumberOfMinutes()) * 60. + seconds_;
   }
 
   //! Returns the week day.
