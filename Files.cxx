@@ -605,7 +605,7 @@ namespace Talos
   template <class T>
   bool ExtStream::GetElement(T& element)
   {
-    string str = this->GetElement();
+    string str = ExtStream::GetElement();
     convert(str, element);
 
     return (str != "");
@@ -1387,11 +1387,38 @@ namespace Talos
     section_ = section;
     for (current_ = streams_.begin(); current_ != streams_.end(); ++current_)
       (*current_)->SetSection("");
-    this->FindFromBeginning(section_);
+
     current_ = streams_.begin();
-    for (current_ = streams_.begin(); current_ != streams_.end(); ++current_)
-      (*current_)->SetSection(section_);
-    current_ = streams_.begin();
+    bool found = false;
+    try
+      {
+	(*current_)->SetSection(section);
+	found = true;
+      }
+    catch (...)
+      {
+	(*current_)->Rewind();
+	(*current_)->section_ = section_;
+      }
+    while (!found && current_ != streams_.end() - 1)
+      {
+	++current_;
+	try
+	  {
+	    (*current_)->SetSection(section_);
+	    found = true;
+	  }
+	catch (...)
+	  {
+	    (*current_)->Rewind();
+	    (*current_)->section_ = section_;
+	  }
+      }
+
+    if (!found)
+      throw string("Error in ConfigStreams::SetSection: section \"")
+	+ section + string("\" was not found in \"")
+	+ (*current_)->GetFileName() + "\".";
   }
 
   //! Returns the current section.

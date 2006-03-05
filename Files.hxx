@@ -157,6 +157,8 @@ namespace Talos
 
   private:
     bool IsSection(string str) const;
+
+    friend class ConfigStreams;
   };
 
   //! Streams associated with several configuration files.
