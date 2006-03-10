@@ -538,7 +538,7 @@ namespace Talos
     searching_ = element;
 
     string elt;
-    while (this->GetElement(elt) && elt!=element);
+    while (GetElement(elt) && elt!=element);
 
     if (elt == "")
       throw string("Error in ExtStream::Find: \"")
@@ -605,7 +605,7 @@ namespace Talos
   template <class T>
   bool ExtStream::GetElement(T& element)
   {
-    string str = ExtStream::GetElement();
+    string str = GetElement();
     convert(str, element);
 
     return (str != "");
@@ -640,7 +640,7 @@ namespace Talos
     initial_position = this->tellg();
     iostate state = this->rdstate();
 
-    element = this->GetElement();
+    element = GetElement();
 
     this->clear(state);
     this->seekg(initial_position);
@@ -663,7 +663,7 @@ namespace Talos
     initial_position = this->tellg();
     iostate state = this->rdstate();
 
-    success = this->GetElement(element);
+    success = GetElement(element);
 
     this->clear(state);
     this->seekg(initial_position);
@@ -678,7 +678,7 @@ namespace Talos
   void ExtStream::SkipElements(int nb)
   {
     for (int i=0; i<nb; i++)
-      this->GetElement();
+      GetElement();
   }
 
   //! Returns the next valid number.
@@ -779,7 +779,7 @@ namespace Talos
     searching_ = name;
 
     string element;
-    while (this->GetElement(element) && element!=name);
+    while (GetElement(element) && element!=name);
 
     if (element != name)
       throw string("Error in ExtStream::GetValue: \"")
@@ -787,7 +787,7 @@ namespace Talos
 
     searching_ = "";
 
-    return this->GetElement();
+    return GetElement();
   }
 
   //! Gets the value of a given variable without extracting from the stream.
