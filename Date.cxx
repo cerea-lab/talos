@@ -293,6 +293,11 @@ namespace Talos
       {
 	minutes_ += int(seconds_ / 60.) - 1;
 	seconds_ -= double(int(seconds_ / 60.) - 1) * 60.;
+	if (seconds_ == 60.)
+	  {
+	    minutes_ += 1;
+	    seconds_ = 0.;
+	  }
       }
 
     // Hours.
