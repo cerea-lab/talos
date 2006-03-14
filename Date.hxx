@@ -104,6 +104,14 @@ namespace Talos
     int GetWeekDay() const;
   };
 
+  // Comparisons.
+  bool operator < (const Date& first_date, const Date& second_date);
+  bool operator <= (const Date& first_date, const Date& second_date);
+  bool operator > (const Date& first_date, const Date& second_date);
+  bool operator >= (const Date& first_date, const Date& second_date);
+  bool operator == (const Date& first_date, const Date& second_date);
+  bool operator != (const Date& first_date, const Date& second_date);
+
 }  // namespace Talos.
 
 

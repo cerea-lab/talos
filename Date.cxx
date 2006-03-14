@@ -743,6 +743,76 @@ namespace Talos
     return day % 7;
   }
 
+  ///////////////
+  // OPERATORS //
+  ///////////////
+  
+  //! Comparison operator <.
+  /*!
+    \param first_date date.
+    \param second_date date.
+    \return True if \a first_date is strictly before \a second_date.
+   */
+  bool operator < (const Date& first_date, const Date& second_date)
+  {
+    return first_date.GetSecondsFrom(second_date) < 0.;
+  }
+
+  //! Comparison operator <=.
+  /*!
+    \param first_date date.
+    \param second_date date.
+    \return True if \a first_date is before \a second_date.
+   */
+  bool operator <= (const Date& first_date, const Date& second_date)
+  {
+    return first_date.GetSecondsFrom(second_date) <= 0.;
+  }
+
+  //! Comparison operator >.
+  /*!
+    \param first_date date.
+    \param second_date date.
+    \return True if \a first_date is strictly after \a second_date.
+   */
+  bool operator > (const Date& first_date, const Date& second_date)
+  {
+    return first_date.GetSecondsFrom(second_date) > 0.;
+  }
+
+  //! Comparison operator >=.
+  /*!
+    \param first_date date.
+    \param second_date date.
+    \return True if \a first_date is after \a second_date.
+   */
+  bool operator >= (const Date& first_date, const Date& second_date)
+  {
+    return first_date.GetSecondsFrom(second_date) >= 0.;
+  }
+
+  //! Comparison operator ==.
+  /*!
+    \param first_date date.
+    \param second_date date.
+    \return True if \a first_date is the same date as \a second_date.
+   */
+  bool operator == (const Date& first_date, const Date& second_date)
+  {
+    return first_date.GetSecondsFrom(second_date) == 0.;
+  }
+
+  //! Comparison operator !=.
+  /*!
+    \param first_date date.
+    \param second_date date.
+    \return True if \a first_date is not the same date as \a second_date.
+   */
+  bool operator != (const Date& first_date, const Date& second_date)
+  {
+    return first_date.GetSecondsFrom(second_date) != 0.;
+  }
+
 }  // namespace Talos.
 
 
