@@ -133,6 +133,8 @@ namespace Talos
     ifstream(file_name.c_str(), ifstream::binary), file_name_(file_name),
     comments_(comments), delimiters_(delimiters), searching_("")
   {
+    if (!this->is_open())
+      throw string("Unable to open file \"") + file_name + "\".";
   }
 
   //! Destructor.
@@ -265,6 +267,9 @@ namespace Talos
     this->open(file_name.c_str(), mode);
 
     file_name_ = file_name;
+
+    if (!this->is_open())
+      throw string("Unable to open file \"") + file_name + "\".";
   }
 
   //! Closes the current file.
