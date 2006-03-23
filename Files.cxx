@@ -1098,7 +1098,7 @@ namespace Talos
     this->searching_ = element;
 
     string elt;
-    while (ExtStream::GetElement(elt) && elt!=element);
+    while (ExtStream::GetRawElement(elt) && elt!=element);
 
     if (elt == "")
       throw string("Error in ConfigStream::Find: \"")
