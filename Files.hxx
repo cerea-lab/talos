@@ -48,7 +48,7 @@ namespace Talos
     ExtStream();
     ExtStream(string file_name,
 	      string comments = "#%",
-	      string delimiters = " \t:=|\n,;");
+	      string delimiters = " \t:=|\n,;\r\x0D\x0A");
 
     virtual ~ExtStream();
 
