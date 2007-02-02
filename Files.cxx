@@ -1300,7 +1300,7 @@ namespace Talos
 
   //! Constructor.
   /*! Opens a file.
-    \param file0 file to be opened.
+    \param file file to be opened.
   */
   ConfigStreams::ConfigStreams(string file):
     streams_(1), current_(streams_.begin()), section_("")
@@ -1822,7 +1822,7 @@ namespace Talos
   */
   bool ConfigStreams::FindFromBeginning(string element)
   {
-  this->Rewind();
+    this->Rewind();
     return this->Find(element);
   }
 
