@@ -3,12 +3,12 @@
 // This file is part of Talos library.
 // Talos library provides miscellaneous tools to make up for C++
 // lacks and to ease C++ programming.
-// 
+//
 // Talos is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // Talos is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -140,7 +140,8 @@ namespace Talos
 
     if (lower == "true" || lower == "t" || lower == "y" || lower == "yes")
       out = true;
-    else if (lower == "false" || lower == "f" || lower == "n" || lower == "no")
+    else if (lower == "false" || lower == "f" || lower == "n" 
+	     || lower == "no")
       out = false;
     else
 #ifdef TALOS_DO_NOT_CHECK_BOOLEAN
@@ -273,6 +274,48 @@ namespace Talos
       }
 
     return ans;
+  }
+
+ //! Checks whether a string is a date.
+  /*!
+    \param str string to be checked.
+    \return true if 'str' is a date, false otherwise.
+  */
+  bool is_date(const string& str)
+  {
+    bool ans = true;
+    try
+      {
+	Date d(str);
+      }
+    catch (...)
+      {
+	ans = false;
+      }
+    return ans;
+  }
+
+  //! Checks whether a string is a valid time interval.
+  /*!
+    \param str string to be checked.
+    \return true if 'str' is a valid time interval, false otherwise.
+  */
+  bool is_delta(const string& str)
+  {
+     if (str.find('h', 0) == string::npos ||
+	 (str.find("d", 0) != string::npos &&
+	  str.find("d", 0) >= str.find("h", 0)))
+       return false;
+
+    vector<string> period = split(str, "dh-_");
+
+    if (period.size() > 2 || period.size() == 0)
+      return false;
+   
+    if (period.size() == 2)
+      return (is_integer(period[0]) && is_integer(period[1]));
+    else
+      return is_integer(period[0]);
   }
 
   //! Finds and replace a substring.
@@ -481,7 +524,7 @@ namespace Talos
 	// Moves forward.
 	index_beg = markup_end == string::npos ? string::npos : index_end + 1;
 
-      }    
+      }
   }
 
   //! Displays a vector.

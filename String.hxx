@@ -3,12 +3,12 @@
 // This file is part of Talos library.
 // Talos library provides miscellaneous tools to make up for C++
 // lacks and to ease C++ programming.
-// 
+//
 // Talos is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // Talos is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -20,6 +20,7 @@
 
 #ifndef TALOS_FILE_STRING_HXX
 
+#include "Date.hxx"
 
 namespace Talos
 {
@@ -34,7 +35,7 @@ namespace Talos
   string to_str_fill(const T& input, int l = 2, char c = ' ',
 		     ostringstream::fmtflags flags = ostringstream::left);
 
-  template <class T>
+  template <class T> 
   void to_num(const string& s, T& num);
 
   template <class T>
@@ -55,6 +56,10 @@ namespace Talos
   bool is_integer(const string& s);
 
   bool is_unsigned_integer(const string& s);
+
+  bool is_date(const string& s);
+
+  bool is_delta(const string& s);
 
   string find_replace(string str, string old_str, string new_str = "");
 
