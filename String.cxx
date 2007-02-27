@@ -302,9 +302,10 @@ namespace Talos
   */
   bool is_delta(const string& str)
   {
-     if (str.find('h', 0) == string::npos ||
-	 (str.find("d", 0) != string::npos &&
-	  str.find("d", 0) >= str.find("h", 0)))
+     if ((str.find('h', 0) == string::npos &&
+	  str.find('d', 0) == string::npos) || 
+	 (str.find('d', 0) != string::npos &&
+	  str.find('d', 0) >= str.find('h', 0)))
        return false;
 
     vector<string> period = split(str, "dh-_");
