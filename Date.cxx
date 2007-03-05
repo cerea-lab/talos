@@ -628,6 +628,16 @@ namespace Talos
     this->Adjust();
   }
 
+  //! Returns the ordinal number of the day in the year (between 1 and 366).
+  /*!
+    \return The ordinal number of the day in the year (between 1 and 366).
+    \note The ordinal day is often but incorrectly refered to as 'Julian' day.
+  */
+  int Date::GetOrdinalDay() const
+  {
+    return this->GetNumberOfDays() + 1;
+  }
+
   //! Returns the number of the day in the year (between 0 and 365).
   /*!
     \return The number of the day in the year (between 0 and 365).
