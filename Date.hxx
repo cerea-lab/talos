@@ -92,6 +92,7 @@ namespace Talos
     void SetMinutes(int mn);
     void SetSeconds(double sc);
 
+    int GetOrdinalDay() const;
     int GetDayNumber() const;
     int GetNumberOfDays() const;
     int GetDaysFrom(Date date) const;
