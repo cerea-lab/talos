@@ -170,6 +170,9 @@ namespace Talos
 
     string section_;
 
+    //! Field currently searched.
+    string searching_;
+
   public:
     ConfigStreams();
     ConfigStreams(const vector<string>& files);

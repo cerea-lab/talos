@@ -1283,7 +1283,7 @@ namespace Talos
   /*! Nothing is performed.
    */
   ConfigStreams::ConfigStreams():
-    streams_(0), current_(streams_.begin()), section_("")
+    streams_(0), current_(streams_.begin()), section_(""), searching_("")
   {
   }
 
@@ -1292,7 +1292,8 @@ namespace Talos
     \param files files to be opened.
   */
   ConfigStreams::ConfigStreams(const vector<string>& files):
-    streams_(files.size()), current_(streams_.begin()), section_("")
+    streams_(files.size()), current_(streams_.begin()), section_(""),
+    searching_("")
   {
     for (int i = 0; i < int(files.size()); i++)
       streams_[i] = new ConfigStream(files[i]);
@@ -1303,7 +1304,7 @@ namespace Talos
     \param file file to be opened.
   */
   ConfigStreams::ConfigStreams(string file):
-    streams_(1), current_(streams_.begin()), section_("")
+    streams_(1), current_(streams_.begin()), section_(""), searching_("")
   {
     streams_[0] = new ConfigStream(file);
   }
@@ -1314,7 +1315,7 @@ namespace Talos
     \param file1 second file to be opened.
   */
   ConfigStreams::ConfigStreams(string file0, string file1):
-    streams_(2), current_(streams_.begin()), section_("")
+    streams_(2), current_(streams_.begin()), section_(""), searching_("")
   {
     streams_[0] = new ConfigStream(file0);
     streams_[1] = new ConfigStream(file1);
@@ -1327,7 +1328,7 @@ namespace Talos
     \param file2 third file to be opened.
   */
   ConfigStreams::ConfigStreams(string file0, string file1, string file2):
-    streams_(3), current_(streams_.begin()), section_("")
+    streams_(3), current_(streams_.begin()), section_(""), searching_("")
   {
     streams_[0] = new ConfigStream(file0);
     streams_[1] = new ConfigStream(file1);
@@ -1786,6 +1787,8 @@ namespace Talos
   */
   bool ConfigStreams::Find(string element)
   {
+    searching_ = element;
+
     bool found;
     try
       {
@@ -1811,6 +1814,9 @@ namespace Talos
       throw string("Error in ConfigStreams::Find: \"")
 	+ element + string("\" not found in \"") + (*current_)->GetFileName()
 	+ "\".";
+
+    searching_ = "";
+
     return found;
   }
 
@@ -1885,9 +1891,15 @@ namespace Talos
     (*current_)->seekg(initial_position);
 
     if (!section_.empty() && IsSection(element))
-      throw string("End of section \"") + section_
-	+ string("\" has been reached in file \"")
-	+ (*current_)->GetFileName() + "\".";
+      {
+	string message = string("End of section \"") + section_
+	  + string("\" has been reached in file \"")
+	  + (*current_)->GetFileName() + "\".";
+	if (searching_ != "")
+	  message += string("\nUnable to find \"")
+	    + this->searching_ + string("\".");
+	throw message;
+      }
 
     return element;
   }
@@ -2058,12 +2070,16 @@ namespace Talos
   */
   string ConfigStreams::GetValue(string name)
   {
+    searching_ = name;
+
     string element;
     while (this->GetElement(element) && element!=name);
 
     if (element != name)
       throw string("Error in ConfigStreams::GetValue: \"")
 	+ name + string("\" not found in \"") + (*current_)->GetFileName() + "\".";
+
+    searching_ = "";
 
     return this->GetElement();
   }
@@ -2102,12 +2118,16 @@ namespace Talos
   template <class T>
   bool ConfigStreams::GetValue(string name, T& value)
   {
+    searching_ = name;
+
     string element;
     while (this->GetElement(element) && element!=name);
 
     if (element != name)
       throw string("Error in ConfigStreams::GetValue: \"")
 	+ name + string("\" not found in \"") + (*current_)->GetFileName() + "\".";
+
+    searching_ = "";
 
     return GetNumber(value);
   }
@@ -2146,12 +2166,16 @@ namespace Talos
   */
   bool ConfigStreams::GetValue(string name, string& value)
   {
+    searching_ = name;
+
     string element;
     while (this->GetElement(element) && element!=name);
 
     if (element != name)
       throw string("Error in ConfigStreams::GetValue: \"")
 	+ name + string("\" not found in \"") + (*current_)->GetFileName() + "\".";
+
+    searching_ = "";
 
     return GetElement(value);
   }
@@ -2189,12 +2213,16 @@ namespace Talos
   */
   bool ConfigStreams::GetValue(string name, bool& value)
   {
+    searching_ = name;
+
     string element;
     while (this->GetElement(element) && element!=name);
 
     if (element != name)
       throw string("Error in ConfigStreams::GetValue: \"")
 	+ name + string("\" not found in \"") + (*current_)->GetFileName() + "\".";
+
+    searching_ = "";
 
     return this->GetElement(value);
   }
