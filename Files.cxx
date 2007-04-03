@@ -1098,8 +1098,14 @@ namespace Talos
     this->searching_ = element;
 
     string elt;
-    while (ExtStream::GetRawElement(elt) && elt!=element);
+    while (ExtStream::GetRawElement(elt) && elt!=element
+	   && (section_ == "" || !IsSection(elt)));
 
+    if (section_ != "" && IsSection(elt))
+      throw string("Error in ConfigStream::Find: end of section \"")
+	+ section_ + string("\" has been reached in file \"")
+	+ this->file_name_ + string("\".\nUnable to find \"")
+	+ element + "\".";
     if (elt == "")
       throw string("Error in ConfigStream::Find: \"")
 	+ element + string("\" not found in \"") + this->file_name_ + "\".";
@@ -1423,8 +1429,7 @@ namespace Talos
 
     if (!found)
       throw string("Error in ConfigStreams::SetSection: section \"")
-	+ section + string("\" was not found in \"")
-	+ (*current_)->GetFileName() + "\".";
+	+ section + string("\" was not found in ") + FileNames() + ".";
   }
 
   //! Returns the current section.
@@ -1685,8 +1690,8 @@ namespace Talos
 	    tmp = this->GetRawElement();
 	  if (tmp == "")
 	    throw string("Error in ConfigStreams::GetLine: the value of the markup \"")
-	      + elements[i] + string("\" was not found in \"")
-	      + (*current_)->GetFileName() + "\".";
+	      + elements[i] + string("\" was not found in ")
+	      + FileNames() + ".";
 	  line += this->GetElement();
 	}
 
@@ -1810,10 +1815,14 @@ namespace Talos
 	    found = false;
 	  }
       }
+    if (!found && !section_.empty())
+      throw string("Error in ConfigStreams::Find: end of section \"")
+	+ section_ + string("\" has been reached in ")
+	+ FileNames() + string(".\nUnable to find \"")
+	+ element + "\".";
     if (!found)
       throw string("Error in ConfigStreams::Find: \"")
-	+ element + string("\" not found in \"") + (*current_)->GetFileName()
-	+ "\".";
+	+ element + string("\" not found in ") + FileNames() + ".";
 
     searching_ = "";
 
@@ -1828,6 +1837,7 @@ namespace Talos
   */
   bool ConfigStreams::FindFromBeginning(string element)
   {
+    NoSection();
     this->Rewind();
     return this->Find(element);
   }
@@ -1880,8 +1890,8 @@ namespace Talos
 	    tmp = GetRawElement();
 	  if (tmp == "")
 	    throw string("Error in ConfigStreams::GetElement: the value of the markup \"")
-	      + elements[i] + string("\" was not found in \"")
-	      + (*current_)->GetFileName() + "\".";
+	      + elements[i] + string("\" was not found in ")
+	      + FileNames() + ".";
 	  element += this->GetElement();
 	}
 
@@ -1893,8 +1903,7 @@ namespace Talos
     if (!section_.empty() && IsSection(element))
       {
 	string message = string("End of section \"") + section_
-	  + string("\" has been reached in file \"")
-	  + (*current_)->GetFileName() + "\".";
+	  + string("\" has been reached in ") + FileNames() + ".";
 	if (searching_ != "")
 	  message += string("\nUnable to find \"")
 	    + this->searching_ + string("\".");
@@ -2077,7 +2086,7 @@ namespace Talos
 
     if (element != name)
       throw string("Error in ConfigStreams::GetValue: \"")
-	+ name + string("\" not found in \"") + (*current_)->GetFileName() + "\".";
+	+ name + string("\" not found in \"") + FileNames() + ".";
 
     searching_ = "";
 
@@ -2125,7 +2134,7 @@ namespace Talos
 
     if (element != name)
       throw string("Error in ConfigStreams::GetValue: \"")
-	+ name + string("\" not found in \"") + (*current_)->GetFileName() + "\".";
+	+ name + string("\" not found in \"") + FileNames() + ".";
 
     searching_ = "";
 
@@ -2173,7 +2182,7 @@ namespace Talos
 
     if (element != name)
       throw string("Error in ConfigStreams::GetValue: \"")
-	+ name + string("\" not found in \"") + (*current_)->GetFileName() + "\".";
+	+ name + string("\" not found in ") + FileNames() + ".";
 
     searching_ = "";
 
@@ -2220,7 +2229,7 @@ namespace Talos
 
     if (element != name)
       throw string("Error in ConfigStreams::GetValue: \"")
-	+ name + string("\" not found in \"") + (*current_)->GetFileName() + "\".";
+	+ name + string("\" not found in ") + FileNames() + ".";
 
     searching_ = "";
 
@@ -2259,6 +2268,24 @@ namespace Talos
   bool ConfigStreams::IsSection(string str) const
   {
     return str[0] == '[' && str[str.size()-1] == ']';
+  }
+
+  //! Returns file names in string form.
+  /*!
+    \return File names in order to print them on screen.
+  */
+  string ConfigStreams::FileNames() const
+  {
+    string output = "";
+    int Nstream = streams_.size();
+    for (int i = 0; i < Nstream - 2; i++)
+      output += string("\"") + streams_[i]->GetFileName() + "\", ";
+    if (Nstream > 1)
+      output += string("\"") + streams_[Nstream - 2]->GetFileName()
+	+ "\" or ";
+    if (Nstream > 0)
+      output += string("\"") + streams_[Nstream - 1]->GetFileName() + "\"";
+    return output;
   }
 
 }  // namespace Talos.

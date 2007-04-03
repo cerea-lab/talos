@@ -254,6 +254,7 @@ namespace Talos
 
   private:
     bool IsSection(string str) const;
+    string FileNames() const;
   };
 
 }  // namespace Talos.
