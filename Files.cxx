@@ -1101,7 +1101,7 @@ namespace Talos
     while (ExtStream::GetRawElement(elt) && elt!=element
 	   && (section_ == "" || !IsSection(elt)));
 
-    if (section_ != "" && IsSection(elt))
+    if (section_ != "" && (elt == "" || IsSection(elt)))
       throw string("Error in ConfigStream::Find: end of section \"")
 	+ section_ + string("\" has been reached in file \"")
 	+ this->file_name_ + string("\".\nUnable to find \"")
@@ -1170,7 +1170,7 @@ namespace Talos
     this->clear(state);
     this->seekg(initial_position);
 
-    if (!section_.empty() && IsSection(element))
+    if (!section_.empty() && (element == "" || IsSection(element)))
       {
 	string message = string("End of section \"") + section_
 	  + string("\" has been reached in file \"") + this->file_name_
@@ -1900,7 +1900,7 @@ namespace Talos
     (*current_)->clear(state);
     (*current_)->seekg(initial_position);
 
-    if (!section_.empty() && IsSection(element))
+    if (!section_.empty() && (element == "" || IsSection(element)))
       {
 	string message = string("End of section \"") + section_
 	  + string("\" has been reached in ") + FileNames() + ".";
