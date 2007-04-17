@@ -44,7 +44,7 @@ namespace Talos
   //! Returns a file size.
   /*!
     \param file_name file name.
-    \return the file size in bytes.
+    \return The file size in bytes.
   */
   unsigned long file_size(string file_name)
   {
@@ -58,7 +58,7 @@ namespace Talos
   //! Returns a stream size.
   /*!
     \param stream the stream.
-    \return the stream size in bytes.
+    \return The stream size in bytes.
   */
   unsigned long stream_size(istream& stream)
   {
@@ -92,7 +92,7 @@ namespace Talos
   //! Checks whether a stream contains an element.
   /*!
     Checks whether a stream contains an element that may be extracted
-    through 'operator <<'.
+    through 'operator >>'.
     \param stream the stream.
     \return true if the stream has an element, false otherwise.
   */
@@ -148,6 +148,7 @@ namespace Talos
   //! Checks whether a line should be discarded.
   /*!
     \param line line to be checked.
+    \return true if the line should be discarded, false otherwise.
   */
   bool ExtStream::Discard(string line) const
   {
@@ -169,7 +170,7 @@ namespace Talos
     return *this;
   }
 
-  //! Sets the characters considered as delimiters..
+  //! Sets the characters considered as delimiters.
   /*!
     \param delimiters delimiters.
   */
@@ -231,7 +232,8 @@ namespace Talos
   //! Removes delimiters at both ends of a string.
   /*!
     Removes delimiters at the beginning and at the end of a string.
-    \param 
+    \param str string.
+    \return The string without delimiters at both ends.
   */
   string ExtStream::RemoveDelimiters(const string& str) const
   {
@@ -286,7 +288,7 @@ namespace Talos
 
   //! Checks whether the stream is empty.
   /*!
-    Checcks whether the stream has still valid elements to be read.
+    Checks whether the stream has still valid elements to be read.
     \return 'true' is the stream is empty, 'false' otherwise.
   */
   bool ExtStream::IsEmpty()
@@ -372,6 +374,7 @@ namespace Talos
   //! Returns the next line without extracting it from the stream.
   /*!
     \param line (output) the next line.
+    \return true if a line has been found, false otherwise.
   */
   bool ExtStream::PeekFullLine(string& line)
   {

@@ -81,8 +81,8 @@ namespace Talos
 
   //! Converts string to most types, specially numbers.
   /*!
-    \param input string to be converted.
-    \param num 'input' converted to 'T'.
+    \param s string to be converted.
+    \param num 's' converted to 'T'.
   */
   template <class T>
   void to_num(const string& s, T& num)
@@ -93,8 +93,8 @@ namespace Talos
 
   //! Converts string to most types, specially numbers.
   /*!
-    \param input string to be converted.
-    \return 'input' converted to 'T'.
+    \param s string to be converted.
+    \return 's' converted to 'T'.
   */
   template <class T>
   T to_num(const string& s)
@@ -107,8 +107,8 @@ namespace Talos
 
   //! Converts strings to most types.
   /*!
-    \param input string to be converted.
-    \param num 'input' converted to 'T'.
+    \param s string to be converted.
+    \param out 's' converted to 'T'.
   */
   template <class T>
   void convert(const string& s, T& out)
@@ -158,8 +158,8 @@ namespace Talos
 
   //! Converts strings to most types.
   /*!
-    \param input string to be converted.
-    \return 'input' converted to 'T'.
+    \param s input string to be converted.
+    \return 's' converted to 'T'.
   */
   template <class T>
   T convert(const string& s)
@@ -437,8 +437,10 @@ namespace Talos
   /*!
     The string is split into markups and elements.
     \param str string to be split.
-    \param elements (output) vector containing markups (without their tags) and elements of the string.
-    \param is_markup (output) booleans set to true for each markup found in 'elements'.
+    \param elements (output) vector containing markups (without their tags) 
+    and elements of the string.
+    \param is_markup (output) booleans set to true for each markup found in 
+    'elements'.
     \param delimiters (optional) markup tags. Default: "$".
     \note A markup is a field delimited by two tags.
   */
