@@ -3,6 +3,19 @@ o---------------o
 o---------------o
 
 
+Version 1.0 (2007-04-24)
+-----------
+
+** Improvements:
+
+- Improved the parsing of configuration files: fields are now only searched 
+  in current section, and error messages when a field is not found have been 
+  improved too.
+- Improved the management of Windows end of line character. 
+- Added functions 'is_date(const string& s)' and 'is_delta(const string& s)'.
+- Added function 'GetOrdinalDay()'.
+
+
 Version 0.4 (2006-09-29)
 -----------
 
