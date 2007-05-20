@@ -113,6 +113,9 @@ namespace Talos
   bool operator == (const Date& first_date, const Date& second_date);
   bool operator != (const Date& first_date, const Date& second_date);
 
+  // Redirection.
+  ostream& operator << (ostream& out, const Date& d);
+
 }  // namespace Talos.
 
 

@@ -823,6 +823,18 @@ namespace Talos
     return first_date.GetSecondsFrom(second_date) != 0.;
   }
 
+  //! Redirection operator <<.
+  /*! The date is converted to a string in format "%y-%m-%d %h:%i".
+    \param out output stream.
+    \param d date to be displayed.
+    \return The updated stream.
+   */
+  ostream& operator << (ostream& out, const Date& d)
+  {
+    out << d.GetDate("%y-%m-%d %h:%i");
+    return out;
+  }
+
 }  // namespace Talos.
 
 
