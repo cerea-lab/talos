@@ -35,7 +35,7 @@ namespace Talos
   string to_str_fill(const T& input, int l = 2, char c = ' ',
 		     ostringstream::fmtflags flags = ostringstream::left);
 
-  template <class T> 
+  template <class T>
   void to_num(const string& s, T& num);
 
   template <class T>

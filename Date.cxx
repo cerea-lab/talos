@@ -3,12 +3,12 @@
 // This file is part of Talos library.
 // Talos library provides miscellaneous tools to make up for C++
 // lacks and to ease C++ programming.
-// 
+//
 // Talos is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // Talos is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -268,7 +268,7 @@ namespace Talos
   //! Checks whether a date is valid.
   /*!
     \return True is the current date is valid, false otherwise.
-   */
+  */
   bool Date::IsValid()
   {
     this->LeapYearAdjust();
@@ -762,7 +762,7 @@ namespace Talos
     \param first_date date.
     \param second_date date.
     \return True if \a first_date is strictly before \a second_date.
-   */
+  */
   bool operator < (const Date& first_date, const Date& second_date)
   {
     return first_date.GetSecondsFrom(second_date) < 0.;
@@ -773,7 +773,7 @@ namespace Talos
     \param first_date date.
     \param second_date date.
     \return True if \a first_date is before \a second_date.
-   */
+  */
   bool operator <= (const Date& first_date, const Date& second_date)
   {
     return first_date.GetSecondsFrom(second_date) <= 0.;
@@ -784,7 +784,7 @@ namespace Talos
     \param first_date date.
     \param second_date date.
     \return True if \a first_date is strictly after \a second_date.
-   */
+  */
   bool operator > (const Date& first_date, const Date& second_date)
   {
     return first_date.GetSecondsFrom(second_date) > 0.;
@@ -795,7 +795,7 @@ namespace Talos
     \param first_date date.
     \param second_date date.
     \return True if \a first_date is after \a second_date.
-   */
+  */
   bool operator >= (const Date& first_date, const Date& second_date)
   {
     return first_date.GetSecondsFrom(second_date) >= 0.;
@@ -806,7 +806,7 @@ namespace Talos
     \param first_date date.
     \param second_date date.
     \return True if \a first_date is the same date as \a second_date.
-   */
+  */
   bool operator == (const Date& first_date, const Date& second_date)
   {
     return first_date.GetSecondsFrom(second_date) == 0.;
@@ -817,7 +817,7 @@ namespace Talos
     \param first_date date.
     \param second_date date.
     \return True if \a first_date is not the same date as \a second_date.
-   */
+  */
   bool operator != (const Date& first_date, const Date& second_date)
   {
     return first_date.GetSecondsFrom(second_date) != 0.;
@@ -828,7 +828,7 @@ namespace Talos
     \param out output stream.
     \param d date to be displayed.
     \return The updated stream.
-   */
+  */
   ostream& operator << (ostream& out, const Date& d)
   {
     out << d.GetDate("%y-%m-%d %h:%i");

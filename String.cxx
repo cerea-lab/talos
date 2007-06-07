@@ -140,7 +140,7 @@ namespace Talos
 
     if (lower == "true" || lower == "t" || lower == "y" || lower == "yes")
       out = true;
-    else if (lower == "false" || lower == "f" || lower == "n" 
+    else if (lower == "false" || lower == "f" || lower == "n"
 	     || lower == "no")
       out = false;
     else
@@ -276,7 +276,7 @@ namespace Talos
     return ans;
   }
 
- //! Checks whether a string is a date.
+  //! Checks whether a string is a date.
   /*!
     \param str string to be checked.
     \return true if 'str' is a date, false otherwise.
@@ -302,11 +302,11 @@ namespace Talos
   */
   bool is_delta(const string& str)
   {
-     if ((str.find('h', 0) == string::npos &&
-	  str.find('d', 0) == string::npos) || 
-	 (str.find('d', 0) != string::npos &&
-	  str.find('d', 0) >= str.find('h', 0)))
-       return false;
+    if ((str.find('h', 0) == string::npos &&
+	 str.find('d', 0) == string::npos) ||
+	(str.find('d', 0) != string::npos &&
+	 str.find('d', 0) >= str.find('h', 0)))
+      return false;
 
     vector<string> period = split(str, "dh-_");
 
@@ -437,9 +437,9 @@ namespace Talos
   /*!
     The string is split into markups and elements.
     \param str string to be split.
-    \param elements (output) vector containing markups (without their tags) 
+    \param elements (output) vector containing markups (without their tags)
     and elements of the string.
-    \param is_markup (output) booleans set to true for each markup found in 
+    \param is_markup (output) booleans set to true for each markup found in
     'elements'.
     \param delimiters (optional) markup tags. Default: "$".
     \note A markup is a field delimited by two tags.

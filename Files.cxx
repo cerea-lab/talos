@@ -3,12 +3,12 @@
 // This file is part of Talos library.
 // Talos library provides miscellaneous tools to make up for C++
 // lacks and to ease C++ programming.
-// 
+//
 // Talos is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // Talos is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -224,7 +224,8 @@ namespace Talos
   ExtStream& ExtStream::SkipDelimiters()
   {
     while ( this->good()
-	    && (delimiters_.find_first_of(char(this->peek())) != string::npos) )
+	    && (delimiters_.find_first_of(char(this->peek()))
+		!= string::npos) )
       this->get();
     return *this;
   }
@@ -258,9 +259,10 @@ namespace Talos
   //! Opens a file.
   /*!
     \param file_name file name.
-    \param mode (optional) flags describing the requested I/O mode for the file.
-    Default: in.
-    \note If a file was previously opened, it is closed and the stream is cleared.
+    \param mode (optional) flags describing the requested I/O mode for the
+    file.  Default: in.
+    \note If a file was previously opened, it is closed and the stream is
+    cleared.
   */
   void ExtStream::Open(string file_name, openmode mode)
   {
@@ -414,9 +416,11 @@ namespace Talos
     this->Skip();
     line = GetFullLine();
 
-    while ( (not_end = ( (index_tmp = line.substr(index).find_first_of(comments_))
+    while ( (not_end = ( (index_tmp
+			  = line.substr(index).find_first_of(comments_))
 			 != string::npos ))
-	    && (delimiters_.find_first_of(line[(index+=index_tmp)-1]) == string::npos)
+	    && (delimiters_.find_first_of(line[(index+=index_tmp)-1])
+		== string::npos)
 	    && (not_end = (++index != line.size())) );
 
     if (not_end)
@@ -443,9 +447,11 @@ namespace Talos
     this->Skip();
     success = GetFullLine(line);
 
-    while ( (not_end = ( (index_tmp = line.substr(index).find_first_of(comments_))
+    while ( (not_end = ( (index_tmp
+			  = line.substr(index).find_first_of(comments_))
 			 != string::npos ))
-	    && (delimiters_.find_first_of(line[(index+=index_tmp)-1]) == string::npos)
+	    && (delimiters_.find_first_of(line[(index+=index_tmp)-1])
+		== string::npos)
 	    && (not_end = (++index != line.size())) );
 
     if (not_end)
@@ -487,7 +493,8 @@ namespace Talos
     Returns the next valid line, i.e. the next line that is
     not a line to be discarded and from which comments have been extracted.
     Nothing is extracted from the stream.
-    \param position (output) the position of the line following the next valid line.
+    \param position (output) the position of the line following the next valid
+    line.
     \return The valid line.
   */
   string ExtStream::PeekLine(streampos& position)
@@ -589,7 +596,8 @@ namespace Talos
     if (index != string::npos)
       {
 	length = element.find_first_of(delimiters_, index);
-	length = length==string::npos ? element.size() - index : length - index;
+	length = length==string::npos ? element.size() - index
+	  : length - index;
 	element = element.substr(index, length);
       }
     else
@@ -809,7 +817,7 @@ namespace Talos
   string ExtStream::PeekValue(string name)
   {
     streampos initial_position = this->tellg();
-    iostate state = this->rdstate();    
+    iostate state = this->rdstate();
 
     string element = this->GetValue(name);
 
@@ -843,7 +851,8 @@ namespace Talos
     return GetNumber(value);
   }
 
-  //! Gets the value of a given variable without extracting them from the stream.
+  /*! \brief Gets the value of a given variable without extracting them from
+    the stream. */
   /*!
     Gets the (numerical) value of a given variable, i.e. the next valid
     (not in a discarded line) number or element following the variable name.
@@ -899,7 +908,8 @@ namespace Talos
     return GetElement(value);
   }
 
-  //! Gets the value of a given variable without extracting them from the stream.
+  /*! \brief Gets the value of a given variable without extracting them from
+    the stream. */
   /*!
     Gets the value of a given variable, i.e. the next valid
     (not in a discarded line) number or element following the variable name.
@@ -1017,7 +1027,7 @@ namespace Talos
   //! Deselects the section.
   /*!
     Deselects the section (this is equivalent to SetSection("")).
-   */
+  */
   void ConfigStream::NoSection()
   {
     section_ = "";
@@ -1146,7 +1156,7 @@ namespace Talos
     string element = ExtStream::GetElement();
 
     streampos initial_position = this->tellg();
-    iostate state = this->rdstate();    
+    iostate state = this->rdstate();
 
     vector<string> elements;
     vector<bool> is_markup;
@@ -1165,8 +1175,10 @@ namespace Talos
 	  while (tmp != elements[i] && tmp != "")
 	    tmp = ExtStream::GetElement();
 	  if (tmp == "")
-	    throw string("Error in ConfigStream::GetElement: the value of the markup \"")
-	      + elements[i] + string("\" was not found in \"") + file_name_ + "\".";
+	    throw string("Error in ConfigStream::GetElement:")
+	      + string(" the value of the markup \"")
+	      + elements[i] + string("\" was not found in \"")
+	      + file_name_ + "\".";
 	  element += this->GetElement();
 	}
 
@@ -1200,7 +1212,7 @@ namespace Talos
     string element = ExtStream::GetLine();
 
     streampos initial_position = this->tellg();
-    iostate state = this->rdstate();    
+    iostate state = this->rdstate();
 
     vector<string> elements;
     vector<bool> is_markup;
@@ -1219,8 +1231,10 @@ namespace Talos
 	  while (tmp != elements[i] && tmp != "")
 	    tmp = ExtStream::GetElement();
 	  if (tmp == "")
-	    throw string("Error in ConfigStream::GetLine: the value of the markup \"")
-	      + elements[i] + string("\" was not found in \"") + file_name_ + "\".";
+	    throw string("Error in ConfigStream::GetLine:")
+	      + string(" the value of the markup \"")
+	      + elements[i] + string("\" was not found in \"")
+	      + file_name_ + "\".";
 	  element += this->GetElement();
 	}
 
@@ -1243,7 +1257,7 @@ namespace Talos
     bool success = ExtStream::GetLine(line);
 
     streampos initial_position = this->tellg();
-    iostate state = this->rdstate();    
+    iostate state = this->rdstate();
 
     vector<string> elements;
     vector<bool> is_markup;
@@ -1262,8 +1276,10 @@ namespace Talos
 	  while (tmp != elements[i] && tmp != "")
 	    tmp = ExtStream::GetElement();
 	  if (tmp == "")
-	    throw string("Error in ConfigStream::GetLine: the value of the markup \"")
-	      + elements[i] + string("\" was not found in \"") + file_name_ + "\".";
+	    throw string("Error in ConfigStream::GetLine:")
+	      + string(" the value of the markup \"")
+	      + elements[i] + string("\" was not found in \"")
+	      + file_name_ + "\".";
 	  line += this->GetElement();
 	}
 
@@ -1385,7 +1401,7 @@ namespace Talos
   /*!
     Deselects the section (this is equivalent to SetSection("")) and rewinds
     the stream.
-   */
+  */
   void ConfigStreams::NoSection()
   {
     section_ = "";
@@ -1489,7 +1505,8 @@ namespace Talos
   //! Removes delimiters at both ends of a string.
   /*!
     Removes delimiters at the beginning and at the end of a string.
-    \param 
+    \param str string to processed.
+    \return The string with delimiters removed.
   */
   string ConfigStreams::RemoveDelimiters(const string& str) const
   {
@@ -1692,7 +1709,8 @@ namespace Talos
 	  while (tmp != elements[i] && tmp != "")
 	    tmp = this->GetRawElement();
 	  if (tmp == "")
-	    throw string("Error in ConfigStreams::GetLine: the value of the markup \"")
+	    throw string("Error in ConfigStreams::GetLine:")
+	      + string(" the value of the markup \"")
 	      + elements[i] + string("\" was not found in ")
 	      + FileNames() + ".";
 	  line += this->GetElement();
@@ -1734,7 +1752,8 @@ namespace Talos
     Returns the next valid line, i.e. the next line that is
     not a line to be discarded and from which comments have been extracted.
     Nothing is extracted from the stream.
-    \param position (output) the position of the line following the next valid line.
+    \param position (output) the position of the line following the next valid
+    line.
     \return The valid line.
   */
   string ConfigStreams::PeekLine(streampos& position)
@@ -1854,7 +1873,8 @@ namespace Talos
   string ConfigStreams::GetRawElement()
   {
     string element;
-    while ((element = (*current_)->ExtStream::GetElement()) == "" && current_ != streams_.end()-1)
+    while ((element = (*current_)->ExtStream::GetElement()) == ""
+	   && current_ != streams_.end()-1)
       ++current_;
     return element;
   }
@@ -1892,7 +1912,8 @@ namespace Talos
 	  while (tmp != elements[i] && tmp != "")
 	    tmp = GetRawElement();
 	  if (tmp == "")
-	    throw string("Error in ConfigStreams::GetElement: the value of the markup \"")
+	    throw string("Error in ConfigStreams::GetElement: ")
+	      + string("the value of the markup \"")
 	      + elements[i] + string("\" was not found in ")
 	      + FileNames() + ".";
 	  element += this->GetElement();
@@ -2144,7 +2165,8 @@ namespace Talos
     return GetNumber(value);
   }
 
-  //! Gets the value of a given variable without extracting them from the stream.
+  /*! \brief Gets the value of a given variable without extracting them from
+    the stream. */
   /*!
     Gets the (numerical) value of a given variable, i.e. the next valid
     (not in a discarded line) number or element following the variable name.
@@ -2192,7 +2214,8 @@ namespace Talos
     return GetElement(value);
   }
 
-  //! Gets the value of a given variable without extracting them from the stream.
+  /*! \brief Gets the value of a given variable without extracting them from
+    the stream. */
   /*!
     Gets the value of a given variable, i.e. the next valid
     (not in a discarded line) number or element following the variable name.
