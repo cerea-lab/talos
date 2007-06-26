@@ -284,6 +284,10 @@ namespace Talos
   bool is_date(const string& str)
   {
     bool ans = true;
+
+
+    if (!isdigit(str[0]))
+	return false;
     try
       {
 	Date d(str);
