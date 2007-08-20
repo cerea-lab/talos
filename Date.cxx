@@ -648,8 +648,9 @@ namespace Talos
   }
 
   //! Returns the number of days in the year before the current day.
-  /*!
-    \return The number of days in the year before the current day.
+  /*!  
+    \return The number of days in the year before the current day. (0 for
+    the 1st of January).
   */
   int Date::GetNumberOfDays() const
   {
