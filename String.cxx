@@ -287,7 +287,7 @@ namespace Talos
 
 
     if (!isdigit(str[0]))
-	return false;
+      return false;
     try
       {
 	Date d(str);
