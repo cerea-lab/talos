@@ -134,7 +134,7 @@ namespace Talos
     ConfigStream();
     ConfigStream(string file_name,
 		 string comments = "#%",
-		 string delimiters = " \t:=|\n,;",
+		 string delimiters = " \t:=|\n,;\r\x0D\x0A",
 		 string markup_tags = "<>$");
 
     void NoSection();
