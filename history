@@ -2,6 +2,17 @@ o---------------o
 | TALOS HISTORY |
 o---------------o
 
+Version 1.1 (2007-10-09)
+-----------
+
+** Improvements:
+
+- Added output operator << for dates.
+
+** Bug fixes:
+
+- The test to determine if a string represents a date could fail.
+
 
 Version 1.0 (2007-04-24)
 -----------
