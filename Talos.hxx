@@ -66,7 +66,7 @@ return 1;\
 }\
 catch(...)\
 {\
-cout << "Unknown exception..." <<endl;\
+cout << "Unknown exception..." << endl;\
 return 1;\
 }
 
