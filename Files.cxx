@@ -119,7 +119,7 @@ namespace Talos
   /*! Nothing is performed.
    */
   ExtStream::ExtStream():
-    comments_("#%"), delimiters_(" \t"), searching_("")
+    comments_("#%"), delimiters_(" \t:=|\n,;\r\x0D\x0A"), searching_("")
   {
   }
 
