@@ -845,10 +845,13 @@ namespace Talos
     if (element != name)
       throw string("Error in ExtStream::GetValue: \"")
 	+ name + string("\" not found in \"") + file_name_ + "\".";
+    bool success = this->GetElement(element) && is_num(element);
+
+    value = success ? to_num<T>(element) : T(0);
 
     searching_ = "";
 
-    return GetNumber(value);
+    return success;
   }
 
   /*! \brief Gets the value of a given variable without extracting them from
@@ -863,24 +866,13 @@ namespace Talos
   template <class T>
   bool ExtStream::PeekValue(string name, T& value)
   {
-    searching_ = name;
-
     streampos initial_position = this->tellg();
     iostate state = this->rdstate();
 
-    string element;
-    while (GetElement(element) && element!=name);
-
-    if (element != name)
-      throw string("Error in ExtStream::PeekValue: \"")
-	+ name + string("\" not found in \"") + file_name_ + "\".";
-
-    bool success = GetNumber(value);
+    bool success = this->GetValue(name, value);
 
     this->clear(state);
     this->seekg(initial_position);
-
-    searching_ = "";
 
     return success;
   }
@@ -2160,9 +2152,13 @@ namespace Talos
       throw string("Error in ConfigStreams::GetValue: \"")
 	+ name + string("\" not found in \"") + FileNames() + ".";
 
+    bool success = this->GetElement(element) && is_num(element);
+
+    value = success ? to_num<T>(element) : T(0);
+
     searching_ = "";
 
-    return GetNumber(value);
+    return success;
   }
 
   /*! \brief Gets the value of a given variable without extracting them from
