@@ -19,6 +19,9 @@
 
 #ifndef TALOS_FILE_TALOS_HXX
 
+namespace Talos
+{
+}
 
 #include <iostream>
 #include <exception>
