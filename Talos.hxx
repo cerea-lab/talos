@@ -19,54 +19,7 @@
 
 #ifndef TALOS_FILE_TALOS_HXX
 
-namespace Talos
-{
-}
-
-#include <iostream>
-#include <exception>
-
-
-//! To display a message... call Hermes!
-#ifndef ERR
-#define ERR(x) std::cout << "Hermes - " #x << std::endl
-#endif
-//! To display a variable (with its name).
-#ifndef DISP
-#define DISP(x) std::cout << #x ": " << (x) << std::endl
-#endif
-
-#ifdef TRY
-#undef TRY
-#endif
-#define TRY try\
-{
-
-#ifdef END
-#undef END
-#endif
-#define END \
-}\
-catch (std::exception& Err)\
-{\
-cout << "C++ exception: " << Err.what() << endl;\
-return 1;\
-}\
-catch (std::string& str)\
-{\
-cout << str << endl;\
-return 1;\
-}\
-catch (const char* str)\
-{\
-cout << str << endl;\
-return 1;\
-}\
-catch(...)\
-{\
-cout << "Unknown exception..." << endl;\
-return 1;\
-}
+#include "TalosHeader.hxx"
 
 #include "String.cxx"
 #include "Date.cxx"
