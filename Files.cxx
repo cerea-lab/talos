@@ -19,6 +19,7 @@
 
 #ifndef TALOS_FILE_FILES_CXX
 
+#include "String.hxx"
 #include "Files.hxx"
 
 namespace Talos

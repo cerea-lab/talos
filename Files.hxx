@@ -20,14 +20,27 @@
 #ifndef TALOS_FILE_FILES_HXX
 
 
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <vector>
+#include <stdexcept>
+
+
 namespace Talos
 {
 
+  using namespace std;
+
   bool exists(string file_name);
   unsigned long file_size(string file_name);
+#ifndef SWIG
   unsigned long stream_size(istream& stream);
   bool is_empty(istream& stream);
   bool has_element(istream& stream);
+#endif
 
   //! Extended streams.
   class ExtStream: public ifstream
@@ -66,7 +79,9 @@ namespace Talos
 
     ExtStream& Skip();
 
+#ifndef SWIG
     void Open(string file_name, openmode mode = in);
+#endif
     void Close();
     
     bool IsEmpty();
@@ -76,14 +91,18 @@ namespace Talos
     string GetFullLine();
     bool GetFullLine(string& line);
     string PeekFullLine();
+#ifndef SWIG
     string PeekFullLine(streampos& position);
+#endif
     bool PeekFullLine(string& line);
     void SkipFullLines(int nb);
 
     virtual string GetLine();
     virtual bool GetLine(string& line);
     virtual string PeekLine();
+#ifndef SWIG
     virtual string PeekLine(streampos& position);
+#endif
     virtual bool PeekLine(string& line);
     void SkipLines(int nb);
 
@@ -205,7 +224,9 @@ namespace Talos
     string GetFullLine();
     bool GetFullLine(string& line);
     string PeekFullLine();
+#ifndef SWIG
     string PeekFullLine(streampos& position);
+#endif
     bool PeekFullLine(string& line);
     void SkipFullLines(int nb);
 
@@ -213,7 +234,9 @@ namespace Talos
     string GetLine();
     bool GetLine(string& line);
     string PeekLine();
+#ifndef SWIG
     string PeekLine(streampos& position);
+#endif
     bool PeekLine(string& line);
     void SkipLines(int nb);
 

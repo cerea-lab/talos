@@ -21,13 +21,8 @@
 
 
 #include <iostream>
-#include <algorithm>
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <vector>
 #include <exception>
-#include <stdexcept>
+
 
 //! To display a message... call Hermes!
 #ifndef ERR
@@ -68,12 +63,6 @@ catch(...)\
 {\
 cout << "Unknown exception..." << endl;\
 return 1;\
-}
-
-//! Talos namespace.
-namespace Talos
-{
-  using namespace std;
 }
 
 #include "String.cxx"

@@ -20,8 +20,19 @@
 #ifndef TALOS_FILE_DATE_HXX
 
 
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <vector>
+#include <stdexcept>
+
+
 namespace Talos
 {
+
+  using namespace std;
 
   //! Class Date.
   class Date
@@ -112,8 +123,10 @@ namespace Talos
   bool operator == (const Date& first_date, const Date& second_date);
   bool operator != (const Date& first_date, const Date& second_date);
 
+#ifndef SWIG
   // Redirection.
   ostream& operator << (ostream& out, const Date& d);
+#endif
 
 }  // namespace Talos.
 

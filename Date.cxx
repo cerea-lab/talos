@@ -19,6 +19,7 @@
 
 #ifndef TALOS_FILE_DATE_CXX
 
+#include "String.hxx"
 #include "Date.hxx"
 
 namespace Talos

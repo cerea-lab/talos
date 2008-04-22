@@ -19,20 +19,34 @@
 
 #ifndef TALOS_FILE_STRING_HXX
 
+
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <vector>
+#include <stdexcept>
+
 #include "Date.hxx"
+
 
 namespace Talos
 {
 
+  using namespace std;
+
   template<typename T>
   string to_str(const T& input);
 
+#ifndef SWIG
   string fill(const string& input, int l = 2, char c = ' ',
 	      ostringstream::fmtflags flags = ostringstream::left);
 
   template<typename T>
   string to_str_fill(const T& input, int l = 2, char c = ' ',
 		     ostringstream::fmtflags flags = ostringstream::left);
+#endif
 
   template <class T>
   void to_num(const string& s, T& num);
