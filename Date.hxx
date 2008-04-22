@@ -65,8 +65,10 @@ namespace Talos
     Date(int yyyy, int mm, int dd = 1,
 	 int hh = 0, int mn = 0, double sc = 0);
 
+#ifndef SWIG
     Date& operator=(const Date&);
     Date& operator=(string date);
+#endif
     void SetDate(string date);
     void SetDate(int yyyymmdd);
     void SetDate(int yyyy, int mm, int dd = 1,

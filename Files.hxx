@@ -43,7 +43,11 @@ namespace Talos
 #endif
 
   //! Extended streams.
+#ifndef SWIG
   class ExtStream: public ifstream
+#else
+  class ExtStream
+#endif
   {
   protected:
     //! File name associated with the stream.
