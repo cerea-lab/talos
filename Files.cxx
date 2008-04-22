@@ -835,7 +835,7 @@ namespace Talos
     \param value value associated with the variable.
   */
   template <class T>
-  bool ExtStream::GetValue(string name, T& value)
+  void ExtStream::GetValue(string name, T& value)
   {
     searching_ = name;
 
@@ -845,13 +845,17 @@ namespace Talos
     if (element != name)
       throw string("Error in ExtStream::GetValue: \"")
 	+ name + string("\" not found in \"") + file_name_ + "\".";
-    bool success = this->GetElement(element) && is_num(element);
+    if (!this->GetElement(element))
+      throw string("Error in ExtStream::GetValue: unable to read value of \"")
+	+ name + string("\" in \"") + file_name_ + "\".";
+    if (!is_num(element))
+      throw string("Error in ExtStream::GetValue: the value of \"") + name
+	+ string("\" in \"") + file_name_ + string("\" is \"") + element
+	+ "\", but it should be a number.";
 
-    value = success ? to_num<T>(element) : T(0);
+    value = to_num<T>(element);
 
     searching_ = "";
-
-    return success;
   }
 
   /*! \brief Gets the value of a given variable without extracting them from
@@ -864,17 +868,15 @@ namespace Talos
     \param value value associated with the variable.
   */
   template <class T>
-  bool ExtStream::PeekValue(string name, T& value)
+  void ExtStream::PeekValue(string name, T& value)
   {
     streampos initial_position = this->tellg();
     iostate state = this->rdstate();
 
-    bool success = this->GetValue(name, value);
+    this->GetValue(name, value);
 
     this->clear(state);
     this->seekg(initial_position);
-
-    return success;
   }
 
   //! Gets the value of a given variable.
@@ -884,7 +886,7 @@ namespace Talos
     \param name the name of the variable.
     \param value value associated with the variable.
   */
-  bool ExtStream::GetValue(string name, string& value)
+  void ExtStream::GetValue(string name, string& value)
   {
     searching_ = name;
 
@@ -897,7 +899,10 @@ namespace Talos
 
     searching_ = "";
 
-    return GetElement(value);
+    if (!this->GetElement(value))
+      throw string("Error in ExtStream::GetValue: ")
+	+ string("unable to get a value for \"") + name + string("\" in \"")
+	+ file_name_ + "\".";
   }
 
   /*! \brief Gets the value of a given variable without extracting them from
@@ -909,28 +914,19 @@ namespace Talos
     \param name the name of the variable.
     \param value value associated with the variable.
   */
-  bool ExtStream::PeekValue(string name, string& value)
+  void ExtStream::PeekValue(string name, string& value)
   {
     searching_ = name;
 
     streampos initial_position = this->tellg();
     iostate state = this->rdstate();
 
-    string element;
-    while (GetElement(element) && element!=name);
-
-    if (element != name)
-      throw string("Error in ExtStream::PeekValue: \"")
-	+ name + string("\" not found in \"") + file_name_ + "\".";
-
-    bool success = GetElement(value);
+    this->GetValue(name, value);
 
     this->clear(state);
     this->seekg(initial_position);
 
     searching_ = "";
-
-    return success;
   }
 
   //! Gets the value of a given variable.
@@ -940,7 +936,7 @@ namespace Talos
     \param name the name of the variable.
     \param value boolean associated with the variable.
   */
-  bool ExtStream::GetValue(string name, bool& value)
+  void ExtStream::GetValue(string name, bool& value)
   {
     searching_ = name;
 
@@ -953,7 +949,10 @@ namespace Talos
 
     searching_ = "";
 
-    return GetElement(value);
+    if (!this->GetElement(value))
+      throw string("Error in ExtStream::GetValue: ")
+	+ string("unable to get a value for \"") + name + string("\" in \"")
+	+ file_name_ + "\".";
   }
 
   //! Gets the value of a given variable without extracting from the stream.
@@ -964,28 +963,19 @@ namespace Talos
     \param name the name of the variable.
     \param value boolean associated with the variable.
   */
-  bool ExtStream::PeekValue(string name, bool& value)
+  void ExtStream::PeekValue(string name, bool& value)
   {
     searching_ = name;
 
     streampos initial_position = this->tellg();
     iostate state = this->rdstate();
 
-    string element;
-    while (GetElement(element) && element!=name);
-
-    if (element != name)
-      throw string("Error in ExtStream::PeekValue: \"")
-	+ name + string("\" not found in \"") + file_name_ + "\".";
-
-    bool success = GetElement(value);
+    this->GetValue(name, value);
 
     this->clear(state);
     this->seekg(initial_position);
 
     searching_ = "";
-
-    return success;
   }
 
 
@@ -2141,7 +2131,7 @@ namespace Talos
     \param value value associated with the variable.
   */
   template <class T>
-  bool ConfigStreams::GetValue(string name, T& value)
+  void ConfigStreams::GetValue(string name, T& value)
   {
     searching_ = name;
 
@@ -2150,15 +2140,18 @@ namespace Talos
 
     if (element != name)
       throw string("Error in ConfigStreams::GetValue: \"")
-	+ name + string("\" not found in \"") + FileNames() + ".";
+	+ name + string("\" not found in ") + FileNames() + ".";
+    if (!this->GetElement(element))
+      throw string("Error in ConfigStreams::GetValue: unable to read value")
+	+ string(" of \"") + name + string("\" in ") + FileNames() + ".";
+    if (!is_num(element))
+      throw string("Error in ConfigStreams::GetValue: the value of \"") + name
+	+ string("\" in ") + FileNames() + string(" is \"") + element
+	+ "\", but it should be a number.";
 
-    bool success = this->GetElement(element) && is_num(element);
-
-    value = success ? to_num<T>(element) : T(0);
+    value = to_num<T>(element);
 
     searching_ = "";
-
-    return success;
   }
 
   /*! \brief Gets the value of a given variable without extracting them from
@@ -2171,20 +2164,18 @@ namespace Talos
     \param value value associated with the variable.
   */
   template <class T>
-  bool ConfigStreams::PeekValue(string name, T& value)
+  void ConfigStreams::PeekValue(string name, T& value)
   {
     vector<ConfigStream*>::iterator iter = current_;
     streampos initial_position = (*current_)->tellg();
     ifstream::iostate state = (*current_)->rdstate();
 
-    bool success = this->GetValue(name, value);
+    this->GetValue(name, value);
 
     this->Rewind();
     current_ = iter;
     (*current_)->clear(state);
     (*current_)->seekg(initial_position);
-
-    return success;
   }
 
   //! Gets the value of a given variable.
@@ -2194,7 +2185,7 @@ namespace Talos
     \param name the name of the variable.
     \param value value associated with the variable.
   */
-  bool ConfigStreams::GetValue(string name, string& value)
+  void ConfigStreams::GetValue(string name, string& value)
   {
     searching_ = name;
 
@@ -2207,7 +2198,10 @@ namespace Talos
 
     searching_ = "";
 
-    return GetElement(value);
+    if (!this->GetElement(value))
+      throw string("Error in ConfigStreams::GetValue: ")
+	+ string("unable to get a value for \"") + name + string("\" in \"")
+	+ FileNames() + "\".";
   }
 
   /*! \brief Gets the value of a given variable without extracting them from
@@ -2219,20 +2213,18 @@ namespace Talos
     \param name the name of the variable.
     \param value value associated with the variable.
   */
-  bool ConfigStreams::PeekValue(string name, string& value)
+  void ConfigStreams::PeekValue(string name, string& value)
   {
     vector<ConfigStream*>::iterator iter = current_;
     streampos initial_position = (*current_)->tellg();
     ifstream::iostate state = (*current_)->rdstate();
 
-    bool success = this->GetValue(name, value);
+    this->GetValue(name, value);
 
     this->Rewind();
     current_ = iter;
     (*current_)->clear(state);
     (*current_)->seekg(initial_position);
-
-    return success;
   }
 
   //! Gets the value of a given variable.
@@ -2242,7 +2234,7 @@ namespace Talos
     \param name the name of the variable.
     \param value boolean associated with the variable.
   */
-  bool ConfigStreams::GetValue(string name, bool& value)
+  void ConfigStreams::GetValue(string name, bool& value)
   {
     searching_ = name;
 
@@ -2255,7 +2247,10 @@ namespace Talos
 
     searching_ = "";
 
-    return this->GetElement(value);
+    if (!this->GetElement(value))
+      throw string("Error in ConfigStreams::GetValue: ")
+	+ string("unable to get a value for \"") + name + string("\" in \"")
+	+ FileNames() + "\".";
   }
 
   //! Gets the value of a given variable without extracting from the stream.
@@ -2266,20 +2261,18 @@ namespace Talos
     \param name the name of the variable.
     \param value boolean associated with the variable.
   */
-  bool ConfigStreams::PeekValue(string name, bool& value)
+  void ConfigStreams::PeekValue(string name, bool& value)
   {
     vector<ConfigStream*>::iterator iter = current_;
     streampos initial_position = (*current_)->tellg();
     ifstream::iostate state = (*current_)->rdstate();
 
-    bool success = this->GetValue(name, value);
+    this->GetValue(name, value);
 
     this->Rewind();
     current_ = iter;
     (*current_)->clear(state);
     (*current_)->seekg(initial_position);
-
-    return success;
   }
 
   //! Checks whether a string is a section flag.

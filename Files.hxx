@@ -135,15 +135,15 @@ namespace Talos
     string PeekValue(string name);
 
     template <class T>
-    bool GetValue(string name, T& value);
+    void GetValue(string name, T& value);
     template <class T>
-    bool PeekValue(string name, T& value);
+    void PeekValue(string name, T& value);
 
-    bool GetValue(string name, string& value);
-    bool PeekValue(string name, string& value);
+    void GetValue(string name, string& value);
+    void PeekValue(string name, string& value);
 
-    bool GetValue(string name, bool& value);
-    bool PeekValue(string name, bool& value);
+    void GetValue(string name, bool& value);
+    void PeekValue(string name, bool& value);
   };
 
   //! Streams associated with configuration files.
@@ -268,15 +268,15 @@ namespace Talos
     string PeekValue(string name);
 
     template <class T>
-    bool GetValue(string name, T& value);
+    void GetValue(string name, T& value);
     template <class T>
-    bool PeekValue(string name, T& value);
+    void PeekValue(string name, T& value);
 
-    bool GetValue(string name, string& value);
-    bool PeekValue(string name, string& value);
+    void GetValue(string name, string& value);
+    void PeekValue(string name, string& value);
 
-    bool GetValue(string name, bool& value);
-    bool PeekValue(string name, bool& value);
+    void GetValue(string name, bool& value);
+    void PeekValue(string name, bool& value);
 
   private:
     bool IsSection(string str) const;
