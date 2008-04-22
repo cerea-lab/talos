@@ -13,8 +13,6 @@ namespace std {
    %template(VectorDouble) vector<double>;
 }
 
-%apply const string& {std::string*};
-
 using namespace std;
 
 // Include the header file with above prototypes
