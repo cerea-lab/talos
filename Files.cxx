@@ -2092,7 +2092,7 @@ namespace Talos
 
     if (element != name)
       throw string("Error in ConfigStreams::GetValue: \"")
-	+ name + string("\" not found in \"") + FileNames() + ".";
+	+ name + string("\" not found in ") + FileNames() + ".";
 
     searching_ = "";
 
@@ -2200,8 +2200,8 @@ namespace Talos
 
     if (!this->GetElement(value))
       throw string("Error in ConfigStreams::GetValue: ")
-	+ string("unable to get a value for \"") + name + string("\" in \"")
-	+ FileNames() + "\".";
+	+ string("unable to get a value for \"") + name + string("\" in ")
+	+ FileNames() + ".";
   }
 
   /*! \brief Gets the value of a given variable without extracting them from
@@ -2249,8 +2249,8 @@ namespace Talos
 
     if (!this->GetElement(value))
       throw string("Error in ConfigStreams::GetValue: ")
-	+ string("unable to get a value for \"") + name + string("\" in \"")
-	+ FileNames() + "\".";
+	+ string("unable to get a value for \"") + name + string("\" in ")
+	+ FileNames() + ".";
   }
 
   //! Gets the value of a given variable without extracting from the stream.
