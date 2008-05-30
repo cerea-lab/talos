@@ -115,7 +115,8 @@ namespace Talos
     \param value the numerical value.
     \param constraint the list of constraints. The constraints are delimited
     by |. The supported constraints are: positive, strictly positive,
-    negative, strictly negative, non zero, > x, >= x, < x, <= x, != x.
+    negative, strictly negative, non zero, integer, > x, >= x, < x, <= x, !=
+    x.
     \return true if the constraints are satisfied, false otherwise.
   */
   template <class T>
@@ -208,6 +209,11 @@ namespace Talos
 	    if (value == T(0))
 	      return false;
 	  }
+	else if (expression == "integer")
+	  {
+	    if (value != T(int(value)))
+	      return false;
+	  }
 	else
 	  throw "Error in satisfies_constraint: the constraint \""
 	    + expression + "\" cannot be parsed or is not supported.";
@@ -220,7 +226,8 @@ namespace Talos
   /*!
     \param constraint the list of constraints. The constraints are delimited
     by |. The supported constraints are: positive, strictly positive,
-    negative, strictly negative, non zero, > x, >= x, < x, <= x, != x.
+    negative, strictly negative, non zero, integer, > x, >= x, < x, <= x, !=
+    x.
     \return The constraints in a readable string.
   */
   string show_constraint(string constraint)
@@ -292,6 +299,8 @@ namespace Talos
 	  output += " - Strictly negative value" + termination;
 	else if (expression == "non zero")
 	  output += " - Non-zero value" + termination;
+	else if (expression == "integer")
+	  output += " - Integral value" + termination;
 	else
 	  throw "Error in show_constraint: the constraint \""
 	    + expression + "\" cannot be parsed or is not supported.";
@@ -1118,9 +1127,10 @@ namespace Talos
     in a discarded line) number or element following the variable name. This
     methods also checks that the value meets given constraints.
     \param name the name of the variable.
-    \param constraint list of contraints. The constraints are delimited by
-    |. The supported constraints are: positive, strictly positive, negative,
-    strictly negative, non zero, > x, >= x, < x, <= x, != x.
+    \param constraint the list of constraints. The constraints are delimited
+    by |. The supported constraints are: positive, strictly positive,
+    negative, strictly negative, non zero, integer, > x, >= x, < x, <= x, !=
+    x.
     \param value value associated with the variable.
   */
   template <class T>
@@ -1142,9 +1152,10 @@ namespace Talos
     methods also checks that the value meets given constraints. Nothing is
     extracted from the stream.
     \param name the name of the variable.
-    \param constraint list of contraints. The constraints are delimited by
-    |. The supported constraints are: positive, strictly positive, negative,
-    strictly negative, non zero, > x, >= x, < x, <= x, != x.
+    \param constraint the list of constraints. The constraints are delimited
+    by |. The supported constraints are: positive, strictly positive,
+    negative, strictly negative, non zero, integer, > x, >= x, < x, <= x, !=
+    x.
     \param value value associated with the variable.
   */
   template <class T>
@@ -2583,9 +2594,10 @@ namespace Talos
     in a discarded line) number or element following the variable name. This
     methods also checks that the value meets given constraints.
     \param name the name of the variable.
-    \param constraint list of contraints. The constraints are delimited by
-    |. The supported constraints are: positive, strictly positive, negative,
-    strictly negative, non zero, > x, >= x, < x, <= x, != x.
+    \param constraint the list of constraints. The constraints are delimited
+    by |. The supported constraints are: positive, strictly positive,
+    negative, strictly negative, non zero, integer, > x, >= x, < x, <= x, !=
+    x.
     \param value value associated with the variable.
   */
   template <class T>
@@ -2607,9 +2619,10 @@ namespace Talos
     methods also checks that the value meets given constraints. Nothing is
     extracted from the stream.
     \param name the name of the variable.
-    \param constraint list of contraints. The constraints are delimited by
-    |. The supported constraints are: positive, strictly positive, negative,
-    strictly negative, non zero, > x, >= x, < x, <= x, != x.
+    \param constraint the list of constraints. The constraints are delimited
+    by |. The supported constraints are: positive, strictly positive,
+    negative, strictly negative, non zero, integer, > x, >= x, < x, <= x, !=
+    x.
     \param value value associated with the variable.
   */
   template <class T>
