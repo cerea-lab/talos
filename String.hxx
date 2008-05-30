@@ -66,6 +66,11 @@ namespace Talos
   
   bool is_num(const string& s);
 
+  // The functions with 'char*' and 'const char*' are provided for convenience
+  // and to adequately overload the function 'is_integer' of the scientific
+  // library Blitz++.
+  bool is_integer(char* s);
+  bool is_integer(const char* s);
   bool is_integer(const string& s);
 
   bool is_unsigned_integer(const string& s);

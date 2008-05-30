@@ -240,6 +240,26 @@ namespace Talos
     \param str string to be checked.
     \return true if 'str' is an integer, false otherwise.
   */
+  bool is_integer(char* str)
+  {
+    return is_integer(string(str));
+  }
+
+  //! Checks whether a string is an integer.
+  /*!
+    \param str string to be checked.
+    \return true if 'str' is an integer, false otherwise.
+  */
+  bool is_integer(const char* str)
+  {
+    return is_integer(string(str));
+  }
+
+  //! Checks whether a string is an integer.
+  /*!
+    \param str string to be checked.
+    \return true if 'str' is an integer, false otherwise.
+  */
   bool is_integer(const string& str)
   {
     bool ans;
