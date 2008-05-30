@@ -145,9 +145,17 @@ namespace Talos
 
     void GetValue(string name, string& value);
     void PeekValue(string name, string& value);
+    void GetValue(string name, string accepted, string& value,
+		  string delimiter);
+    void PeekValue(string name, string accepted, string& value,
+		   string delimiter);
 
     void GetValue(string name, bool& value);
     void PeekValue(string name, bool& value);
+
+  protected:
+    void CheckAccepted(string name, string value, string accepted,
+		       string delimiter) const;
   };
 
   //! Streams associated with configuration files.
@@ -282,6 +290,10 @@ namespace Talos
 
     void GetValue(string name, string& value);
     void PeekValue(string name, string& value);
+    void GetValue(string name, string accepted, string& value,
+		  string delimiter);
+    void PeekValue(string name, string accepted, string& value,
+		   string delimiter);
 
     void GetValue(string name, bool& value);
     void PeekValue(string name, bool& value);
@@ -289,6 +301,8 @@ namespace Talos
   private:
     bool IsSection(string str) const;
     string FileNames() const;
+    void CheckAccepted(string name, string value, string accepted,
+		       string delimiter) const;
   };
 
 }  // namespace Talos.

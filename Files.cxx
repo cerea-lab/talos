@@ -974,6 +974,52 @@ namespace Talos
 
   //! Gets the value of a given variable.
   /*!
+    Gets the value of a given variable, i.e. the next valid (not in a
+    discarded line) number or element following the variable name.  In
+    addition, this method checks that the value is in an acceptable list of
+    values.
+    \param name the name of the variable.
+    \param accepted list of accepted values.
+    \param value value associated with the variable.
+    \param delimiter delimiter in \a accepted. Default: |.
+  */
+  void ExtStream::GetValue(string name, string accepted, string& value,
+			   string delimiter = "|")
+  {
+    GetValue(name, value);
+    CheckAccepted(name, value, accepted, delimiter);
+  }
+
+  /*! \brief Gets the value of a given variable without extracting them from
+    the stream. */
+  /*!
+    Gets the value of a given variable, i.e. the next valid (not in a
+    discarded line) number or element following the variable name.  In
+    addition, this method checks that the value is in an acceptable list of
+    values. Nothing is extracted from the stream.
+    \param name the name of the variable.
+    \param accepted list of accepted values.
+    \param value value associated with the variable.
+    \param delimiter delimiter in \a accepted. Default: |.
+  */
+  void ExtStream::PeekValue(string name, string accepted, string& value,
+			    string delimiter = "|")
+  {
+    searching_ = name;
+
+    streampos initial_position = this->tellg();
+    iostate state = this->rdstate();
+
+    this->GetValue(name, accepted, value, delimiter);
+
+    this->clear(state);
+    this->seekg(initial_position);
+
+    searching_ = "";
+  }
+
+  //! Gets the value of a given variable.
+  /*!
     Gets the value of a given variable, i.e. the next valid
     (not in a discarded line) number or element following the variable name.
     \param name the name of the variable.
@@ -1019,6 +1065,33 @@ namespace Talos
     this->seekg(initial_position);
 
     searching_ = "";
+  }
+
+  //! Checks that a value is in a given list of accepted values.
+  /*!
+    \param name the name of the entry with value \a value.
+    \param value the value to be checked.
+    \param accepted the list of accepted values.
+    \param delimiter delimiter in \a accepted.
+  */
+  void ExtStream::CheckAccepted(string name, string value,
+				string accepted, string delimiter) const
+  {
+    vector<string> accepted_list = split(accepted, delimiter);
+    int i = 0;
+    while (i < int(accepted_list.size()) && trim(accepted_list[i]) != value)
+      i++;
+    if (i == int(accepted_list.size()))
+      {
+	string list = "[";
+	for (i = 0; i < int(accepted_list.size()) - 1; i++)
+	  list += trim(accepted_list[i]) + " " + delimiter[0] + " ";
+	if (accepted_list.size() != 0)
+	  list += trim(accepted_list[accepted_list.size() - 1]) + "]";
+	throw string("Error in ExtStream::GetValue: the value of \"")
+	  + name + string("\" in \"") + file_name_ + "\" is \""
+	  + to_str(value) + "\" but it should be in " + list + ".";
+      }
   }
 
 
@@ -2318,6 +2391,51 @@ namespace Talos
 
   //! Gets the value of a given variable.
   /*!
+    Gets the value of a given variable, i.e. the next valid (not in a
+    discarded line) number or element following the variable name.  In
+    addition, this method checks that the value is in an acceptable list of
+    values.
+    \param name the name of the variable.
+    \param accepted list of accepted values.
+    \param value value associated with the variable.
+    \param delimiter delimiter in \a accepted. Default: |.
+  */
+  void ConfigStreams::GetValue(string name, string accepted, string& value,
+			       string delimiter = "|")
+  {
+    GetValue(name, value);
+    CheckAccepted(name, value, accepted, delimiter);
+  }
+
+  /*! \brief Gets the value of a given variable without extracting them from
+    the stream. */
+  /*!
+    Gets the value of a given variable, i.e. the next valid (not in a
+    discarded line) number or element following the variable name.  In
+    addition, this method checks that the value is in an acceptable list of
+    values. Nothing is extracted from the stream.
+    \param name the name of the variable.
+    \param accepted list of accepted values.
+    \param value value associated with the variable.
+    \param delimiter delimiter in \a accepted. Default: |.
+  */
+  void ConfigStreams::PeekValue(string name, string accepted, string& value,
+				string delimiter = "|")
+  {
+    vector<ConfigStream*>::iterator iter = current_;
+    streampos initial_position = (*current_)->tellg();
+    ifstream::iostate state = (*current_)->rdstate();
+
+    this->GetValue(name, accepted, value, delimiter);
+
+    this->Rewind();
+    current_ = iter;
+    (*current_)->clear(state);
+    (*current_)->seekg(initial_position);
+  }
+
+  //! Gets the value of a given variable.
+  /*!
     Gets the value of a given variable, i.e. the next valid
     (not in a discarded line) number or element following the variable name.
     \param name the name of the variable.
@@ -2390,6 +2508,33 @@ namespace Talos
     if (Nstream > 0)
       output += string("\"") + streams_[Nstream - 1]->GetFileName() + "\"";
     return output;
+  }
+
+  //! Checks that a value is in a given list of accepted values.
+  /*!
+    \param name the name of the entry with value \a value.
+    \param value the value to be checked.
+    \param accepted the list of accepted values.
+    \param delimiter delimiter in \a accepted.
+  */
+  void ConfigStreams::CheckAccepted(string name, string value,
+				    string accepted, string delimiter) const
+  {
+    vector<string> accepted_list = split(accepted, delimiter);
+    int i = 0;
+    while (i < int(accepted_list.size()) && trim(accepted_list[i]) != value)
+      i++;
+    if (i == int(accepted_list.size()))
+      {
+	string list = "[";
+	for (i = 0; i < int(accepted_list.size()) - 1; i++)
+	  list += trim(accepted_list[i]) + " " + delimiter[0] + " ";
+	if (accepted_list.size() != 0)
+	  list += trim(accepted_list[accepted_list.size() - 1]) + "]";
+	throw string("Error in ConfigStreams::GetValue: the value of \"")
+	  + name + string("\" in ") + FileNames() + " is \""
+	  + to_str(value) + "\" but it should be in " + list + ".";
+      }
   }
 
 }  // namespace Talos.
