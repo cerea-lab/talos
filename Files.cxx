@@ -115,8 +115,8 @@ namespace Talos
     \param value the numerical value.
     \param constraint the list of constraints. The constraints are delimited
     by |. The supported constraints are: positive, strictly positive,
-    negative, strictly negative, non zero, integer, > x, >= x, < x, <= x, !=
-    x.
+    negative, strictly negative, non zero, integer, > x, >= x, < x, <= x, != x
+    y z, = x y z.
     \return true if the constraints are satisfied, false otherwise.
   */
   template <class T>
@@ -177,11 +177,31 @@ namespace Talos
 	else if (expression.substr(0, 2) == "!=")
 	  {
 	    str = trim(expression.substr(2));
-	    if (!is_num(str))
-	      throw "Error in satisfies_constraint: the constraint \""
-		+ expression + "\" cannot be parsed or is not supported.";
-	    to_num(str, val);
-	    if (value == val)
+	    vector<string> number = split(str);
+	    for (int j = 0; j < int(number.size()); j++)
+	      {
+		if (!is_num(number[j]))
+		  throw "Error in satisfies_constraint: the constraint \""
+		    + expression + "\" cannot be parsed or is not supported.";
+		to_num(number[j], val);
+		if (value == val)
+		  return false;
+	      }
+	  }
+	else if (expression[0] == '=')
+	  {
+	    str = trim(expression.substr(1));
+	    vector<string> number = split(str);
+	    bool acceptable = false;
+	    for (int j = 0; j < int(number.size()); j++)
+	      {
+		if (!is_num(number[j]))
+		  throw "Error in satisfies_constraint: the constraint \""
+		    + expression + "\" cannot be parsed or is not supported.";
+		to_num(number[j], val);
+		acceptable = acceptable || value == val;
+	      }
+	    if (!acceptable)
 	      return false;
 	  }
 	else if (expression == "positive")
@@ -226,8 +246,8 @@ namespace Talos
   /*!
     \param constraint the list of constraints. The constraints are delimited
     by |. The supported constraints are: positive, strictly positive,
-    negative, strictly negative, non zero, integer, > x, >= x, < x, <= x, !=
-    x.
+    negative, strictly negative, non zero, integer, > x, >= x, < x, <= x, != x
+    y z, = x y z.
     \return The constraints in a readable string.
   */
   string show_constraint(string constraint)
@@ -284,10 +304,38 @@ namespace Talos
 	else if (expression.substr(0, 2) == "!=")
 	  {
 	    str = trim(expression.substr(2));
-	    if (!is_num(str))
-	      throw "Error in show_constraint: the constraint \""
-		+ expression + "\" cannot be parsed or is not supported.";
-	    output += " - Value different from " + str + termination;
+	    vector<string> number = split(str);
+	    output += " - Value different from ";
+	    for (int j = 0; j < int(number.size()); j++)
+	      {
+		if (!is_num(number[j]))
+		  throw "Error in show_constraint: the constraint \""
+		    + expression + "\" cannot be parsed or is not supported.";
+		output += number[j];
+		if (j == int(number.size()) - 2)
+		  output += " and ";
+		else if (j != int(number.size()) - 1)
+		  output += ", ";
+	      }
+	    output += termination;
+	  }
+	else if (expression[0] == '=')
+	  {
+	    str = trim(expression.substr(1));
+	    vector<string> number = split(str);
+	    output += " - Value equal to ";
+	    for (int j = 0; j < int(number.size()); j++)
+	      {
+		if (!is_num(number[j]))
+		  throw "Error in show_constraint: the constraint \""
+		    + expression + "\" cannot be parsed or is not supported.";
+		output += number[j];
+		if (j == int(number.size()) - 2)
+		  output += " or ";
+		else if (j != int(number.size()) - 1)
+		  output += ", ";
+	      }
+	    output += termination;
 	  }
 	else if (expression == "positive")
 	  output += " - Positive value" + termination;
@@ -1129,8 +1177,8 @@ namespace Talos
     \param name the name of the variable.
     \param constraint the list of constraints. The constraints are delimited
     by |. The supported constraints are: positive, strictly positive,
-    negative, strictly negative, non zero, integer, > x, >= x, < x, <= x, !=
-    x.
+    negative, strictly negative, non zero, integer, > x, >= x, < x, <= x, != x
+    y z, = x y z.
     \param value value associated with the variable.
   */
   template <class T>
@@ -1154,8 +1202,8 @@ namespace Talos
     \param name the name of the variable.
     \param constraint the list of constraints. The constraints are delimited
     by |. The supported constraints are: positive, strictly positive,
-    negative, strictly negative, non zero, integer, > x, >= x, < x, <= x, !=
-    x.
+    negative, strictly negative, non zero, integer, > x, >= x, < x, <= x, != x
+    y z, = x y z.
     \param value value associated with the variable.
   */
   template <class T>
@@ -2596,8 +2644,8 @@ namespace Talos
     \param name the name of the variable.
     \param constraint the list of constraints. The constraints are delimited
     by |. The supported constraints are: positive, strictly positive,
-    negative, strictly negative, non zero, integer, > x, >= x, < x, <= x, !=
-    x.
+    negative, strictly negative, non zero, integer, > x, >= x, < x, <= x, != x
+    y z, = x y z.
     \param value value associated with the variable.
   */
   template <class T>
@@ -2621,8 +2669,8 @@ namespace Talos
     \param name the name of the variable.
     \param constraint the list of constraints. The constraints are delimited
     by |. The supported constraints are: positive, strictly positive,
-    negative, strictly negative, non zero, integer, > x, >= x, < x, <= x, !=
-    x.
+    negative, strictly negative, non zero, integer, > x, >= x, < x, <= x, != x
+    y z, = x y z.
     \param value value associated with the variable.
   */
   template <class T>
