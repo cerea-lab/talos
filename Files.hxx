@@ -138,6 +138,10 @@ namespace Talos
     void GetValue(string name, T& value);
     template <class T>
     void PeekValue(string name, T& value);
+    template <class T>
+    void GetValue(string name, T min, T max, T& value);
+    template <class T>
+    void PeekValue(string name, T min, T max, T& value);
 
     void GetValue(string name, string& value);
     void PeekValue(string name, string& value);
@@ -271,6 +275,10 @@ namespace Talos
     void GetValue(string name, T& value);
     template <class T>
     void PeekValue(string name, T& value);
+    template <class T>
+    void GetValue(string name, T min, T max, T& value);
+    template <class T>
+    void PeekValue(string name, T min, T max, T& value);
 
     void GetValue(string name, string& value);
     void PeekValue(string name, string& value);

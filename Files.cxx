@@ -881,6 +881,49 @@ namespace Talos
 
   //! Gets the value of a given variable.
   /*!
+    Gets the (numerical) value of a given variable, i.e. the next valid
+    (not in a discarded line) number or element following the variable name.
+    \param name the name of the variable.
+    \param min the minimum value that the variable should take.
+    \param max the maximum value that the variable should take.
+    \param value value associated with the variable.
+  */
+  template <class T>
+  void ExtStream::GetValue(string name, T min, T max, T& value)
+  {
+    GetValue(name, value);
+    if (value < min || value > max)
+      throw string("Error in ExtStream::GetValue: the value of \"")
+	+ name + string("\" in \"") + file_name_ + "\" is "
+	+ to_str(value) + " but it should be in [" + to_str(min)
+	+ ", " + to_str(max) + "].";
+  }
+
+  /*! \brief Gets the value of a given variable without extracting them from
+    the stream. */
+  /*!
+    Gets the (numerical) value of a given variable, i.e. the next valid
+    (not in a discarded line) number or element following the variable name.
+    Nothing is extracted from the stream.
+    \param name the name of the variable.
+    \param min the minimum value that the variable should take.
+    \param max the maximum value that the variable should take.
+    \param value value associated with the variable.
+  */
+  template <class T>
+  void ExtStream::PeekValue(string name, T min, T max, T& value)
+  {
+    streampos initial_position = this->tellg();
+    iostate state = this->rdstate();
+
+    this->GetValue(name, min, max, value);
+
+    this->clear(state);
+    this->seekg(initial_position);
+  }
+
+  //! Gets the value of a given variable.
+  /*!
     Gets the value of a given variable, i.e. the next valid
     (not in a discarded line) number or element following the variable name.
     \param name the name of the variable.
@@ -2171,6 +2214,52 @@ namespace Talos
     ifstream::iostate state = (*current_)->rdstate();
 
     this->GetValue(name, value);
+
+    this->Rewind();
+    current_ = iter;
+    (*current_)->clear(state);
+    (*current_)->seekg(initial_position);
+  }
+
+  //! Gets the value of a given variable.
+  /*!
+    Gets the (numerical) value of a given variable, i.e. the next valid
+    (not in a discarded line) number or element following the variable name.
+    \param name the name of the variable.
+    \param min the minimum value that the variable should take.
+    \param max the maximum value that the variable should take.
+    \param value value associated with the variable.
+  */
+  template <class T>
+  void ConfigStreams::GetValue(string name, T min, T max, T& value)
+  {
+    GetValue(name, value);
+    if (value < min || value > max)
+      throw string("Error in ConfigStreams::GetValue: the value of \"")
+	+ name + string("\" in ") +  FileNames() + " is "
+	+ to_str(value) + " but it should be in [" + to_str(min)
+	+ ", " + to_str(max) + "].";
+  }
+
+  /*! \brief Gets the value of a given variable without extracting them from
+    the stream. */
+  /*!
+    Gets the (numerical) value of a given variable, i.e. the next valid
+    (not in a discarded line) number or element following the variable name.
+    Nothing is extracted from the stream.
+    \param name the name of the variable.
+    \param min the minimum value that the variable should take.
+    \param max the maximum value that the variable should take.
+    \param value value associated with the variable.
+  */
+  template <class T>
+  void ConfigStreams::PeekValue(string name, T min, T max, T& value)
+  {
+    vector<ConfigStream*>::iterator iter = current_;
+    streampos initial_position = (*current_)->tellg();
+    ifstream::iostate state = (*current_)->rdstate();
+
+    this->GetValue(name, min, max, value);
 
     this->Rewind();
     current_ = iter;
