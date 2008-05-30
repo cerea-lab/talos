@@ -42,6 +42,10 @@ namespace Talos
   bool has_element(istream& stream);
 #endif
 
+  template <class T>
+  bool satisfies_constraint(T value, string constraint);
+  string show_constraint(string constraint);
+
   //! Extended streams.
 #ifndef SWIG
   class ExtStream: public ifstream
@@ -142,6 +146,10 @@ namespace Talos
     void GetValue(string name, T min, T max, T& value);
     template <class T>
     void PeekValue(string name, T min, T max, T& value);
+    template <class T>
+    void GetValue(string name, string constraints, T& value);
+    template <class T>
+    void PeekValue(string name, string constraints, T& value);
 
     void GetValue(string name, string& value);
     void PeekValue(string name, string& value);
@@ -287,6 +295,10 @@ namespace Talos
     void GetValue(string name, T min, T max, T& value);
     template <class T>
     void PeekValue(string name, T min, T max, T& value);
+    template <class T>
+    void GetValue(string name, string constraints, T& value);
+    template <class T>
+    void PeekValue(string name, string constraints, T& value);
 
     void GetValue(string name, string& value);
     void PeekValue(string name, string& value);

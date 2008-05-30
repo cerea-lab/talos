@@ -110,6 +110,196 @@ namespace Talos
     return res;
   }
 
+  //! Checks whether a numerical value satisfies a list of constraints.
+  /*!
+    \param value the numerical value.
+    \param constraint the list of constraints. The constraints are delimited
+    by |. The supported constraints are: positive, strictly positive,
+    negative, strictly negative, non zero, > x, >= x, < x, <= x, != x.
+    \return true if the constraints are satisfied, false otherwise.
+  */
+  template <class T>
+  bool satisfies_constraint(T value, string constraint)
+  {
+    vector<string> constraint_list = split(constraint, "|");
+
+    string expression, str;
+    T val;
+    for (int i = 0; i < int(constraint_list.size()); i++)
+      {
+	expression = trim(constraint_list[i]);
+	if (expression.size() < 2)
+	  throw "Error in satisfies_constraint: the constraint \""
+	    + expression + "\" is not supported.";
+	if (expression[0] == '<')
+	  if (expression[1] == '=')
+	    {
+	      str = trim(expression.substr(2));
+	      if (!is_num(str))
+		throw "Error in satisfies_constraint: the constraint \""
+		  + expression + "\" cannot be parsed or is not supported.";
+	      to_num(str, val);
+	      if (value > val)
+		return false;
+	    }
+	  else
+	    {
+	      str = trim(expression.substr(1));
+	      if (!is_num(str))
+		throw "Error in satisfies_constraint: the constraint \""
+		  + expression + "\" cannot be parsed or is not supported.";
+	      to_num(str, val);
+	      if (value >= val)
+		return false;
+	    }
+	else if (expression[0] == '>')
+	  if (expression[1] == '=')
+	    {
+	      str = trim(expression.substr(2));
+	      if (!is_num(str))
+		throw "Error in satisfies_constraint: the constraint \""
+		  + expression + "\" cannot be parsed or is not supported.";
+	      to_num(str, val);
+	      if (value < val)
+		return false;
+	    }
+	  else
+	    {
+	      str = trim(expression.substr(1));
+	      if (!is_num(str))
+		throw "Error in satisfies_constraint: the constraint \""
+		  + expression + "\" cannot be parsed or is not supported.";
+	      to_num(str, val);
+	      if (value <= val)
+		return false;
+	    }
+	else if (expression.substr(0, 2) == "!=")
+	  {
+	    str = trim(expression.substr(2));
+	    if (!is_num(str))
+	      throw "Error in satisfies_constraint: the constraint \""
+		+ expression + "\" cannot be parsed or is not supported.";
+	    to_num(str, val);
+	    if (value == val)
+	      return false;
+	  }
+	else if (expression == "positive")
+	  {
+	    if (value < T(0))
+	      return false;
+	  }
+	else if (expression == "strictly positive")
+	  {
+	    if (value <= T(0))
+	      return false;
+	  }
+	else if (expression == "negative")
+	  {
+	    if (value > T(0))
+	      return false;
+	  }
+	else if (expression == "strictly negative")
+	  {
+	    if (value >= T(0))
+	      return false;
+	  }
+	else if (expression == "non zero")
+	  {
+	    if (value == T(0))
+	      return false;
+	  }
+	else
+	  throw "Error in satisfies_constraint: the constraint \""
+	    + expression + "\" cannot be parsed or is not supported.";
+      }
+    
+    return true;
+  }
+
+  //! Formats a list of constraints in a string readable for human beings.
+  /*!
+    \param constraint the list of constraints. The constraints are delimited
+    by |. The supported constraints are: positive, strictly positive,
+    negative, strictly negative, non zero, > x, >= x, < x, <= x, != x.
+    \return The constraints in a readable string.
+  */
+  string show_constraint(string constraint)
+  {
+    vector<string> constraint_list = split(constraint, "|");
+
+    string output = "";
+    
+    string expression, str, termination;
+    for (int i = 0; i < int(constraint_list.size()); i++)
+      {
+	if (i != int(constraint_list.size()) - 1)
+	  termination = ";\n";
+	else
+	  termination = ".";
+	expression = trim(constraint_list[i]);
+	if (expression.size() < 2)
+	  throw "Error in show_constraint: the constraint \""
+	    + expression + "\" cannot be parsed.";
+	if (expression[0] == '<')
+	  if (expression[1] == '=')
+	    {
+	      str = trim(expression.substr(2));
+	      if (!is_num(str))
+		throw "Error in show_constraint: the constraint \""
+		  + expression + "\" cannot be parsed or is not supported.";
+	      output += " - Value less than " + str + termination;
+	    }
+	  else
+	    {
+	      str = trim(expression.substr(1));
+	      if (!is_num(str))
+		throw "Error in show_constraint: the constraint \""
+		  + expression + "\" cannot be parsed or is not supported.";
+	      output += " - Value strictly less than " + str + termination;
+	    }
+	else if (expression[0] == '>')
+	  if (expression[1] == '=')
+	    {
+	      str = trim(expression.substr(2));
+	      if (!is_num(str))
+		throw "Error in show_constraint: the constraint \""
+		  + expression + "\" cannot be parsed or is not supported.";
+	      output += " - Value greater than " + str + termination;
+	    }
+	  else
+	    {
+	      str = trim(expression.substr(1));
+	      if (!is_num(str))
+		throw "Error in show_constraint: the constraint \""
+		  + expression + "\" cannot be parsed or is not supported.";
+	      output += " - Value strictly greater than " + str + termination;
+	    }
+	else if (expression.substr(0, 2) == "!=")
+	  {
+	    str = trim(expression.substr(2));
+	    if (!is_num(str))
+	      throw "Error in show_constraint: the constraint \""
+		+ expression + "\" cannot be parsed or is not supported.";
+	    output += " - Value different from " + str + termination;
+	  }
+	else if (expression == "positive")
+	  output += " - Positive value" + termination;
+	else if (expression == "strictly positive")
+	  output += " - Strictly positive value" + termination;
+	else if (expression == "negative")
+	  output += " - Negative value" + termination;
+	else if (expression == "strictly negative")
+	  output += " - Strictly negative value" + termination;
+	else if (expression == "non zero")
+	  output += " - Non-zero value" + termination;
+	else
+	  throw "Error in show_constraint: the constraint \""
+	    + expression + "\" cannot be parsed or is not supported.";
+      }
+
+    return output;
+  }
+
 
   ///////////////
   // EXTSTREAM //
@@ -917,6 +1107,53 @@ namespace Talos
     iostate state = this->rdstate();
 
     this->GetValue(name, min, max, value);
+
+    this->clear(state);
+    this->seekg(initial_position);
+  }
+
+  //! Gets the value of a given variable.
+  /*!
+    Gets the (numerical) value of a given variable, i.e. the next valid (not
+    in a discarded line) number or element following the variable name. This
+    methods also checks that the value meets given constraints.
+    \param name the name of the variable.
+    \param constraint list of contraints. The constraints are delimited by
+    |. The supported constraints are: positive, strictly positive, negative,
+    strictly negative, non zero, > x, >= x, < x, <= x, != x.
+    \param value value associated with the variable.
+  */
+  template <class T>
+  void ExtStream::GetValue(string name, string constraint, T& value)
+  {
+    GetValue(name, value);
+    if (!satisfies_constraint(value, constraint))
+      throw string("Error in ExtStream::GetValue: the value of \"")
+	+ name + string("\" in \"") + file_name_ + "\" is "
+	+ to_str(value) + " but it should satisfy the following "
+	+ "constraint(s):\n" + show_constraint(constraint);
+  }
+
+  /*! \brief Gets the value of a given variable without extracting them from
+    the stream. */
+  /*!
+    Gets the (numerical) value of a given variable, i.e. the next valid (not
+    in a discarded line) number or element following the variable name. This
+    methods also checks that the value meets given constraints. Nothing is
+    extracted from the stream.
+    \param name the name of the variable.
+    \param constraint list of contraints. The constraints are delimited by
+    |. The supported constraints are: positive, strictly positive, negative,
+    strictly negative, non zero, > x, >= x, < x, <= x, != x.
+    \param value value associated with the variable.
+  */
+  template <class T>
+  void ExtStream::PeekValue(string name, string constraint, T& value)
+  {
+    streampos initial_position = this->tellg();
+    iostate state = this->rdstate();
+
+    this->GetValue(name, constraint, value);
 
     this->clear(state);
     this->seekg(initial_position);
@@ -2333,6 +2570,56 @@ namespace Talos
     ifstream::iostate state = (*current_)->rdstate();
 
     this->GetValue(name, min, max, value);
+
+    this->Rewind();
+    current_ = iter;
+    (*current_)->clear(state);
+    (*current_)->seekg(initial_position);
+  }
+
+  //! Gets the value of a given variable.
+  /*!
+    Gets the (numerical) value of a given variable, i.e. the next valid (not
+    in a discarded line) number or element following the variable name. This
+    methods also checks that the value meets given constraints.
+    \param name the name of the variable.
+    \param constraint list of contraints. The constraints are delimited by
+    |. The supported constraints are: positive, strictly positive, negative,
+    strictly negative, non zero, > x, >= x, < x, <= x, != x.
+    \param value value associated with the variable.
+  */
+  template <class T>
+  void ConfigStreams::GetValue(string name, string constraint, T& value)
+  {
+    GetValue(name, value);
+    if (!satisfies_constraint(value, constraint))
+      throw string("Error in ConfigStreams::GetValue: the value of \"")
+	+ name + string("\" in ") + FileNames() + " is "
+	+ to_str(value) + " but it should satisfy the following "
+	+ "constraint(s):\n" + show_constraint(constraint);
+  }
+
+  /*! \brief Gets the value of a given variable without extracting them from
+    the stream. */
+  /*!
+    Gets the (numerical) value of a given variable, i.e. the next valid (not
+    in a discarded line) number or element following the variable name. This
+    methods also checks that the value meets given constraints. Nothing is
+    extracted from the stream.
+    \param name the name of the variable.
+    \param constraint list of contraints. The constraints are delimited by
+    |. The supported constraints are: positive, strictly positive, negative,
+    strictly negative, non zero, > x, >= x, < x, <= x, != x.
+    \param value value associated with the variable.
+  */
+  template <class T>
+  void ConfigStreams::PeekValue(string name, string constraint, T& value)
+  {
+    vector<ConfigStream*>::iterator iter = current_;
+    streampos initial_position = (*current_)->tellg();
+    ifstream::iostate state = (*current_)->rdstate();
+
+    this->GetValue(name, constraint, value);
 
     this->Rewind();
     current_ = iter;
