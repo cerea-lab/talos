@@ -1105,6 +1105,36 @@ namespace Talos
     searching_ = "";
   }
 
+  //! Gets the value of a given variable.
+  /*!
+    Gets the integral value of a given variable, i.e. the next valid (not in a
+    discarded line) number or element following the variable name.
+    \param name the name of the variable.
+    \param value value associated with the variable.
+  */
+  void ExtStream::GetValue(string name, int& value)
+  {
+    searching_ = name;
+
+    string element;
+    while (GetElement(element) && element!=name);
+
+    if (element != name)
+      throw string("Error in ExtStream::GetValue: \"")
+	+ name + string("\" not found in \"") + file_name_ + "\".";
+    if (!this->GetElement(element))
+      throw string("Error in ExtStream::GetValue: unable to read value of \"")
+	+ name + string("\" in \"") + file_name_ + "\".";
+    if (!is_integer(element))
+      throw string("Error in ExtStream::GetValue: the value of \"") + name
+	+ string("\" in \"") + file_name_ + string("\" is \"") + element
+	+ "\", but it should be an integer.";
+
+    value = to_num<int>(element);
+
+    searching_ = "";
+  }
+
   /*! \brief Gets the value of a given variable without extracting them from
     the stream. */
   /*!
@@ -2562,6 +2592,36 @@ namespace Talos
 	+ "\", but it should be a number.";
 
     value = to_num<T>(element);
+
+    searching_ = "";
+  }
+
+  //! Gets the value of a given variable.
+  /*!
+    Gets the integral value of a given variable, i.e. the next valid (not in a
+    discarded line) number or element following the variable name.
+    \param name the name of the variable.
+    \param value value associated with the variable.
+  */
+  void ConfigStreams::GetValue(string name, int& value)
+  {
+    searching_ = name;
+
+    string element;
+    while (this->GetElement(element) && element!=name);
+
+    if (element != name)
+      throw string("Error in ConfigStreams::GetValue: \"")
+	+ name + string("\" not found in ") + FileNames() + ".";
+    if (!this->GetElement(element))
+      throw string("Error in ConfigStreams::GetValue: unable to read value")
+	+ string(" of \"") + name + string("\" in ") + FileNames() + ".";
+    if (!is_integer(element))
+      throw string("Error in ConfigStreams::GetValue: the value of \"") + name
+	+ string("\" in ") + FileNames() + string(" is \"") + element
+	+ "\", but it should be an integer.";
+
+    value = to_num<int>(element);
 
     searching_ = "";
   }
