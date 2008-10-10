@@ -193,6 +193,7 @@ namespace Talos
     bool Find(string element);
     bool FindFromBeginning(string element);
 
+    using ExtStream::GetElement;
     virtual string GetElement();
 
     virtual string GetLine();
