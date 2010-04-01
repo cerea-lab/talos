@@ -1,4 +1,5 @@
-// Copyright (C) 2004-2007, Vivien Mallet
+// Copyright (C) 2004-2007, INRIA
+// Author(s): Vivien Mallet
 //
 // This file is part of Talos library, which provides miscellaneous tools to
 // make up for C++ lacks and to ease C++ programming.
