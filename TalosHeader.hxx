@@ -40,15 +40,11 @@ namespace Talos
 #define DISP(x) std::cout << #x ": " << (x) << std::endl
 #endif
 
-#ifdef TRY
-#undef TRY
-#endif
+#ifndef TRY
 #define TRY try					\
     {
-
-#ifdef END
-#undef END
 #endif
+#ifndef END
 #define END						\
       }							\
  catch (std::exception& Err)				\
@@ -71,6 +67,7 @@ namespace Talos
      cout << "Unknown exception..." << endl;		\
      return 1;						\
    }
+#endif
 
 #include "String.hxx"
 #include "Date.hxx"
