@@ -1,4 +1,4 @@
-// Copyright (C) 2004-2007, INRIA
+// Copyright (C) 2004-2012, INRIA
 // Author(s): Vivien Mallet
 //
 // This file is part of Talos library, which provides miscellaneous tools to
@@ -28,6 +28,67 @@
 
 namespace Talos
 {
+
+  //! Default constructor.
+  Str::Str()
+  {
+  }
+
+  //! Copy constructor.
+  /*!
+    \param[in] s 'Str' instance to be copied.
+  */
+  Str::Str(const Str& s)
+  {
+    output_ << s;
+  }
+
+  //! Conversion to string.
+  Str::operator std::string() const
+  {
+    return output_.str();
+  }
+
+  //! Adds an element to the string.
+  /*!
+    \param[in] input element added at the end of the string.
+  */
+  template <class T>
+  Str& Str::operator << (const T& input)
+  {
+    output_ << input;
+    return *this;
+  }
+
+  //! Adds an element to an instance of 'Str'.
+  /*!
+    \param[in] s 'Str' instance.
+    \param[in] input element added at the end of the string.
+  */
+  template <class T>
+  Str operator + (const Str& s, const T& input)
+  {
+    string s_input = s;
+    Str output;
+    output << s_input << input;
+    return output;
+  }
+
+  //! Converts a 'str' instance to an 'ostream' instance.
+  ostream& operator << (ostream& out, Str& in)
+  {
+    string output = in;
+    out << output;
+    return out;
+  }
+
+  //! Converts a 'str' instance to an 'ostream' instance.
+  ostream& operator << (ostream& out, Str in)
+  {
+    string output = in;
+    out << output;
+    return out;
+  }
 
   //! Converts most types to string.
   /*!
