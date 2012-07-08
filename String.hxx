@@ -1,4 +1,4 @@
-// Copyright (C) 2004-2007, INRIA
+// Copyright (C) 2004-2012, INRIA
 // Author(s): Vivien Mallet
 //
 // This file is part of Talos library, which provides miscellaneous tools to
@@ -39,6 +39,33 @@ namespace Talos
 {
 
   using namespace std;
+
+  //! This class helps formatting C++ strings on the fly.
+  /*!
+    It should may be used like that:
+    string output = Str() + "There are " + 3 + " laws of robotics.";
+  */
+  class Str
+  {
+  private:
+    //! Buffer.
+    std::ostringstream output_;
+
+  public:
+    Str();
+    Str(const Str& s);
+    operator std::string() const;
+    template <class T>
+    Str& operator << (const T& input);
+  };
+
+  template <class T>
+  Str operator + (const Str&, const T& input);
+
+#ifndef SWIG
+  ostream& operator << (ostream& out, Str& in);
+  ostream& operator << (ostream& out, Str in);
+#endif
 
   template<typename T>
   string to_str(const T& input);
