@@ -1,9 +1,19 @@
+### Binaries
 *.o
-*.os
+*.a
 *.so
-*.cc
-*.pyc
+*.os
+*.py[cod]
+
+### SCons files
 *.scon*
 config.log
+*.cc
+
+### Emacs files
 *~
+\#*\#
+.\#*
+
+# Ignore this file to make local customization more user friendly.
 .gitignore
