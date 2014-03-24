@@ -241,6 +241,8 @@ namespace Talos
 
     if (!IsValid())
       throw string("Date \"") + date + string("\" is invalid.");
+
+    this->Adjust();
   }
 
   //! Sets the date.
