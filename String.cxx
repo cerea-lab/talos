@@ -49,7 +49,7 @@ namespace Talos
     \return A string containing 'input' (filled).
   */
   string fill(const string& input, int l, char c,
-	      ostringstream::fmtflags flags)
+              ostringstream::fmtflags flags)
   {
     std::ostringstream output;
     output.width(l);
@@ -70,7 +70,7 @@ namespace Talos
   */
   template<typename T>
   string to_str_fill(const T& input, int l, char c,
-		     ostringstream::fmtflags flags)
+                     ostringstream::fmtflags flags)
   {
     ostringstream output;
     output.width(l);
@@ -137,18 +137,18 @@ namespace Talos
   {
     std::string lower(s);
     std::transform(lower.begin(), lower.end(), lower.begin(),
-		   (int(*)(int))tolower);
+                   (int(*)(int))tolower);
 
     if (lower == "true" || lower == "t" || lower == "y" || lower == "yes")
       out = true;
     else if (lower == "false" || lower == "f" || lower == "n"
-	     || lower == "no")
+             || lower == "no")
       out = false;
     else
 #ifdef TALOS_DO_NOT_CHECK_BOOLEAN
       {
-	istringstream str(s);
-	str >> out;
+        istringstream str(s);
+        str >> out;
       }
 #else
     throw string("Unable to convert \"") + s
@@ -180,7 +180,7 @@ namespace Talos
   {
     string lower(str);
     std::transform(lower.begin(), lower.end(), lower.begin(),
-		   (int(*)(int))tolower);
+                   (int(*)(int))tolower);
     return lower;
   }
 
@@ -193,7 +193,7 @@ namespace Talos
   {
     string upper(str);
     std::transform(upper.begin(), upper.end(), upper.begin(),
-		   (int(*)(int))toupper);
+                   (int(*)(int))toupper);
     return upper;
   }
 
@@ -204,7 +204,7 @@ namespace Talos
   */
   bool is_num(const string& str)
   {
-    if (str=="")
+    if (str == "")
       return false;
 
     bool mant, mant_a, mant_b, exp;
@@ -215,25 +215,25 @@ namespace Talos
     // Mantissa.
     m = str.substr(0, pos);
     // Exponent.
-    e = pos==string::npos ? "" : str.substr(pos + 1);
+    e = pos == string::npos ? "" : str.substr(pos + 1);
 
-    exp = pos!=string::npos;
+    exp = pos != string::npos;
 
     pos = m.find_first_of(".");
     // Mantissa in the form: [m_a].[m_b].
     m_a = m.substr(0, pos);
     // Exponent.
-    m_b = pos==string::npos ? "" : m.substr(pos + 1);
+    m_b = pos == string::npos ? "" : m.substr(pos + 1);
 
-    mant = m!="" && m!="-" && m!="+";
-    mant_a = m_a!="" && m_a!="-" && m_a!="+";
-    mant_b = m_b!="";
+    mant = m != "" && m != "-" && m != "+";
+    mant_a = m_a != "" && m_a != "-" && m_a != "+";
+    mant_b = m_b != "";
 
-    return ( mant
-	     && ( (mant_a || mant_b)
-		  && (!mant_a || is_integer(m_a))
-		  && (!mant_b || is_unsigned_integer(m_b)) )
-	     && (!exp || is_integer(e)) );
+    return (mant
+            && ((mant_a || mant_b)
+                && (!mant_a || is_integer(m_a))
+                && (!mant_b || is_unsigned_integer(m_b)))
+            && (!exp || is_integer(e)));
   }
 
   //! Checks whether a string is an integer.
@@ -265,14 +265,14 @@ namespace Talos
   {
     bool ans;
 
-    ans = ( str.size() > 0 && isdigit(str[0]) )
-      || ( str.size() > 1 && (str[0]=='+' || str[0]=='-') );
+    ans = (str.size() > 0 && isdigit(str[0]))
+      || (str.size() > 1 && (str[0] == '+' || str[0] == '-'));
 
     unsigned int i(1);
-    while (i<str.size() && ans)
+    while (i < str.size() && ans)
       {
-	ans = ans && isdigit(str[i]);
-	i++;
+        ans = ans && isdigit(str[i]);
+        i++;
       }
 
     return ans;
@@ -288,10 +288,10 @@ namespace Talos
     bool ans(str.size() > 0);
 
     unsigned int i(0);
-    while (i<str.size() && ans)
+    while (i < str.size() && ans)
       {
-	ans = ans && isdigit(str[i]);
-	i++;
+        ans = ans && isdigit(str[i]);
+        i++;
       }
 
     return ans;
@@ -311,11 +311,11 @@ namespace Talos
       return false;
     try
       {
-	Date d(str);
+        Date d(str);
       }
     catch (...)
       {
-	ans = false;
+        ans = false;
       }
     return ans;
   }
@@ -328,16 +328,16 @@ namespace Talos
   bool is_delta(const string& str)
   {
     if ((str.find('h', 0) == string::npos &&
-	 str.find('d', 0) == string::npos) ||
-	(str.find('d', 0) != string::npos &&
-	 str.find('d', 0) >= str.find('h', 0)))
+         str.find('d', 0) == string::npos) ||
+        (str.find('d', 0) != string::npos &&
+         str.find('d', 0) >= str.find('h', 0)))
       return false;
 
     vector<string> period = split(str, "dh-_");
 
     if (period.size() > 2 || period.size() == 0)
       return false;
-   
+
     if (period.size() == 2)
       return (is_integer(period[0]) && is_integer(period[1]));
     else
@@ -354,11 +354,11 @@ namespace Talos
   string find_replace(string str, string old_str, string new_str)
   {
     string::size_type index = str.find(old_str);
-    
+
     while (index != string::npos)
       {
-	str.replace(index, old_str.size(), new_str);
-	index = str.find(old_str, index + new_str.size());
+        str.replace(index, old_str.size(), new_str);
+        index = str.find(old_str, index + new_str.size());
       }
 
     return str;
@@ -378,7 +378,7 @@ namespace Talos
 
     if (index_beg == string::npos)
       return "";
-    
+
     return str.substr(index_beg, index_end - index_beg + 1);
   }
 
@@ -395,7 +395,7 @@ namespace Talos
 
     if (index == string::npos)
       return "";
-    
+
     return str.substr(index);
   }
 
@@ -431,16 +431,16 @@ namespace Talos
 
     T tmp;
     string::size_type index_beg, index_end;
-    
+
     index_beg = str.find_first_not_of(delimiters);
-    
+
     while (index_beg != string::npos)
       {
-	index_end = str.find_first_of(delimiters, index_beg);
-	convert(str.substr(index_beg, index_end == string::npos ?
-			   string::npos : (index_end - index_beg) ), tmp);
-	vect.push_back(tmp);
-	index_beg = str.find_first_not_of(delimiters, index_end);
+        index_end = str.find_first_of(delimiters, index_beg);
+        convert(str.substr(index_beg, index_end == string::npos ?
+                           string::npos : (index_end - index_beg)), tmp);
+        vect.push_back(tmp);
+        index_beg = str.find_first_not_of(delimiters, index_end);
       }
   }
 
@@ -457,7 +457,7 @@ namespace Talos
     split(str, vect, delimiters);
     return vect;
   }
-  
+
   //! Extracts markups from a string.
   /*!
     The string is split into markups and elements.
@@ -471,7 +471,7 @@ namespace Talos
   */
   template <class T>
   void split_markup(string str, vector<T>& elements,
-		    vector<bool>& is_markup, string delimiters)
+                    vector<bool>& is_markup, string delimiters)
   {
     elements.clear();
     is_markup.clear();
@@ -480,77 +480,77 @@ namespace Talos
     T tmp;
     bool is_mark;
     string::size_type index_beg, index_end, markup_end;
-    
+
     index_beg = 0;
-    
+
     while (index_beg != string::npos && index_beg < str.size())
       {
-	is_mark = false;
-	// Stops at the first delimiter.
-	index_end = str.find_first_of(delimiters, index_beg);
+        is_mark = false;
+        // Stops at the first delimiter.
+        index_end = str.find_first_of(delimiters, index_beg);
 
-	// No more delimiter.
-	if (index_end == string::npos)
-	  {
-	    current = str.substr(index_beg, string::npos);
-	    markup_end = string::npos;
-	  }
-	// One character left, added later.
-	else if (index_end == str.size() - 1)
-	  {
-	    current = str.substr(index_beg, index_end - index_beg);
-	    markup_end = string::npos;
-	  }
-	// There may have a markup there. Searches for the end of this markup.
-	else
-	  {
-	    current = str.substr(index_beg, index_end - index_beg);
-	    markup_end = str.find_first_of(delimiters, index_end + 1);
-	  }
+        // No more delimiter.
+        if (index_end == string::npos)
+          {
+            current = str.substr(index_beg, string::npos);
+            markup_end = string::npos;
+          }
+        // One character left, added later.
+        else if (index_end == str.size() - 1)
+          {
+            current = str.substr(index_beg, index_end - index_beg);
+            markup_end = string::npos;
+          }
+        // There may have a markup there. Searches for the end of this markup.
+        else
+          {
+            current = str.substr(index_beg, index_end - index_beg);
+            markup_end = str.find_first_of(delimiters, index_end + 1);
+          }
 
-	// No markup: e.g. "$$" means "$".
-	if (markup_end != string::npos && markup_end - 1 == index_end)
-	  {
-	    current += str[markup_end];
-	    index_end = markup_end;
-	  }
-	// A markup is detected.
-	else if (markup_end != string::npos)
-	  {
-	    // The previous element, which is not a markup, is added.
-	    if (current != "")
-	      if (elements.size() > 0 && !is_markup[elements.size()-1])
-		elements[elements.size()-1] += current;
-	      else
-		{
-		  elements.push_back(current);
-		  is_markup.push_back(false);
-		}
-	    // The markup is extracted.
-	    current = str.substr(index_end, markup_end - index_end + 1);
-	    index_end = markup_end;
-	    is_mark = true;
-	  }
-	// Gets the rest of the string.
-	else if (index_end != string::npos)
-	  current += str.substr(index_end, markup_end);
+        // No markup: e.g. "$$" means "$".
+        if (markup_end != string::npos && markup_end - 1 == index_end)
+          {
+            current += str[markup_end];
+            index_end = markup_end;
+          }
+        // A markup is detected.
+        else if (markup_end != string::npos)
+          {
+            // The previous element, which is not a markup, is added.
+            if (current != "")
+              if (elements.size() > 0 && !is_markup[elements.size() - 1])
+                elements[elements.size() - 1] += current;
+              else
+                {
+                  elements.push_back(current);
+                  is_markup.push_back(false);
+                }
+            // The markup is extracted.
+            current = str.substr(index_end, markup_end - index_end + 1);
+            index_end = markup_end;
+            is_mark = true;
+          }
+        // Gets the rest of the string.
+        else if (index_end != string::npos)
+          current += str.substr(index_end, markup_end);
 
-	// If not a markup, then adds the string to the last stored element
-	// (if it is not a markup itself).
-	if (elements.size() > 0 && !is_markup[elements.size()-1]
-	    && !is_mark)
-	  elements[elements.size()-1] += current;
-	else
-	  {
-	    // Removes markup tags, for markups.
-	    if (is_mark)
-	      current = trim(current, delimiters);
-	    elements.push_back(current);
-	    is_markup.push_back(is_mark);
-	  }
+        // If not a markup, then adds the string to the last stored element
+        // (if it is not a markup itself).
+        if (elements.size() > 0 && !is_markup[elements.size() - 1]
+            && !is_mark)
+          elements[elements.size() - 1] += current;
+        else
+          {
+            // Removes markup tags, for markups.
+            if (is_mark)
+              current = trim(current, delimiters);
+            elements.push_back(current);
+            is_markup.push_back(is_mark);
+          }
 
-	// Moves forward.
-	index_beg = markup_end == string::npos ? string::npos : index_end + 1;
+        // Moves forward.
+        index_beg = markup_end == string::npos ? string::npos : index_end + 1;
 
       }
   }
@@ -568,7 +568,7 @@ namespace Talos
       cout << '\t' << v[i];
     cout << endl;
   }
-  
+
 }  // namespace Talos.
 
 

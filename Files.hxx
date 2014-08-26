@@ -68,8 +68,8 @@ namespace Talos
   public:
     ExtStream();
     ExtStream(string file_name,
-	      string comments = "#%",
-	      string delimiters = " \t:=|\n,;\r\x0D\x0A");
+              string comments = "#%",
+              string delimiters = " \t:=|\n,;\r\x0D\x0A");
 
     virtual ~ExtStream();
 
@@ -92,9 +92,9 @@ namespace Talos
     void Open(string file_name, openmode mode = in);
 #endif
     void Close();
-    
+
     bool IsEmpty();
-    
+
     ExtStream& Rewind();
 
     string GetFullLine();
@@ -156,16 +156,16 @@ namespace Talos
     void GetValue(string name, string& value);
     void PeekValue(string name, string& value);
     void GetValue(string name, string accepted, string& value,
-		  string delimiter);
+                  string delimiter);
     void PeekValue(string name, string accepted, string& value,
-		   string delimiter);
+                   string delimiter);
 
     void GetValue(string name, bool& value);
     void PeekValue(string name, bool& value);
 
   protected:
     void CheckAccepted(string name, string value, string accepted,
-		       string delimiter) const;
+                       string delimiter) const;
   };
 
   //! Streams associated with configuration files.
@@ -174,13 +174,13 @@ namespace Talos
   protected:
     string markup_tags_;
     string section_;
-    
+
   public:
     ConfigStream();
     ConfigStream(string file_name,
-		 string comments = "#%",
-		 string delimiters = " \t:=|\n,;\r\x0D\x0A",
-		 string markup_tags = "<>$");
+                 string comments = "#%",
+                 string delimiters = " \t:=|\n,;\r\x0D\x0A",
+                 string markup_tags = "<>$");
 
     void NoSection();
     void SetSection(string section);
@@ -245,7 +245,7 @@ namespace Talos
     ConfigStreams& Skip();
 
     bool IsEmpty();
-    
+
     ConfigStreams& Rewind();
 
     string GetFullLine();
@@ -307,9 +307,9 @@ namespace Talos
     void GetValue(string name, string& value);
     void PeekValue(string name, string& value);
     void GetValue(string name, string accepted, string& value,
-		  string delimiter);
+                  string delimiter);
     void PeekValue(string name, string accepted, string& value,
-		   string delimiter);
+                   string delimiter);
 
     void GetValue(string name, bool& value);
     void PeekValue(string name, bool& value);
@@ -318,7 +318,7 @@ namespace Talos
     bool IsSection(string str) const;
     string FileNames() const;
     void CheckAccepted(string name, string value, string accepted,
-		       string delimiter) const;
+                       string delimiter) const;
   };
 
 }  // namespace Talos.
