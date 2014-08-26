@@ -42,11 +42,11 @@ namespace Talos
 
 #ifndef SWIG
   string fill(const string& input, int l = 2, char c = ' ',
-	      ostringstream::fmtflags flags = ostringstream::left);
+              ostringstream::fmtflags flags = ostringstream::left);
 
   template<typename T>
   string to_str_fill(const T& input, int l = 2, char c = ' ',
-		     ostringstream::fmtflags flags = ostringstream::left);
+                     ostringstream::fmtflags flags = ostringstream::left);
 #endif
 
   template <class T>
@@ -61,10 +61,10 @@ namespace Talos
 
   template <class T>
   T convert(const string& s);
-  
+
   string lower_case(string str);
   string upper_case(string str);
-  
+
   bool is_num(const string& s);
 
   // The functions with 'char*' and 'const char*' are provided for convenience
@@ -94,11 +94,11 @@ namespace Talos
 
   template <class T>
   void split_markup(string str, vector<T>& elements, vector<bool>& is_markup,
-		    string delimiters = "$");
-  
+                    string delimiters = "$");
+
   template <class T>
   void print(const vector<T>& v);
-  
+
 }  // namespace Talos.
 
 

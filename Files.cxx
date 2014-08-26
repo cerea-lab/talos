@@ -25,7 +25,7 @@
 
 namespace Talos
 {
-  
+
   //! Tests whether a file exists.
   /*!
     \param file_name file name.
@@ -38,7 +38,7 @@ namespace Talos
     ifstream file_stream(file_name.c_str(), ifstream::in);
     bool ans = file_stream.is_open();
     file_stream.close();
-    
+
     return ans;
   }
 
@@ -129,117 +129,117 @@ namespace Talos
     T val;
     for (int i = 0; i < int(constraint_list.size()); i++)
       {
-	expression = trim(constraint_list[i]);
-	if (expression.size() < 2)
-	  throw "Error in satisfies_constraint: the constraint \""
-	    + expression + "\" is not supported.";
-	if (expression[0] == '<')
-	  if (expression[1] == '=')
-	    {
-	      str = trim(expression.substr(2));
-	      if (!is_num(str))
-		throw "Error in satisfies_constraint: the constraint \""
-		  + expression + "\" cannot be parsed or is not supported.";
-	      to_num(str, val);
-	      if (value > val)
-		return false;
-	    }
-	  else
-	    {
-	      str = trim(expression.substr(1));
-	      if (!is_num(str))
-		throw "Error in satisfies_constraint: the constraint \""
-		  + expression + "\" cannot be parsed or is not supported.";
-	      to_num(str, val);
-	      if (value >= val)
-		return false;
-	    }
-	else if (expression[0] == '>')
-	  if (expression[1] == '=')
-	    {
-	      str = trim(expression.substr(2));
-	      if (!is_num(str))
-		throw "Error in satisfies_constraint: the constraint \""
-		  + expression + "\" cannot be parsed or is not supported.";
-	      to_num(str, val);
-	      if (value < val)
-		return false;
-	    }
-	  else
-	    {
-	      str = trim(expression.substr(1));
-	      if (!is_num(str))
-		throw "Error in satisfies_constraint: the constraint \""
-		  + expression + "\" cannot be parsed or is not supported.";
-	      to_num(str, val);
-	      if (value <= val)
-		return false;
-	    }
-	else if (expression.substr(0, 2) == "!=")
-	  {
-	    str = trim(expression.substr(2));
-	    vector<string> number = split(str);
-	    for (int j = 0; j < int(number.size()); j++)
-	      {
-		if (!is_num(number[j]))
-		  throw "Error in satisfies_constraint: the constraint \""
-		    + expression + "\" cannot be parsed or is not supported.";
-		to_num(number[j], val);
-		if (value == val)
-		  return false;
-	      }
-	  }
-	else if (expression[0] == '=')
-	  {
-	    str = trim(expression.substr(1));
-	    vector<string> number = split(str);
-	    bool acceptable = false;
-	    for (int j = 0; j < int(number.size()); j++)
-	      {
-		if (!is_num(number[j]))
-		  throw "Error in satisfies_constraint: the constraint \""
-		    + expression + "\" cannot be parsed or is not supported.";
-		to_num(number[j], val);
-		acceptable = acceptable || value == val;
-	      }
-	    if (!acceptable)
-	      return false;
-	  }
-	else if (expression == "positive")
-	  {
-	    if (value < T(0))
-	      return false;
-	  }
-	else if (expression == "strictly positive")
-	  {
-	    if (value <= T(0))
-	      return false;
-	  }
-	else if (expression == "negative")
-	  {
-	    if (value > T(0))
-	      return false;
-	  }
-	else if (expression == "strictly negative")
-	  {
-	    if (value >= T(0))
-	      return false;
-	  }
-	else if (expression == "non zero")
-	  {
-	    if (value == T(0))
-	      return false;
-	  }
-	else if (expression == "integer")
-	  {
-	    if (value != T(int(value)))
-	      return false;
-	  }
-	else
-	  throw "Error in satisfies_constraint: the constraint \""
-	    + expression + "\" cannot be parsed or is not supported.";
+        expression = trim(constraint_list[i]);
+        if (expression.size() < 2)
+          throw "Error in satisfies_constraint: the constraint \""
+        + expression + "\" is not supported.";
+        if (expression[0] == '<')
+          if (expression[1] == '=')
+            {
+              str = trim(expression.substr(2));
+              if (!is_num(str))
+                throw "Error in satisfies_constraint: the constraint \""
+          + expression + "\" cannot be parsed or is not supported.";
+              to_num(str, val);
+              if (value > val)
+                return false;
+            }
+          else
+            {
+              str = trim(expression.substr(1));
+              if (!is_num(str))
+                throw "Error in satisfies_constraint: the constraint \""
+          + expression + "\" cannot be parsed or is not supported.";
+              to_num(str, val);
+              if (value >= val)
+                return false;
+            }
+        else if (expression[0] == '>')
+          if (expression[1] == '=')
+            {
+              str = trim(expression.substr(2));
+              if (!is_num(str))
+                throw "Error in satisfies_constraint: the constraint \""
+          + expression + "\" cannot be parsed or is not supported.";
+              to_num(str, val);
+              if (value < val)
+                return false;
+            }
+          else
+            {
+              str = trim(expression.substr(1));
+              if (!is_num(str))
+                throw "Error in satisfies_constraint: the constraint \""
+          + expression + "\" cannot be parsed or is not supported.";
+              to_num(str, val);
+              if (value <= val)
+                return false;
+            }
+        else if (expression.substr(0, 2) == "!=")
+          {
+            str = trim(expression.substr(2));
+            vector<string> number = split(str);
+            for (int j = 0; j < int(number.size()); j++)
+              {
+                if (!is_num(number[j]))
+                  throw "Error in satisfies_constraint: the constraint \""
+            + expression + "\" cannot be parsed or is not supported.";
+                to_num(number[j], val);
+                if (value == val)
+                  return false;
+              }
+          }
+        else if (expression[0] == '=')
+          {
+            str = trim(expression.substr(1));
+            vector<string> number = split(str);
+            bool acceptable = false;
+            for (int j = 0; j < int(number.size()); j++)
+              {
+                if (!is_num(number[j]))
+                  throw "Error in satisfies_constraint: the constraint \""
+            + expression + "\" cannot be parsed or is not supported.";
+                to_num(number[j], val);
+                acceptable = acceptable || value == val;
+              }
+            if (!acceptable)
+              return false;
+          }
+        else if (expression == "positive")
+          {
+            if (value < T(0))
+              return false;
+          }
+        else if (expression == "strictly positive")
+          {
+            if (value <= T(0))
+              return false;
+          }
+        else if (expression == "negative")
+          {
+            if (value > T(0))
+              return false;
+          }
+        else if (expression == "strictly negative")
+          {
+            if (value >= T(0))
+              return false;
+          }
+        else if (expression == "non zero")
+          {
+            if (value == T(0))
+              return false;
+          }
+        else if (expression == "integer")
+          {
+            if (value != T(int(value)))
+              return false;
+          }
+        else
+          throw "Error in satisfies_constraint: the constraint \""
+        + expression + "\" cannot be parsed or is not supported.";
       }
-    
+
     return true;
   }
 
@@ -256,103 +256,103 @@ namespace Talos
     vector<string> constraint_list = split(constraint, "|");
 
     string output = "";
-    
+
     string expression, str, termination;
     for (int i = 0; i < int(constraint_list.size()); i++)
       {
-	if (i != int(constraint_list.size()) - 1)
-	  termination = ";\n";
-	else
-	  termination = ".";
-	expression = trim(constraint_list[i]);
-	if (expression.size() < 2)
-	  throw "Error in show_constraint: the constraint \""
-	    + expression + "\" cannot be parsed.";
-	if (expression[0] == '<')
-	  if (expression[1] == '=')
-	    {
-	      str = trim(expression.substr(2));
-	      if (!is_num(str))
-		throw "Error in show_constraint: the constraint \""
-		  + expression + "\" cannot be parsed or is not supported.";
-	      output += " - Value less than " + str + termination;
-	    }
-	  else
-	    {
-	      str = trim(expression.substr(1));
-	      if (!is_num(str))
-		throw "Error in show_constraint: the constraint \""
-		  + expression + "\" cannot be parsed or is not supported.";
-	      output += " - Value strictly less than " + str + termination;
-	    }
-	else if (expression[0] == '>')
-	  if (expression[1] == '=')
-	    {
-	      str = trim(expression.substr(2));
-	      if (!is_num(str))
-		throw "Error in show_constraint: the constraint \""
-		  + expression + "\" cannot be parsed or is not supported.";
-	      output += " - Value greater than " + str + termination;
-	    }
-	  else
-	    {
-	      str = trim(expression.substr(1));
-	      if (!is_num(str))
-		throw "Error in show_constraint: the constraint \""
-		  + expression + "\" cannot be parsed or is not supported.";
-	      output += " - Value strictly greater than " + str + termination;
-	    }
-	else if (expression.substr(0, 2) == "!=")
-	  {
-	    str = trim(expression.substr(2));
-	    vector<string> number = split(str);
-	    output += " - Value different from ";
-	    for (int j = 0; j < int(number.size()); j++)
-	      {
-		if (!is_num(number[j]))
-		  throw "Error in show_constraint: the constraint \""
-		    + expression + "\" cannot be parsed or is not supported.";
-		output += number[j];
-		if (j == int(number.size()) - 2)
-		  output += " and ";
-		else if (j != int(number.size()) - 1)
-		  output += ", ";
-	      }
-	    output += termination;
-	  }
-	else if (expression[0] == '=')
-	  {
-	    str = trim(expression.substr(1));
-	    vector<string> number = split(str);
-	    output += " - Value equal to ";
-	    for (int j = 0; j < int(number.size()); j++)
-	      {
-		if (!is_num(number[j]))
-		  throw "Error in show_constraint: the constraint \""
-		    + expression + "\" cannot be parsed or is not supported.";
-		output += number[j];
-		if (j == int(number.size()) - 2)
-		  output += " or ";
-		else if (j != int(number.size()) - 1)
-		  output += ", ";
-	      }
-	    output += termination;
-	  }
-	else if (expression == "positive")
-	  output += " - Positive value" + termination;
-	else if (expression == "strictly positive")
-	  output += " - Strictly positive value" + termination;
-	else if (expression == "negative")
-	  output += " - Negative value" + termination;
-	else if (expression == "strictly negative")
-	  output += " - Strictly negative value" + termination;
-	else if (expression == "non zero")
-	  output += " - Non-zero value" + termination;
-	else if (expression == "integer")
-	  output += " - Integral value" + termination;
-	else
-	  throw "Error in show_constraint: the constraint \""
-	    + expression + "\" cannot be parsed or is not supported.";
+        if (i != int(constraint_list.size()) - 1)
+          termination = ";\n";
+        else
+          termination = ".";
+        expression = trim(constraint_list[i]);
+        if (expression.size() < 2)
+          throw "Error in show_constraint: the constraint \""
+        + expression + "\" cannot be parsed.";
+        if (expression[0] == '<')
+          if (expression[1] == '=')
+            {
+              str = trim(expression.substr(2));
+              if (!is_num(str))
+                throw "Error in show_constraint: the constraint \""
+          + expression + "\" cannot be parsed or is not supported.";
+              output += " - Value less than " + str + termination;
+            }
+          else
+            {
+              str = trim(expression.substr(1));
+              if (!is_num(str))
+                throw "Error in show_constraint: the constraint \""
+          + expression + "\" cannot be parsed or is not supported.";
+              output += " - Value strictly less than " + str + termination;
+            }
+        else if (expression[0] == '>')
+          if (expression[1] == '=')
+            {
+              str = trim(expression.substr(2));
+              if (!is_num(str))
+                throw "Error in show_constraint: the constraint \""
+          + expression + "\" cannot be parsed or is not supported.";
+              output += " - Value greater than " + str + termination;
+            }
+          else
+            {
+              str = trim(expression.substr(1));
+              if (!is_num(str))
+                throw "Error in show_constraint: the constraint \""
+          + expression + "\" cannot be parsed or is not supported.";
+              output += " - Value strictly greater than " + str + termination;
+            }
+        else if (expression.substr(0, 2) == "!=")
+          {
+            str = trim(expression.substr(2));
+            vector<string> number = split(str);
+            output += " - Value different from ";
+            for (int j = 0; j < int(number.size()); j++)
+              {
+                if (!is_num(number[j]))
+                  throw "Error in show_constraint: the constraint \""
+            + expression + "\" cannot be parsed or is not supported.";
+                output += number[j];
+                if (j == int(number.size()) - 2)
+                  output += " and ";
+                else if (j != int(number.size()) - 1)
+                  output += ", ";
+              }
+            output += termination;
+          }
+        else if (expression[0] == '=')
+          {
+            str = trim(expression.substr(1));
+            vector<string> number = split(str);
+            output += " - Value equal to ";
+            for (int j = 0; j < int(number.size()); j++)
+              {
+                if (!is_num(number[j]))
+                  throw "Error in show_constraint: the constraint \""
+            + expression + "\" cannot be parsed or is not supported.";
+                output += number[j];
+                if (j == int(number.size()) - 2)
+                  output += " or ";
+                else if (j != int(number.size()) - 1)
+                  output += ", ";
+              }
+            output += termination;
+          }
+        else if (expression == "positive")
+          output += " - Positive value" + termination;
+        else if (expression == "strictly positive")
+          output += " - Strictly positive value" + termination;
+        else if (expression == "negative")
+          output += " - Negative value" + termination;
+        else if (expression == "strictly negative")
+          output += " - Strictly negative value" + termination;
+        else if (expression == "non zero")
+          output += " - Non-zero value" + termination;
+        else if (expression == "integer")
+          output += " - Integral value" + termination;
+        else
+          throw "Error in show_constraint: the constraint \""
+        + expression + "\" cannot be parsed or is not supported.";
       }
 
     return output;
@@ -376,8 +376,8 @@ namespace Talos
     \param file_name file to be opened.
   */
   ExtStream::ExtStream(string file_name,
-		       string comments,
-		       string delimiters):
+                       string comments,
+                       string delimiters):
     ifstream(file_name.c_str(), ifstream::binary), file_name_(file_name),
     comments_(comments), delimiters_(delimiters), searching_("")
   {
@@ -401,8 +401,8 @@ namespace Talos
   bool ExtStream::Discard(string line) const
   {
     size_t first = line.find_first_not_of(delimiters_);
-    return ( (first == string::npos)
-	     || (comments_.find_first_of(line[first]) != string::npos) );
+    return ((first == string::npos)
+            || (comments_.find_first_of(line[first]) != string::npos));
   }
 
   //! Skips discarded lines.
@@ -413,7 +413,7 @@ namespace Talos
   ExtStream& ExtStream::SkipDiscarded()
   {
     streampos position;
-    while ( (!is_empty(*this)) && (Discard(PeekFullLine(position))) )
+    while ((!is_empty(*this)) && (Discard(PeekFullLine(position))))
       this->seekg(position);
     return *this;
   }
@@ -471,9 +471,9 @@ namespace Talos
   */
   ExtStream& ExtStream::SkipDelimiters()
   {
-    while ( this->good()
-	    && (delimiters_.find_first_of(char(this->peek()))
-		!= string::npos) )
+    while (this->good()
+           && (delimiters_.find_first_of(char(this->peek()))
+               != string::npos))
       this->get();
     return *this;
   }
@@ -490,7 +490,7 @@ namespace Talos
     if (index == string::npos)
       return "";
     return str.substr(index,
-		      str.find_last_not_of(delimiters_) - index + 1);
+                      str.find_last_not_of(delimiters_) - index + 1);
   }
 
   //! Skips discarded lines and delimiters.
@@ -645,7 +645,7 @@ namespace Talos
   */
   void ExtStream::SkipFullLines(int nb)
   {
-    for (int i=0; i<nb; i++)
+    for (int i = 0; i < nb; i++)
       this->GetFullLine();
   }
 
@@ -664,18 +664,18 @@ namespace Talos
     this->Skip();
     line = GetFullLine();
 
-    while ( (not_end = ( (index_tmp
-			  = line.substr(index).find_first_of(comments_))
-			 != string::npos ))
-	    && (delimiters_.find_first_of(line[(index+=index_tmp)-1])
-		== string::npos)
-	    && (not_end = (++index != line.size())) );
+    while ((not_end = ((index_tmp
+                        = line.substr(index).find_first_of(comments_))
+                       != string::npos))
+           && (delimiters_.find_first_of(line[(index += index_tmp) - 1])
+               == string::npos)
+           && (not_end = (++index != line.size())));
 
     if (not_end)
       index --;
     else
       index = line.size();
-    
+
     while (delimiters_.find_first_of(line[--index]) != string::npos);
 
     return line.substr(0, index + 1);
@@ -695,18 +695,18 @@ namespace Talos
     this->Skip();
     success = GetFullLine(line);
 
-    while ( (not_end = ( (index_tmp
-			  = line.substr(index).find_first_of(comments_))
-			 != string::npos ))
-	    && (delimiters_.find_first_of(line[(index+=index_tmp)-1])
-		== string::npos)
-	    && (not_end = (++index != line.size())) );
+    while ((not_end = ((index_tmp
+                        = line.substr(index).find_first_of(comments_))
+                       != string::npos))
+           && (delimiters_.find_first_of(line[(index += index_tmp) - 1])
+               == string::npos)
+           && (not_end = (++index != line.size())));
 
     if (not_end)
       index --;
     else
       index = line.size();
-    
+
     while (delimiters_.find_first_of(line[--index]) != string::npos);
 
     line = line.substr(0, index + 1);
@@ -786,7 +786,7 @@ namespace Talos
   */
   void ExtStream::SkipLines(int nb)
   {
-    for (int i=0; i<nb; i++)
+    for (int i = 0; i < nb; i++)
       this->GetLine();
   }
 
@@ -801,11 +801,11 @@ namespace Talos
     searching_ = element;
 
     string elt;
-    while (GetElement(elt) && elt!=element);
+    while (GetElement(elt) && elt != element);
 
     if (elt == "")
       throw string("Error in ExtStream::Find: \"")
-	+ element + string("\" not found in \"") + file_name_ + "\".";
+    + element + string("\" not found in \"") + file_name_ + "\".";
 
     searching_ = "";
 
@@ -836,23 +836,23 @@ namespace Talos
     string element;
     string::size_type index, length;
 
-    while ( (!is_empty(*this)) && (Discard(PeekFullLine(position))) )
+    while ((!is_empty(*this)) && (Discard(PeekFullLine(position))))
       this->seekg(position);
     element = PeekFullLine();
 
     index = element.find_first_not_of(delimiters_);
     if (index != string::npos)
       {
-	length = element.find_first_of(delimiters_, index);
-	length = length==string::npos ? element.size() - index
-	  : length - index;
-	element = element.substr(index, length);
+        length = element.find_first_of(delimiters_, index);
+        length = length == string::npos ? element.size() - index
+      : length - index;
+        element = element.substr(index, length);
       }
     else
       {
-	index = element.size();
-	length = 0;
-	element = "";
+        index = element.size();
+        length = 0;
+        element = "";
       }
 
     this->seekg(index + length, ifstream::cur);
@@ -941,7 +941,7 @@ namespace Talos
   */
   void ExtStream::SkipElements(int nb)
   {
-    for (int i=0; i<nb; i++)
+    for (int i = 0; i < nb; i++)
       GetElement();
   }
 
@@ -1027,7 +1027,7 @@ namespace Talos
   */
   void ExtStream::SkipNumbers(int nb)
   {
-    for (int i=0; i<nb; i++)
+    for (int i = 0; i < nb; i++)
       this->GetNumber();
   }
 
@@ -1043,11 +1043,11 @@ namespace Talos
     searching_ = name;
 
     string element;
-    while (GetElement(element) && element!=name);
+    while (GetElement(element) && element != name);
 
     if (element != name)
       throw string("Error in ExtStream::GetValue: \"")
-	+ name + string("\" not found in \"") + file_name_ + "\".";
+    + name + string("\" not found in \"") + file_name_ + "\".";
 
     searching_ = "";
 
@@ -1088,18 +1088,18 @@ namespace Talos
     searching_ = name;
 
     string element;
-    while (GetElement(element) && element!=name);
+    while (GetElement(element) && element != name);
 
     if (element != name)
       throw string("Error in ExtStream::GetValue: \"")
-	+ name + string("\" not found in \"") + file_name_ + "\".";
+    + name + string("\" not found in \"") + file_name_ + "\".";
     if (!this->GetElement(element))
       throw string("Error in ExtStream::GetValue: unable to read value of \"")
-	+ name + string("\" in \"") + file_name_ + "\".";
+    + name + string("\" in \"") + file_name_ + "\".";
     if (!is_num(element))
       throw string("Error in ExtStream::GetValue: the value of \"") + name
-	+ string("\" in \"") + file_name_ + string("\" is \"") + element
-	+ "\", but it should be a number.";
+    + string("\" in \"") + file_name_ + string("\" is \"") + element
+    + "\", but it should be a number.";
 
     value = to_num<T>(element);
 
@@ -1118,18 +1118,18 @@ namespace Talos
     searching_ = name;
 
     string element;
-    while (GetElement(element) && element!=name);
+    while (GetElement(element) && element != name);
 
     if (element != name)
       throw string("Error in ExtStream::GetValue: \"")
-	+ name + string("\" not found in \"") + file_name_ + "\".";
+    + name + string("\" not found in \"") + file_name_ + "\".";
     if (!this->GetElement(element))
       throw string("Error in ExtStream::GetValue: unable to read value of \"")
-	+ name + string("\" in \"") + file_name_ + "\".";
+    + name + string("\" in \"") + file_name_ + "\".";
     if (!is_integer(element))
       throw string("Error in ExtStream::GetValue: the value of \"") + name
-	+ string("\" in \"") + file_name_ + string("\" is \"") + element
-	+ "\", but it should be an integer.";
+    + string("\" in \"") + file_name_ + string("\" is \"") + element
+    + "\", but it should be an integer.";
 
     value = to_num<int>(element);
 
@@ -1172,9 +1172,9 @@ namespace Talos
     GetValue(name, value);
     if (value < min || value > max)
       throw string("Error in ExtStream::GetValue: the value of \"")
-	+ name + string("\" in \"") + file_name_ + "\" is "
-	+ to_str(value) + " but it should be in [" + to_str(min)
-	+ ", " + to_str(max) + "].";
+    + name + string("\" in \"") + file_name_ + "\" is "
+    + to_str(value) + " but it should be in [" + to_str(min)
+    + ", " + to_str(max) + "].";
   }
 
   /*! \brief Gets the value of a given variable without extracting them from
@@ -1218,9 +1218,9 @@ namespace Talos
     GetValue(name, value);
     if (!satisfies_constraint(value, constraint))
       throw string("Error in ExtStream::GetValue: the value of \"")
-	+ name + string("\" in \"") + file_name_ + "\" is "
-	+ to_str(value) + " but it should satisfy the following "
-	+ "constraint(s):\n" + show_constraint(constraint);
+    + name + string("\" in \"") + file_name_ + "\" is "
+    + to_str(value) + " but it should satisfy the following "
+    + "constraint(s):\n" + show_constraint(constraint);
   }
 
   /*! \brief Gets the value of a given variable without extracting them from
@@ -1261,18 +1261,18 @@ namespace Talos
     searching_ = name;
 
     string element;
-    while (GetElement(element) && element!=name);
+    while (GetElement(element) && element != name);
 
     if (element != name)
       throw string("Error in ExtStream::GetValue: \"")
-	+ name + string("\" not found in \"") + file_name_ + "\".";
+    + name + string("\" not found in \"") + file_name_ + "\".";
 
     searching_ = "";
 
     if (!this->GetElement(value))
       throw string("Error in ExtStream::GetValue: ")
-	+ string("unable to get a value for \"") + name + string("\" in \"")
-	+ file_name_ + "\".";
+    + string("unable to get a value for \"") + name + string("\" in \"")
+    + file_name_ + "\".";
   }
 
   /*! \brief Gets the value of a given variable without extracting them from
@@ -1311,7 +1311,7 @@ namespace Talos
     \param delimiter delimiter in \a accepted. Default: |.
   */
   void ExtStream::GetValue(string name, string accepted, string& value,
-			   string delimiter = "|")
+                           string delimiter = "|")
   {
     GetValue(name, value);
     CheckAccepted(name, value, accepted, delimiter);
@@ -1330,7 +1330,7 @@ namespace Talos
     \param delimiter delimiter in \a accepted. Default: |.
   */
   void ExtStream::PeekValue(string name, string accepted, string& value,
-			    string delimiter = "|")
+                            string delimiter = "|")
   {
     searching_ = name;
 
@@ -1357,18 +1357,18 @@ namespace Talos
     searching_ = name;
 
     string element;
-    while (GetElement(element) && element!=name);
+    while (GetElement(element) && element != name);
 
     if (element != name)
       throw string("Error in ExtStream::GetValue: \"")
-	+ name + string("\" not found in \"") + file_name_ + "\".";
+    + name + string("\" not found in \"") + file_name_ + "\".";
 
     searching_ = "";
 
     if (!this->GetElement(value))
       throw string("Error in ExtStream::GetValue: ")
-	+ string("unable to get a value for \"") + name + string("\" in \"")
-	+ file_name_ + "\".";
+    + string("unable to get a value for \"") + name + string("\" in \"")
+    + file_name_ + "\".";
   }
 
   //! Gets the value of a given variable without extracting from the stream.
@@ -1402,7 +1402,7 @@ namespace Talos
     \param delimiter delimiter in \a accepted.
   */
   void ExtStream::CheckAccepted(string name, string value,
-				string accepted, string delimiter) const
+                                string accepted, string delimiter) const
   {
     vector<string> accepted_list = split(accepted, delimiter);
     int i = 0;
@@ -1410,14 +1410,14 @@ namespace Talos
       i++;
     if (i == int(accepted_list.size()))
       {
-	string list = "[";
-	for (i = 0; i < int(accepted_list.size()) - 1; i++)
-	  list += trim(accepted_list[i]) + " " + delimiter[0] + " ";
-	if (accepted_list.size() != 0)
-	  list += trim(accepted_list[accepted_list.size() - 1]) + "]";
-	throw string("Error in ExtStream::GetValue: the value of \"")
-	  + name + string("\" in \"") + file_name_ + "\" is \""
-	  + to_str(value) + "\" but it should be in " + list + ".";
+        string list = "[";
+        for (i = 0; i < int(accepted_list.size()) - 1; i++)
+          list += trim(accepted_list[i]) + " " + delimiter[0] + " ";
+        if (accepted_list.size() != 0)
+          list += trim(accepted_list[accepted_list.size() - 1]) + "]";
+        throw string("Error in ExtStream::GetValue: the value of \"")
+      + name + string("\" in \"") + file_name_ + "\" is \""
+      + to_str(value) + "\" but it should be in " + list + ".";
       }
   }
 
@@ -1440,9 +1440,9 @@ namespace Talos
     \param file_name file to be opened.
   */
   ConfigStream::ConfigStream(string file_name,
-			     string comments,
-			     string delimiters,
-			     string markup_tags):
+                             string comments,
+                             string delimiters,
+                             string markup_tags):
     ExtStream(file_name, comments, delimiters),
     markup_tags_(markup_tags)
   {
@@ -1467,8 +1467,8 @@ namespace Talos
     section_ = "";
     if (section != "")
       {
-	this->FindFromBeginning(section);
-	section_ = section;
+        this->FindFromBeginning(section);
+        section_ = section;
       }
   }
 
@@ -1536,17 +1536,17 @@ namespace Talos
     this->searching_ = element;
 
     string elt;
-    while (ExtStream::GetRawElement(elt) && elt!=element
-	   && (section_ == "" || !IsSection(elt)));
+    while (ExtStream::GetRawElement(elt) && elt != element
+           && (section_ == "" || !IsSection(elt)));
 
     if (section_ != "" && (elt == "" || IsSection(elt)))
       throw string("Error in ConfigStream::Find: end of section \"")
-	+ section_ + string("\" has been reached in file \"")
-	+ this->file_name_ + string("\".\nUnable to find \"")
-	+ element + "\".";
+    + section_ + string("\" has been reached in file \"")
+    + this->file_name_ + string("\".\nUnable to find \"")
+    + element + "\".";
     if (elt == "")
       throw string("Error in ConfigStream::Find: \"")
-	+ element + string("\" not found in \"") + this->file_name_ + "\".";
+    + element + string("\" not found in \"") + this->file_name_ + "\".";
 
     this->searching_ = "";
 
@@ -1592,33 +1592,33 @@ namespace Talos
 
     for (int i = 0; i < int(elements.size()); i++)
       if (!is_markup[i])
-	element += elements[i];
+        element += elements[i];
       else
-	{
-	  this->Rewind();
-	  tmp = ExtStream::GetElement();
-	  while (tmp != elements[i] && tmp != "")
-	    tmp = ExtStream::GetElement();
-	  if (tmp == "")
-	    throw string("Error in ConfigStream::GetElement:")
-	      + string(" the value of the markup \"")
-	      + elements[i] + string("\" was not found in \"")
-	      + file_name_ + "\".";
-	  element += this->GetElement();
-	}
+        {
+          this->Rewind();
+          tmp = ExtStream::GetElement();
+          while (tmp != elements[i] && tmp != "")
+            tmp = ExtStream::GetElement();
+          if (tmp == "")
+            throw string("Error in ConfigStream::GetElement:")
+          + string(" the value of the markup \"")
+          + elements[i] + string("\" was not found in \"")
+          + file_name_ + "\".";
+          element += this->GetElement();
+        }
 
     this->clear(state);
     this->seekg(initial_position);
 
     if (!section_.empty() && (element == "" || IsSection(element)))
       {
-	string message = string("End of section \"") + section_
-	  + string("\" has been reached in file \"") + this->file_name_
-	  + "\".";
-	if (this->searching_ != "")
-	  message += string("\nUnable to find \"")
-	    + this->searching_ + string("\".");
-	throw message;
+        string message = string("End of section \"") + section_
+      + string("\" has been reached in file \"") + this->file_name_
+      + "\".";
+        if (this->searching_ != "")
+          message += string("\nUnable to find \"")
+        + this->searching_ + string("\".");
+        throw message;
       }
 
     return element;
@@ -1648,20 +1648,20 @@ namespace Talos
 
     for (int i = 0; i < int(elements.size()); i++)
       if (!is_markup[i])
-	element += elements[i];
+        element += elements[i];
       else
-	{
-	  this->Rewind();
-	  tmp = ExtStream::GetElement();
-	  while (tmp != elements[i] && tmp != "")
-	    tmp = ExtStream::GetElement();
-	  if (tmp == "")
-	    throw string("Error in ConfigStream::GetLine:")
-	      + string(" the value of the markup \"")
-	      + elements[i] + string("\" was not found in \"")
-	      + file_name_ + "\".";
-	  element += this->GetElement();
-	}
+        {
+          this->Rewind();
+          tmp = ExtStream::GetElement();
+          while (tmp != elements[i] && tmp != "")
+            tmp = ExtStream::GetElement();
+          if (tmp == "")
+            throw string("Error in ConfigStream::GetLine:")
+          + string(" the value of the markup \"")
+          + elements[i] + string("\" was not found in \"")
+          + file_name_ + "\".";
+          element += this->GetElement();
+        }
 
     this->clear(state);
     this->seekg(initial_position);
@@ -1693,20 +1693,20 @@ namespace Talos
 
     for (int i = 0; i < int(elements.size()); i++)
       if (!is_markup[i])
-	line += elements[i];
+        line += elements[i];
       else
-	{
-	  this->Rewind();
-	  tmp = ExtStream::GetElement();
-	  while (tmp != elements[i] && tmp != "")
-	    tmp = ExtStream::GetElement();
-	  if (tmp == "")
-	    throw string("Error in ConfigStream::GetLine:")
-	      + string(" the value of the markup \"")
-	      + elements[i] + string("\" was not found in \"")
-	      + file_name_ + "\".";
-	  line += this->GetElement();
-	}
+        {
+          this->Rewind();
+          tmp = ExtStream::GetElement();
+          while (tmp != elements[i] && tmp != "")
+            tmp = ExtStream::GetElement();
+          if (tmp == "")
+            throw string("Error in ConfigStream::GetLine:")
+          + string(" the value of the markup \"")
+          + elements[i] + string("\" was not found in \"")
+          + file_name_ + "\".";
+          line += this->GetElement();
+        }
 
     this->clear(state);
     this->seekg(initial_position);
@@ -1721,7 +1721,7 @@ namespace Talos
   */
   bool ConfigStream::IsSection(string str) const
   {
-    return str[0] == '[' && str[str.size()-1] == ']';
+    return str[0] == '[' && str[str.size() - 1] == ']';
   }
 
 
@@ -1789,7 +1789,7 @@ namespace Talos
   ConfigStreams::~ConfigStreams()
   {
     for (current_ = streams_.begin(); current_ != streams_.end(); ++current_)
-      delete (*current_);
+      delete(*current_);
   }
 
   //! Returns the vector of streams.
@@ -1810,7 +1810,7 @@ namespace Talos
   {
     return current_;
   }
-  
+
   //! Adds a file to the streams.
   /*!
     \param file file to be added.
@@ -1821,7 +1821,7 @@ namespace Talos
     streams_.push_back(new ConfigStream(file));
     current_ = streams_.begin() + l;
   }
-  
+
   //! Deselects the section.
   /*!
     Deselects the section (this is equivalent to SetSection("")) and rewinds
@@ -1848,32 +1848,32 @@ namespace Talos
     bool found = false;
     try
       {
-	(*current_)->SetSection(section);
-	found = true;
+        (*current_)->SetSection(section);
+        found = true;
       }
     catch (...)
       {
-	(*current_)->Rewind();
-	(*current_)->section_ = section_;
+        (*current_)->Rewind();
+        (*current_)->section_ = section_;
       }
     while (!found && current_ != streams_.end() - 1)
       {
-	++current_;
-	try
-	  {
-	    (*current_)->SetSection(section_);
-	    found = true;
-	  }
-	catch (...)
-	  {
-	    (*current_)->Rewind();
-	    (*current_)->section_ = section_;
-	  }
+        ++current_;
+        try
+          {
+            (*current_)->SetSection(section_);
+            found = true;
+          }
+        catch (...)
+          {
+            (*current_)->Rewind();
+            (*current_)->section_ = section_;
+          }
       }
 
     if (!found)
       throw string("Error in ConfigStreams::SetSection: section \"")
-	+ section + string("\" was not found in ") + FileNames() + ".";
+    + section + string("\" was not found in ") + FileNames() + ".";
   }
 
   //! Returns the current section.
@@ -1902,10 +1902,10 @@ namespace Talos
   ConfigStreams& ConfigStreams::SkipDiscarded()
   {
     (*current_)->SkipDiscarded();
-    while (current_ != streams_.end()-1 && !(*current_)->good())
+    while (current_ != streams_.end() - 1 && !(*current_)->good())
       {
-	++current_;
-	(*current_)->SkipDiscarded();
+        ++current_;
+        (*current_)->SkipDiscarded();
       }
     return *this;
   }
@@ -1919,10 +1919,10 @@ namespace Talos
   ConfigStreams& ConfigStreams::SkipDelimiters()
   {
     (*current_)->SkipDelimiters();
-    while (current_ != streams_.end()-1 && !(*current_)->good())
+    while (current_ != streams_.end() - 1 && !(*current_)->good())
       {
-	++current_;
-	(*current_)->SkipDelimiters();
+        ++current_;
+        (*current_)->SkipDelimiters();
       }
     return *this;
   }
@@ -1983,7 +1983,7 @@ namespace Talos
     string line;
     std::getline(**current_, line);
 
-    if (is_empty(**current_) && current_ != streams_.end()-1)
+    if (is_empty(**current_) && current_ != streams_.end() - 1)
       ++current_;
 
     return line;
@@ -1997,7 +1997,7 @@ namespace Talos
   {
     bool success = std::getline(**current_, line);
 
-    if (is_empty(**current_) && current_ != streams_.end()-1)
+    if (is_empty(**current_) && current_ != streams_.end() - 1)
       ++current_;
 
     return success;
@@ -2126,20 +2126,20 @@ namespace Talos
 
     for (int i = 0; i < int(elements.size()); i++)
       if (!is_markup[i])
-	line += elements[i];
+        line += elements[i];
       else
-	{
-	  this->Rewind();
-	  tmp = this->GetRawElement();
-	  while (tmp != elements[i] && tmp != "")
-	    tmp = this->GetRawElement();
-	  if (tmp == "")
-	    throw string("Error in ConfigStreams::GetLine:")
-	      + string(" the value of the markup \"")
-	      + elements[i] + string("\" was not found in ")
-	      + FileNames() + ".";
-	  line += this->GetElement();
-	}
+        {
+          this->Rewind();
+          tmp = this->GetRawElement();
+          while (tmp != elements[i] && tmp != "")
+            tmp = this->GetRawElement();
+          if (tmp == "")
+            throw string("Error in ConfigStreams::GetLine:")
+          + string(" the value of the markup \"")
+          + elements[i] + string("\" was not found in ")
+          + FileNames() + ".";
+          line += this->GetElement();
+        }
 
     this->Rewind();
     current_ = iter;
@@ -2244,32 +2244,32 @@ namespace Talos
     bool found;
     try
       {
-	found = (*current_)->Find(element);
+        found = (*current_)->Find(element);
       }
     catch (...)
       {
-	found = false;
+        found = false;
       }
-    while (!found && current_ != streams_.end()-1)
+    while (!found && current_ != streams_.end() - 1)
       {
-	++current_;
-	try
-	  {
-	    found = (*current_)->Find(element);
-	  }
-	catch (...)
-	  {
-	    found = false;
-	  }
+        ++current_;
+        try
+          {
+            found = (*current_)->Find(element);
+          }
+        catch (...)
+          {
+            found = false;
+          }
       }
     if (!found && !section_.empty())
       throw string("Error in ConfigStreams::Find: end of section \"")
-	+ section_ + string("\" has been reached in ")
-	+ FileNames() + string(".\nUnable to find \"")
-	+ element + "\".";
+    + section_ + string("\" has been reached in ")
+    + FileNames() + string(".\nUnable to find \"")
+    + element + "\".";
     if (!found)
       throw string("Error in ConfigStreams::Find: \"")
-	+ element + string("\" not found in ") + FileNames() + ".";
+    + element + string("\" not found in ") + FileNames() + ".";
 
     searching_ = "";
 
@@ -2299,7 +2299,7 @@ namespace Talos
   {
     string element;
     while ((element = (*current_)->ExtStream::GetElement()) == ""
-	   && current_ != streams_.end()-1)
+           && current_ != streams_.end() - 1)
       ++current_;
     return element;
   }
@@ -2329,20 +2329,20 @@ namespace Talos
 
     for (int i = 0; i < int(elements.size()); i++)
       if (!is_markup[i])
-	element += elements[i];
+        element += elements[i];
       else
-	{
-	  this->Rewind();
-	  tmp = GetRawElement();
-	  while (tmp != elements[i] && tmp != "")
-	    tmp = GetRawElement();
-	  if (tmp == "")
-	    throw string("Error in ConfigStreams::GetElement: ")
-	      + string("the value of the markup \"")
-	      + elements[i] + string("\" was not found in ")
-	      + FileNames() + ".";
-	  element += this->GetElement();
-	}
+        {
+          this->Rewind();
+          tmp = GetRawElement();
+          while (tmp != elements[i] && tmp != "")
+            tmp = GetRawElement();
+          if (tmp == "")
+            throw string("Error in ConfigStreams::GetElement: ")
+          + string("the value of the markup \"")
+          + elements[i] + string("\" was not found in ")
+          + FileNames() + ".";
+          element += this->GetElement();
+        }
 
     this->Rewind();
     current_ = iter;
@@ -2351,12 +2351,12 @@ namespace Talos
 
     if (!section_.empty() && (element == "" || IsSection(element)))
       {
-	string message = string("End of section \"") + section_
-	  + string("\" has been reached in ") + FileNames() + ".";
-	if (searching_ != "")
-	  message += string("\nUnable to find \"")
-	    + this->searching_ + string("\".");
-	throw message;
+        string message = string("End of section \"") + section_
+      + string("\" has been reached in ") + FileNames() + ".";
+        if (searching_ != "")
+          message += string("\nUnable to find \"")
+        + this->searching_ + string("\".");
+        throw message;
       }
 
     return element;
@@ -2531,11 +2531,11 @@ namespace Talos
     searching_ = name;
 
     string element;
-    while (this->GetElement(element) && element!=name);
+    while (this->GetElement(element) && element != name);
 
     if (element != name)
       throw string("Error in ConfigStreams::GetValue: \"")
-	+ name + string("\" not found in ") + FileNames() + ".";
+    + name + string("\" not found in ") + FileNames() + ".";
 
     searching_ = "";
 
@@ -2579,18 +2579,18 @@ namespace Talos
     searching_ = name;
 
     string element;
-    while (this->GetElement(element) && element!=name);
+    while (this->GetElement(element) && element != name);
 
     if (element != name)
       throw string("Error in ConfigStreams::GetValue: \"")
-	+ name + string("\" not found in ") + FileNames() + ".";
+    + name + string("\" not found in ") + FileNames() + ".";
     if (!this->GetElement(element))
       throw string("Error in ConfigStreams::GetValue: unable to read value")
-	+ string(" of \"") + name + string("\" in ") + FileNames() + ".";
+    + string(" of \"") + name + string("\" in ") + FileNames() + ".";
     if (!is_num(element))
       throw string("Error in ConfigStreams::GetValue: the value of \"") + name
-	+ string("\" in ") + FileNames() + string(" is \"") + element
-	+ "\", but it should be a number.";
+    + string("\" in ") + FileNames() + string(" is \"") + element
+    + "\", but it should be a number.";
 
     value = to_num<T>(element);
 
@@ -2609,18 +2609,18 @@ namespace Talos
     searching_ = name;
 
     string element;
-    while (this->GetElement(element) && element!=name);
+    while (this->GetElement(element) && element != name);
 
     if (element != name)
       throw string("Error in ConfigStreams::GetValue: \"")
-	+ name + string("\" not found in ") + FileNames() + ".";
+    + name + string("\" not found in ") + FileNames() + ".";
     if (!this->GetElement(element))
       throw string("Error in ConfigStreams::GetValue: unable to read value")
-	+ string(" of \"") + name + string("\" in ") + FileNames() + ".";
+    + string(" of \"") + name + string("\" in ") + FileNames() + ".";
     if (!is_integer(element))
       throw string("Error in ConfigStreams::GetValue: the value of \"") + name
-	+ string("\" in ") + FileNames() + string(" is \"") + element
-	+ "\", but it should be an integer.";
+    + string("\" in ") + FileNames() + string(" is \"") + element
+    + "\", but it should be an integer.";
 
     value = to_num<int>(element);
 
@@ -2666,9 +2666,9 @@ namespace Talos
     GetValue(name, value);
     if (value < min || value > max)
       throw string("Error in ConfigStreams::GetValue: the value of \"")
-	+ name + string("\" in ") +  FileNames() + " is "
-	+ to_str(value) + " but it should be in [" + to_str(min)
-	+ ", " + to_str(max) + "].";
+    + name + string("\" in ") +  FileNames() + " is "
+    + to_str(value) + " but it should be in [" + to_str(min)
+    + ", " + to_str(max) + "].";
   }
 
   /*! \brief Gets the value of a given variable without extracting them from
@@ -2715,9 +2715,9 @@ namespace Talos
     GetValue(name, value);
     if (!satisfies_constraint(value, constraint))
       throw string("Error in ConfigStreams::GetValue: the value of \"")
-	+ name + string("\" in ") + FileNames() + " is "
-	+ to_str(value) + " but it should satisfy the following "
-	+ "constraint(s):\n" + show_constraint(constraint);
+    + name + string("\" in ") + FileNames() + " is "
+    + to_str(value) + " but it should satisfy the following "
+    + "constraint(s):\n" + show_constraint(constraint);
   }
 
   /*! \brief Gets the value of a given variable without extracting them from
@@ -2761,18 +2761,18 @@ namespace Talos
     searching_ = name;
 
     string element;
-    while (this->GetElement(element) && element!=name);
+    while (this->GetElement(element) && element != name);
 
     if (element != name)
       throw string("Error in ConfigStreams::GetValue: \"")
-	+ name + string("\" not found in ") + FileNames() + ".";
+    + name + string("\" not found in ") + FileNames() + ".";
 
     searching_ = "";
 
     if (!this->GetElement(value))
       throw string("Error in ConfigStreams::GetValue: ")
-	+ string("unable to get a value for \"") + name + string("\" in ")
-	+ FileNames() + ".";
+    + string("unable to get a value for \"") + name + string("\" in ")
+    + FileNames() + ".";
   }
 
   /*! \brief Gets the value of a given variable without extracting them from
@@ -2810,7 +2810,7 @@ namespace Talos
     \param delimiter delimiter in \a accepted. Default: |.
   */
   void ConfigStreams::GetValue(string name, string accepted, string& value,
-			       string delimiter = "|")
+                               string delimiter = "|")
   {
     GetValue(name, value);
     CheckAccepted(name, value, accepted, delimiter);
@@ -2829,7 +2829,7 @@ namespace Talos
     \param delimiter delimiter in \a accepted. Default: |.
   */
   void ConfigStreams::PeekValue(string name, string accepted, string& value,
-				string delimiter = "|")
+                                string delimiter = "|")
   {
     vector<ConfigStream*>::iterator iter = current_;
     streampos initial_position = (*current_)->tellg();
@@ -2855,18 +2855,18 @@ namespace Talos
     searching_ = name;
 
     string element;
-    while (this->GetElement(element) && element!=name);
+    while (this->GetElement(element) && element != name);
 
     if (element != name)
       throw string("Error in ConfigStreams::GetValue: \"")
-	+ name + string("\" not found in ") + FileNames() + ".";
+    + name + string("\" not found in ") + FileNames() + ".";
 
     searching_ = "";
 
     if (!this->GetElement(value))
       throw string("Error in ConfigStreams::GetValue: ")
-	+ string("unable to get a value for \"") + name + string("\" in ")
-	+ FileNames() + ".";
+    + string("unable to get a value for \"") + name + string("\" in ")
+    + FileNames() + ".";
   }
 
   //! Gets the value of a given variable without extracting from the stream.
@@ -2898,7 +2898,7 @@ namespace Talos
   */
   bool ConfigStreams::IsSection(string str) const
   {
-    return str[0] == '[' && str[str.size()-1] == ']';
+    return str[0] == '[' && str[str.size() - 1] == ']';
   }
 
   //! Returns file names in string form.
@@ -2913,7 +2913,7 @@ namespace Talos
       output += string("\"") + streams_[i]->GetFileName() + "\", ";
     if (Nstream > 1)
       output += string("\"") + streams_[Nstream - 2]->GetFileName()
-	+ "\" or ";
+    + "\" or ";
     if (Nstream > 0)
       output += string("\"") + streams_[Nstream - 1]->GetFileName() + "\"";
     return output;
@@ -2927,7 +2927,7 @@ namespace Talos
     \param delimiter delimiter in \a accepted.
   */
   void ConfigStreams::CheckAccepted(string name, string value,
-				    string accepted, string delimiter) const
+                                    string accepted, string delimiter) const
   {
     vector<string> accepted_list = split(accepted, delimiter);
     int i = 0;
@@ -2935,14 +2935,14 @@ namespace Talos
       i++;
     if (i == int(accepted_list.size()))
       {
-	string list = "[";
-	for (i = 0; i < int(accepted_list.size()) - 1; i++)
-	  list += trim(accepted_list[i]) + " " + delimiter[0] + " ";
-	if (accepted_list.size() != 0)
-	  list += trim(accepted_list[accepted_list.size() - 1]) + "]";
-	throw string("Error in ConfigStreams::GetValue: the value of \"")
-	  + name + string("\" in ") + FileNames() + " is \""
-	  + to_str(value) + "\" but it should be in " + list + ".";
+        string list = "[";
+        for (i = 0; i < int(accepted_list.size()) - 1; i++)
+          list += trim(accepted_list[i]) + " " + delimiter[0] + " ";
+        if (accepted_list.size() != 0)
+          list += trim(accepted_list[accepted_list.size() - 1]) + "]";
+        throw string("Error in ConfigStreams::GetValue: the value of \"")
+      + name + string("\" in ") + FileNames() + " is \""
+      + to_str(value) + "\" but it should be in " + list + ".";
       }
   }
 

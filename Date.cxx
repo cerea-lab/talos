@@ -37,8 +37,9 @@ namespace Talos
     month_lengths_(12)
   {
     int month_lengths[12] = {31, 28, 31, 30, 31, 30,
-			     31, 31, 30, 31, 30, 31};
-    for (int i=0; i<12; ++i)
+                             31, 31, 30, 31, 30, 31
+    };
+    for (int i = 0; i < 12; ++i)
       month_lengths_[i] = month_lengths[i];
 
     this->Adjust();
@@ -54,7 +55,8 @@ namespace Talos
     seconds_(date.GetSeconds()), month_lengths_(12)
   {
     int month_lengths[12] = {31, 28, 31, 30, 31, 30,
-			     31, 31, 30, 31, 30, 31};
+                             31, 31, 30, 31, 30, 31
+    };
     for (int i = 0; i < 12; ++i)
       month_lengths_[i] = month_lengths[i];
 
@@ -70,7 +72,8 @@ namespace Talos
   Date::Date(string date): month_lengths_(12)
   {
     int month_lengths[12] = {31, 28, 31, 30, 31, 30,
-			     31, 31, 30, 31, 30, 31};
+                             31, 31, 30, 31, 30, 31
+    };
     for (int i = 0; i < 12; ++i)
       month_lengths_[i] = month_lengths[i];
 
@@ -90,8 +93,9 @@ namespace Talos
     day_ = yyyymmdd % 100;
 
     int month_lengths[12] = {31, 28, 31, 30, 31, 30,
-			     31, 31, 30, 31, 30, 31};
-    for (int i=0; i<12; ++i)
+                             31, 31, 30, 31, 30, 31
+    };
+    for (int i = 0; i < 12; ++i)
       month_lengths_[i] = month_lengths[i];
 
     this->Adjust();
@@ -107,14 +111,15 @@ namespace Talos
     \param sc seconds.
   */
   Date::Date(int yyyy, int mm, int dd,
-	     int hh, int mn, double sc):
+             int hh, int mn, double sc):
     year_(yyyy), month_(mm), day_(dd),
     hour_(hh), minutes_(mn), seconds_(sc),
     month_lengths_(12)
   {
     int month_lengths[12] = {31, 28, 31, 30, 31, 30,
-			     31, 31, 30, 31, 30, 31};
-    for (int i=0; i<12; ++i)
+                             31, 31, 30, 31, 30, 31
+    };
+    for (int i = 0; i < 12; ++i)
       month_lengths_[i] = month_lengths[i];
 
     this->Adjust();
@@ -182,15 +187,15 @@ namespace Talos
     // Parses the string to split items.
     for (unsigned int i = 0; i < date.size(); i++)
       {
-	code = int(date[i]);
-	// If the current character is an integer.
-	if (code > 47 && code < 58)
-	  item += date[i];
-	else if (!item.empty())
-	  {
-	    split_date.push_back(item);
-	    item = "";
-	  }
+        code = int(date[i]);
+        // If the current character is an integer.
+        if (code > 47 && code < 58)
+          item += date[i];
+        else if (!item.empty())
+          {
+            split_date.push_back(item);
+            item = "";
+          }
       }
     if (!item.empty())
       split_date.push_back(item);
@@ -203,9 +208,9 @@ namespace Talos
       throw string("Badly formatted date: \"") + date + string("\".");
     for (unsigned int i = 0; i < split_date.size(); i++)
       {
-	if (split_date[i].size() % 2 != 0 || !is_integer(split_date[i]))
-	  throw string("Badly formatted date: \"") + date + string("\".");
-	compressed_date += split_date[i];
+        if (split_date[i].size() % 2 != 0 || !is_integer(split_date[i]))
+          throw string("Badly formatted date: \"") + date + string("\".");
+        compressed_date += split_date[i];
       }
 
     // Year is at least provided.
@@ -245,7 +250,7 @@ namespace Talos
     \param sc seconds.
   */
   void Date::SetDate(int yyyy, int mm, int dd,
-		     int hh, int mn, double sc)
+                     int hh, int mn, double sc)
   {
     year_ = yyyy;
     month_ = mm;
@@ -276,9 +281,9 @@ namespace Talos
 
     // Month.
     return month_ > 0 && month_ < 13
-      && day_ > 0 && day_ < month_lengths_[month_ - 1] + 1
-      && minutes_ > -1 && minutes_ < 60
-      && seconds_ >= 0. && seconds_ < 60.;
+                  && day_ > 0 && day_ < month_lengths_[month_ - 1] + 1
+                            && minutes_ > -1 && minutes_ < 60
+                                               && seconds_ >= 0. && seconds_ < 60.;
   }
 
   //! Adjusts the date to make it valid.
@@ -287,80 +292,80 @@ namespace Talos
     // Minutes.
     if (seconds_ >= 60.)
       {
-	minutes_ += int(seconds_ / 60.);
-	seconds_ -= double(int(seconds_ / 60.)) * 60.;
+        minutes_ += int(seconds_ / 60.);
+        seconds_ -= double(int(seconds_ / 60.)) * 60.;
       }
     if (seconds_ < 0.)
       {
-	minutes_ += int(seconds_ / 60.) - 1;
-	seconds_ -= double(int(seconds_ / 60.) - 1) * 60.;
-	if (seconds_ == 60.)
-	  {
-	    minutes_ += 1;
-	    seconds_ = 0.;
-	  }
+        minutes_ += int(seconds_ / 60.) - 1;
+        seconds_ -= double(int(seconds_ / 60.) - 1) * 60.;
+        if (seconds_ == 60.)
+          {
+            minutes_ += 1;
+            seconds_ = 0.;
+          }
       }
 
     // Hours.
     if (minutes_ > 59)
       {
-	hour_ += minutes_ / 60;
-	minutes_ = minutes_ % 60;
+        hour_ += minutes_ / 60;
+        minutes_ = minutes_ % 60;
       }
     else if (minutes_ < 0)
       {
-	hour_ += (minutes_ + 1) / 60 - 1;
-	minutes_ = 59 + (minutes_ + 1) % 60;
+        hour_ += (minutes_ + 1) / 60 - 1;
+        minutes_ = 59 + (minutes_ + 1) % 60;
       }
 
     // Days.
     if (hour_ > 23)
       {
-	day_ += hour_ / 24;
-	hour_ = hour_ % 24;
+        day_ += hour_ / 24;
+        hour_ = hour_ % 24;
       }
     else if (hour_ < 0)
       {
-	day_ += hour_ / 24 - 1;
-	hour_ = 24 + hour_ % 24;
+        day_ += hour_ / 24 - 1;
+        hour_ = 24 + hour_ % 24;
       }
 
     // Months.
     if (month_ > 12)
       {
-	year_ += month_ / 12;
-	month_ = month_ % 12;
+        year_ += month_ / 12;
+        month_ = month_ % 12;
       }
     else if (month_ <= 0)
       {
-	year_ += month_ / 12 - 1;
-	month_ = 12 + month_ % 12;
+        year_ += month_ / 12 - 1;
+        month_ = 12 + month_ % 12;
       }
     this->LeapYearAdjust();
 
     // Months again.
     while (day_ > month_lengths_[month_ - 1])
       {
-	day_ -= month_lengths_[month_ - 1];
-	++month_;
-	if (month_ == 13)
-	  {
-	    month_ = 1;
-	    ++year_;
-	    this->LeapYearAdjust();
-	  }
+        day_ -= month_lengths_[month_ - 1];
+        ++month_;
+        if (month_ == 13)
+          {
+            month_ = 1;
+            ++year_;
+            this->LeapYearAdjust();
+          }
       }
 
     while (day_ <= 0)
       {
-	--month_;
-	if (month_ == 0)
-	  {
-	    month_ = 12;
-	    --year_;
-	    this->LeapYearAdjust();
-	  }
-	day_ += month_lengths_[month_ - 1];
+        --month_;
+        if (month_ == 0)
+          {
+            month_ = 12;
+            --year_;
+            this->LeapYearAdjust();
+          }
+        day_ += month_lengths_[month_ - 1];
       }
 
   }
@@ -372,8 +377,8 @@ namespace Talos
   */
   bool Date::LeapYear(int year) const
   {
-    return ( year % 4 == 0
-	     && ( year % 100 != 0 || year % 400 == 0 ) );
+    return (year % 4 == 0
+            && (year % 100 != 0 || year % 400 == 0));
   }
 
   //! Is the current year a leap year?
@@ -407,35 +412,35 @@ namespace Talos
     string output("");
     string::size_type index_b(0), index_e, tmp;
 
-    while ( (index_b != string::npos)
-	    && (index_b < format.size()) )
+    while ((index_b != string::npos)
+           && (index_b < format.size()))
       {
-	tmp = format.substr(index_b).find_first_of("%");
-	index_e = tmp == string::npos ? string::npos : index_b + tmp;
-	if ( (index_e != string::npos) && (index_e != format.size() - 1) )
-	  {
-	    output += format.substr(index_b, index_e - index_b);
-	    if ( format[index_e+1] == 'y')
-	      output += to_str_fill(year_, 4, '0', ostringstream::right);
-	    else if ( format[index_e+1] == 'm')
-	      output += to_str_fill(month_, 2, '0', ostringstream::right);
-	    else if ( format[index_e+1] == 'd')
-	      output += to_str_fill(day_, 2, '0', ostringstream::right);
-	    else if ( format[index_e+1] == 'h')
-	      output += to_str_fill(hour_, 2, '0', ostringstream::right);
-	    else if ( format[index_e+1] == 'i')
-	      output += to_str_fill(minutes_, 2, '0', ostringstream::right);
-	    else if ( format[index_e+1] == 's')
-	      output += to_str_fill(seconds_, 2, '0', ostringstream::right);
-	    else
-	      output += format.substr(index_e, 2);
-	    index_b = index_e + 2;
-	  }
-	else
-	  {
-	    output += format.substr(index_b);
-	    index_b = string::npos;
-	  }
+        tmp = format.substr(index_b).find_first_of("%");
+        index_e = tmp == string::npos ? string::npos : index_b + tmp;
+        if ((index_e != string::npos) && (index_e != format.size() - 1))
+          {
+            output += format.substr(index_b, index_e - index_b);
+            if (format[index_e + 1] == 'y')
+              output += to_str_fill(year_, 4, '0', ostringstream::right);
+            else if (format[index_e + 1] == 'm')
+              output += to_str_fill(month_, 2, '0', ostringstream::right);
+            else if (format[index_e + 1] == 'd')
+              output += to_str_fill(day_, 2, '0', ostringstream::right);
+            else if (format[index_e + 1] == 'h')
+              output += to_str_fill(hour_, 2, '0', ostringstream::right);
+            else if (format[index_e + 1] == 'i')
+              output += to_str_fill(minutes_, 2, '0', ostringstream::right);
+            else if (format[index_e + 1] == 's')
+              output += to_str_fill(seconds_, 2, '0', ostringstream::right);
+            else
+              output += format.substr(index_e, 2);
+            index_b = index_e + 2;
+          }
+        else
+          {
+            output += format.substr(index_b);
+            index_b = string::npos;
+          }
       }
 
     return output;
@@ -656,7 +661,7 @@ namespace Talos
   int Date::GetNumberOfDays() const
   {
     int res(0);
-    for (int i=1; i<month_; i++)
+    for (int i = 1; i < month_; i++)
       res += month_lengths_[i - 1];
     return res + day_ - 1;
   }
@@ -671,10 +676,10 @@ namespace Talos
   {
     int min_year = min(year_, date.GetYear());
     int nb_days(0), nb_days_date(0);
-    for (int i=min_year; i<year_; i++)
+    for (int i = min_year; i < year_; i++)
       nb_days += this->LeapYear(i) ? 366 : 365;
     nb_days += this->GetDayNumber();
-    for (int i=min_year; i<date.GetYear(); i++)
+    for (int i = min_year; i < date.GetYear(); i++)
       nb_days_date += this->LeapYear(i) ? 366 : 365;
     nb_days_date += date.GetDayNumber();
 
@@ -691,10 +696,10 @@ namespace Talos
   {
     int min_year = min(year_, date.GetYear());
     int nb_days(0), nb_days_date(0);
-    for (int i=min_year; i<year_; i++)
+    for (int i = min_year; i < year_; i++)
       nb_days += this->LeapYear(i) ? 366 : 365;
     nb_days += this->GetDayNumber();
-    for (int i=min_year; i<date.GetYear(); i++)
+    for (int i = min_year; i < date.GetYear(); i++)
       nb_days_date += this->LeapYear(i) ? 366 : 365;
     nb_days_date += date.GetDayNumber();
 
@@ -758,7 +763,7 @@ namespace Talos
   ///////////////
   // OPERATORS //
   ///////////////
-  
+
   //! Comparison operator <.
   /*!
     \param first_date date.

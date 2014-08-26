@@ -64,7 +64,7 @@ namespace Talos
     Date(string date);
     Date(int yyyymmdd);
     Date(int yyyy, int mm, int dd = 1,
-	 int hh = 0, int mn = 0, double sc = 0);
+         int hh = 0, int mn = 0, double sc = 0);
 
 #ifndef SWIG
     Date& operator=(const Date&);
@@ -73,13 +73,13 @@ namespace Talos
     void SetDate(string date);
     void SetDate(int yyyymmdd);
     void SetDate(int yyyy, int mm, int dd = 1,
-		 int hh = 0, int mn = 0, double sc = 0);
+                 int hh = 0, int mn = 0, double sc = 0);
 
     bool LeapYear(int year) const;
     bool LeapYear() const;
 
     int GetDate() const;
-    
+
     string GetDate(const string& format) const;
     template <class T>
     void GetDate(const string& format, T& date) const;
