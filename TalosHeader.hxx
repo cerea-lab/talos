@@ -40,35 +40,7 @@ namespace Talos
 #define DISP(x) std::cout << #x ": " << (x) << std::endl
 #endif
 
-#ifndef TRY
-#define TRY try					\
-    {
-#endif
-#ifndef END
-#define END						\
-      }							\
- catch (std::exception& Err)				\
-   {							\
-     cout << "C++ exception: " << Err.what() << endl;	\
-     return 1;						\
-   }							\
- catch (std::string& str)				\
-   {							\
-     cout << str << endl;				\
-     return 1;						\
-   }							\
- catch (const char* str)				\
-   {							\
-     cout << str << endl;				\
-     return 1;						\
-   }							\
- catch(...)						\
-   {							\
-     cout << "Unknown exception..." << endl;		\
-     return 1;						\
-   }
-#endif
-
+#include "exception.hxx"
 #include "String.hxx"
 #include "Date.hxx"
 #include "Files.hxx"

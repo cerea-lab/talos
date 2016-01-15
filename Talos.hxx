@@ -25,6 +25,7 @@
 
 #include "TalosHeader.hxx"
 
+#include "exception.cxx"
 #include "String.cxx"
 #include "Date.cxx"
 #include "Files.cxx"
