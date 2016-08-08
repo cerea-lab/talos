@@ -26,6 +26,10 @@
 #include "String.hxx"
 #include "Files.hxx"
 
+#include <algorithm>
+#include <map>
+#include <set>
+
 namespace Talos
 {
 
@@ -379,6 +383,9 @@ namespace Talos
       : searching_(stream.searching_)
     {
       searching_ = searching;
+#ifdef TALOS_DEBUG
+      AddToRegister(stream);
+#endif
     }
 
     //! Main constructor.
@@ -388,6 +395,10 @@ namespace Talos
       : searching_(multi_stream.searching_)
     {
       searching_ = searching;
+
+      // No real scope for sub-streams, just registering.
+      for (int i = 0; i < (int) multi_stream.streams_.size(); ++i)
+        SearchScope(*multi_stream.streams_[i], searching);
     }
 
     //! Destructor.
@@ -402,7 +413,114 @@ namespace Talos
     SearchScope(const SearchScope&);
     string& searching_;
 
+#ifdef TALOS_DEBUG
+    void AddToRegister(ExtStream& stream)
+    {
+      reg.file[stream.file_name_].insert(searching_);
+      string& delimiter = reg.delimiter[stream.file_name_];
+      if (delimiter.empty())
+        delimiter = stream.delimiters_;
+      else if (delimiter != stream.delimiters_)
+        {
+          throw "\"" + stream.file_name_ + "\" has been opened with different "
+            "delimiters: once with \"" + delimiter + "\", "
+            "another with \"" + stream.delimiters_ + "\"";
+        }
+    }
+
+    //! Fields that has been searched for through the configuration files.
+    static struct Register
+    {
+      typedef std::set<string> FieldSet;
+      typedef map<string, FieldSet> FileRegister;
+      typedef map<string, string> DelimiterRegister;
+      FileRegister file;
+      DelimiterRegister delimiter;
+
+      //! Destructor.
+      //! Checks that all configuration field names has been requested.
+      ~Register()
+      {
+        bool has_warning = false;
+        for (FileRegister::iterator it = file.begin(); it != file.end(); ++it)
+          {
+            const string& filename = it->first;
+            const FieldSet& searched_field = it->second;
+            const string& delimiters = delimiter[filename];
+
+            ConfigStream cfg(filename);
+            FieldSet field_list;
+
+            // Adds the sections to the field list.
+            string element;
+            while (cfg.GetRawElement(element))
+              if (cfg.IsSection(element))
+                field_list.insert(element);
+
+            // Adds variables to the field list.
+            cfg.Rewind();
+            string line;
+            vector<string> member_list;
+            vector<string> word_list;
+            while (cfg.ExtStream::GetLine(line))
+              {
+                vector<string> variable_list;
+
+                split(line, member_list, ":=");
+                int member_count = (int) member_list.size();
+                for (int i = 0; i < member_count; i += 2)
+                  {
+                    const string& token = member_list[i];
+
+                    split(token, word_list, delimiters);
+                    int word_count = word_list.size();
+                    if (member_count == 1  // no affectation symbol
+                        && word_count > 2) // and not a pair of words
+                      break;               // => a line of raw values
+
+                    string variable_name = word_list.back();
+                    if (is_num(variable_name))
+                      {
+                        variable_list.clear();
+                        break; // This was actually a line of raw values.
+                      }
+                    variable_list.push_back(variable_name);
+                  }
+
+                for (int i = 0; i < (int) variable_list.size(); ++i)
+                  field_list.insert(variable_list[i]);
+              }
+
+            FieldSet unused_field;
+            set_difference(field_list.begin(), field_list.end(),
+                           searched_field.begin(), searched_field.end(),
+                           inserter(unused_field, unused_field.begin()));
+
+            // Checks that every fields were searched for.
+            if (!unused_field.empty())
+              {
+                has_warning = true;
+                cerr << "[INFO] === in \"" << filename << "\" ===" << endl;
+              }
+            for (FieldSet::iterator it = unused_field.begin();
+                 it != unused_field.end(); ++it)
+              cerr << "[INFO]   '"
+                   << *it << "' field was never used " << endl;
+          }
+        if (has_warning)
+          cerr << "[INFO] Caveat of the unused field detection:\n"
+            " - A field name with multiple occurrences can be unused for some\n"
+            "   of them without being listed here.\n"
+            " - Some unused fields might actually be used by another reader\n"
+            "   than the Talos config reader." << endl;
+      }
+    } reg;
+#endif
   };
+
+#ifdef TALOS_DEBUG
+  SearchScope::Register SearchScope::reg = SearchScope::Register();
+#endif
 
   ///////////////
   // EXTSTREAM //
@@ -843,7 +961,7 @@ namespace Talos
   */
   bool ExtStream::Find(string element)
   {
-    searching_ = element;
+    SearchScope s(*this, element);
 
     string elt;
     while (GetElement(elt) && elt != element);
@@ -851,8 +969,6 @@ namespace Talos
     if (elt == "")
       throw string("Error in ExtStream::Find: \"")
         + element + string("\" not found in \"") + file_name_ + "\".";
-
-    searching_ = "";
 
     return elt == element;
   }
@@ -1085,7 +1201,7 @@ namespace Talos
   */
   string ExtStream::GetValue(string name)
   {
-    searching_ = name;
+    SearchScope s(*this, name);
 
     string element;
     while (GetElement(element) && element != name);
@@ -1093,8 +1209,6 @@ namespace Talos
     if (element != name)
       throw string("Error in ExtStream::GetValue: \"")
         + name + string("\" not found in \"") + file_name_ + "\".";
-
-    searching_ = "";
 
     return GetElement();
   }
@@ -1130,7 +1244,7 @@ namespace Talos
   template <class T>
   void ExtStream::GetValue(string name, T& value)
   {
-    searching_ = name;
+    SearchScope s(*this, name);
 
     string element;
     while (GetElement(element) && element != name);
@@ -1147,8 +1261,6 @@ namespace Talos
         + "\", but it should be a number.";
 
     value = to_num<T>(element);
-
-    searching_ = "";
   }
 
   //! Gets the value of a given variable.
@@ -1160,7 +1272,7 @@ namespace Talos
   */
   void ExtStream::GetValue(string name, int& value)
   {
-    searching_ = name;
+    SearchScope s(*this, name);
 
     string element;
     while (GetElement(element) && element != name);
@@ -1177,8 +1289,6 @@ namespace Talos
         + "\", but it should be an integer.";
 
     value = to_num<int>(element);
-
-    searching_ = "";
   }
 
   /*! \brief Gets the value of a given variable without extracting them from
@@ -1303,7 +1413,7 @@ namespace Talos
   */
   void ExtStream::GetValue(string name, string& value)
   {
-    searching_ = name;
+    SearchScope s(*this, name);
 
     string element;
     while (GetElement(element) && element != name);
@@ -1311,8 +1421,6 @@ namespace Talos
     if (element != name)
       throw string("Error in ExtStream::GetValue: \"")
         + name + string("\" not found in \"") + file_name_ + "\".";
-
-    searching_ = "";
 
     if (!this->GetElement(value))
       throw string("Error in ExtStream::GetValue: ")
@@ -1331,7 +1439,7 @@ namespace Talos
   */
   void ExtStream::PeekValue(string name, string& value)
   {
-    searching_ = name;
+    SearchScope s(*this, name);
 
     streampos initial_position = this->tellg();
     iostate state = this->rdstate();
@@ -1340,8 +1448,6 @@ namespace Talos
 
     this->clear(state);
     this->seekg(initial_position);
-
-    searching_ = "";
   }
 
   //! Gets the value of a given variable.
@@ -1377,7 +1483,7 @@ namespace Talos
   void ExtStream::PeekValue(string name, string accepted, string& value,
                             string delimiter = "|")
   {
-    searching_ = name;
+    SearchScope s(*this, name);
 
     streampos initial_position = this->tellg();
     iostate state = this->rdstate();
@@ -1386,8 +1492,6 @@ namespace Talos
 
     this->clear(state);
     this->seekg(initial_position);
-
-    searching_ = "";
   }
 
   //! Gets the value of a given variable.
@@ -1399,7 +1503,7 @@ namespace Talos
   */
   void ExtStream::GetValue(string name, bool& value)
   {
-    searching_ = name;
+    SearchScope s(*this, name);
 
     string element;
     while (GetElement(element) && element != name);
@@ -1407,8 +1511,6 @@ namespace Talos
     if (element != name)
       throw string("Error in ExtStream::GetValue: \"")
         + name + string("\" not found in \"") + file_name_ + "\".";
-
-    searching_ = "";
 
     if (!this->GetElement(value))
       throw string("Error in ExtStream::GetValue: ")
@@ -1426,7 +1528,7 @@ namespace Talos
   */
   void ExtStream::PeekValue(string name, bool& value)
   {
-    searching_ = name;
+    SearchScope s(*this, name);
 
     streampos initial_position = this->tellg();
     iostate state = this->rdstate();
@@ -1435,8 +1537,6 @@ namespace Talos
 
     this->clear(state);
     this->seekg(initial_position);
-
-    searching_ = "";
   }
 
   //! Checks that a value is in a given list of accepted values.
@@ -1578,7 +1678,7 @@ namespace Talos
   */
   bool ConfigStream::Find(string element)
   {
-    this->searching_ = element;
+    SearchScope s(*this, element);
 
     string elt;
     while (ExtStream::GetRawElement(elt) && elt != element
@@ -1592,8 +1692,6 @@ namespace Talos
     if (elt == "")
       throw string("Error in ConfigStream::Find: \"")
         + element + string("\" not found in \"") + this->file_name_ + "\".";
-
-    this->searching_ = "";
 
     return elt == element;
   }
@@ -2284,7 +2382,7 @@ namespace Talos
   */
   bool ConfigStreams::Find(string element)
   {
-    searching_ = element;
+    SearchScope s(*this, element);
 
     bool found;
     try
@@ -2315,8 +2413,6 @@ namespace Talos
     if (!found)
       throw string("Error in ConfigStreams::Find: \"")
         + element + string("\" not found in ") + FileNames() + ".";
-
-    searching_ = "";
 
     return found;
   }
@@ -2573,7 +2669,7 @@ namespace Talos
   */
   string ConfigStreams::GetValue(string name)
   {
-    searching_ = name;
+    SearchScope s(*this, name);
 
     string element;
     while (this->GetElement(element) && element != name);
@@ -2581,8 +2677,6 @@ namespace Talos
     if (element != name)
       throw string("Error in ConfigStreams::GetValue: \"")
         + name + string("\" not found in ") + FileNames() + ".";
-
-    searching_ = "";
 
     return this->GetElement();
   }
@@ -2621,7 +2715,7 @@ namespace Talos
   template <class T>
   void ConfigStreams::GetValue(string name, T& value)
   {
-    searching_ = name;
+    SearchScope s(*this, name);
 
     string element;
     while (this->GetElement(element) && element != name);
@@ -2638,8 +2732,6 @@ namespace Talos
         + "\", but it should be a number.";
 
     value = to_num<T>(element);
-
-    searching_ = "";
   }
 
   //! Gets the value of a given variable.
@@ -2651,7 +2743,7 @@ namespace Talos
   */
   void ConfigStreams::GetValue(string name, int& value)
   {
-    searching_ = name;
+    SearchScope s(*this, name);
 
     string element;
     while (this->GetElement(element) && element != name);
@@ -2668,8 +2760,6 @@ namespace Talos
         + "\", but it should be an integer.";
 
     value = to_num<int>(element);
-
-    searching_ = "";
   }
 
   /*! \brief Gets the value of a given variable without extracting them from
@@ -2803,7 +2893,7 @@ namespace Talos
   */
   void ConfigStreams::GetValue(string name, string& value)
   {
-    searching_ = name;
+    SearchScope s(*this, name);
 
     string element;
     while (this->GetElement(element) && element != name);
@@ -2811,8 +2901,6 @@ namespace Talos
     if (element != name)
       throw string("Error in ConfigStreams::GetValue: \"")
         + name + string("\" not found in ") + FileNames() + ".";
-
-    searching_ = "";
 
     if (!this->GetElement(value))
       throw string("Error in ConfigStreams::GetValue: ")
@@ -2897,7 +2985,7 @@ namespace Talos
   */
   void ConfigStreams::GetValue(string name, bool& value)
   {
-    searching_ = name;
+    SearchScope s(*this, name);
 
     string element;
     while (this->GetElement(element) && element != name);
@@ -2905,8 +2993,6 @@ namespace Talos
     if (element != name)
       throw string("Error in ConfigStreams::GetValue: \"")
         + name + string("\" not found in ") + FileNames() + ".";
-
-    searching_ = "";
 
     if (!this->GetElement(value))
       throw string("Error in ConfigStreams::GetValue: ")
