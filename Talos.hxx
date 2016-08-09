@@ -29,6 +29,7 @@
 #include "String.cxx"
 #include "Date.cxx"
 #include "Files.cxx"
+#include "debug/debug.cxx"
 
 #define TALOS_FILE_TALOS_HXX
 #endif

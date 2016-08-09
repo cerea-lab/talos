@@ -28,8 +28,6 @@ namespace Talos
 }
 
 #include <iostream>
-#include <exception>
-
 
 //! To display a message... call Hermes!
 #ifndef ERR
@@ -40,10 +38,11 @@ namespace Talos
 #define DISP(x) std::cout << #x ": " << (x) << std::endl
 #endif
 
-#include "exception.hxx"
 #include "String.hxx"
 #include "Date.hxx"
 #include "Files.hxx"
+
+#include "debug/debug.hxx"
 
 #define TALOS_FILE_TALOSHEADER_HXX
 #endif
