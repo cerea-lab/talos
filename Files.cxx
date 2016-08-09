@@ -135,14 +135,14 @@ namespace Talos
         expression = trim(constraint_list[i]);
         if (expression.size() < 2)
           throw "Error in satisfies_constraint: the constraint \""
-        + expression + "\" is not supported.";
+            + expression + "\" is not supported.";
         if (expression[0] == '<')
           if (expression[1] == '=')
             {
               str = trim(expression.substr(2));
               if (!is_num(str))
                 throw "Error in satisfies_constraint: the constraint \""
-          + expression + "\" cannot be parsed or is not supported.";
+                  + expression + "\" cannot be parsed or is not supported.";
               to_num(str, val);
               if (value > val)
                 return false;
@@ -152,7 +152,7 @@ namespace Talos
               str = trim(expression.substr(1));
               if (!is_num(str))
                 throw "Error in satisfies_constraint: the constraint \""
-          + expression + "\" cannot be parsed or is not supported.";
+                  + expression + "\" cannot be parsed or is not supported.";
               to_num(str, val);
               if (value >= val)
                 return false;
@@ -163,7 +163,7 @@ namespace Talos
               str = trim(expression.substr(2));
               if (!is_num(str))
                 throw "Error in satisfies_constraint: the constraint \""
-          + expression + "\" cannot be parsed or is not supported.";
+                  + expression + "\" cannot be parsed or is not supported.";
               to_num(str, val);
               if (value < val)
                 return false;
@@ -173,7 +173,7 @@ namespace Talos
               str = trim(expression.substr(1));
               if (!is_num(str))
                 throw "Error in satisfies_constraint: the constraint \""
-          + expression + "\" cannot be parsed or is not supported.";
+                  + expression + "\" cannot be parsed or is not supported.";
               to_num(str, val);
               if (value <= val)
                 return false;
@@ -186,7 +186,7 @@ namespace Talos
               {
                 if (!is_num(number[j]))
                   throw "Error in satisfies_constraint: the constraint \""
-            + expression + "\" cannot be parsed or is not supported.";
+                    + expression + "\" cannot be parsed or is not supported.";
                 to_num(number[j], val);
                 if (value == val)
                   return false;
@@ -201,7 +201,7 @@ namespace Talos
               {
                 if (!is_num(number[j]))
                   throw "Error in satisfies_constraint: the constraint \""
-            + expression + "\" cannot be parsed or is not supported.";
+                    + expression + "\" cannot be parsed or is not supported.";
                 to_num(number[j], val);
                 acceptable = acceptable || value == val;
               }
@@ -240,7 +240,7 @@ namespace Talos
           }
         else
           throw "Error in satisfies_constraint: the constraint \""
-        + expression + "\" cannot be parsed or is not supported.";
+            + expression + "\" cannot be parsed or is not supported.";
       }
 
     return true;
@@ -270,14 +270,14 @@ namespace Talos
         expression = trim(constraint_list[i]);
         if (expression.size() < 2)
           throw "Error in show_constraint: the constraint \""
-        + expression + "\" cannot be parsed.";
+            + expression + "\" cannot be parsed.";
         if (expression[0] == '<')
           if (expression[1] == '=')
             {
               str = trim(expression.substr(2));
               if (!is_num(str))
                 throw "Error in show_constraint: the constraint \""
-          + expression + "\" cannot be parsed or is not supported.";
+                  + expression + "\" cannot be parsed or is not supported.";
               output += " - Value less than " + str + termination;
             }
           else
@@ -285,7 +285,7 @@ namespace Talos
               str = trim(expression.substr(1));
               if (!is_num(str))
                 throw "Error in show_constraint: the constraint \""
-          + expression + "\" cannot be parsed or is not supported.";
+                  + expression + "\" cannot be parsed or is not supported.";
               output += " - Value strictly less than " + str + termination;
             }
         else if (expression[0] == '>')
@@ -294,7 +294,7 @@ namespace Talos
               str = trim(expression.substr(2));
               if (!is_num(str))
                 throw "Error in show_constraint: the constraint \""
-          + expression + "\" cannot be parsed or is not supported.";
+                  + expression + "\" cannot be parsed or is not supported.";
               output += " - Value greater than " + str + termination;
             }
           else
@@ -302,7 +302,7 @@ namespace Talos
               str = trim(expression.substr(1));
               if (!is_num(str))
                 throw "Error in show_constraint: the constraint \""
-          + expression + "\" cannot be parsed or is not supported.";
+                  + expression + "\" cannot be parsed or is not supported.";
               output += " - Value strictly greater than " + str + termination;
             }
         else if (expression.substr(0, 2) == "!=")
@@ -314,7 +314,7 @@ namespace Talos
               {
                 if (!is_num(number[j]))
                   throw "Error in show_constraint: the constraint \""
-            + expression + "\" cannot be parsed or is not supported.";
+                    + expression + "\" cannot be parsed or is not supported.";
                 output += number[j];
                 if (j == int(number.size()) - 2)
                   output += " and ";
@@ -332,7 +332,7 @@ namespace Talos
               {
                 if (!is_num(number[j]))
                   throw "Error in show_constraint: the constraint \""
-            + expression + "\" cannot be parsed or is not supported.";
+                    + expression + "\" cannot be parsed or is not supported.";
                 output += number[j];
                 if (j == int(number.size()) - 2)
                   output += " or ";
@@ -355,12 +355,54 @@ namespace Talos
           output += " - Integral value" + termination;
         else
           throw "Error in show_constraint: the constraint \""
-        + expression + "\" cannot be parsed or is not supported.";
+            + expression + "\" cannot be parsed or is not supported.";
       }
 
     return output;
   }
 
+
+  /////////////////
+  // SEARCHSCOPE //
+  /////////////////
+
+  //! A scope opened when searching for a field.
+  class SearchScope
+  {
+  public:
+    //! Main constructor.
+    /*! Begins the search scope.
+      \param stream the stream where the search takes place.
+      \param searching the term being searched for.
+    */
+    SearchScope(ExtStream& stream, const string& searching)
+      : searching_(stream.searching_)
+    {
+      searching_ = searching;
+    }
+
+    //! Main constructor.
+    /*! Begins the search scope for multiple streams.
+     */
+    SearchScope(ConfigStreams& multi_stream, const string& searching)
+      : searching_(multi_stream.searching_)
+    {
+      searching_ = searching;
+    }
+
+    //! Destructor.
+    /*! Ends the search scope.
+     */
+    ~SearchScope()
+    {
+      searching_ = "";
+    }
+
+  private:
+    SearchScope(const SearchScope&);
+    string& searching_;
+
+  };
 
   ///////////////
   // EXTSTREAM //
@@ -808,7 +850,7 @@ namespace Talos
 
     if (elt == "")
       throw string("Error in ExtStream::Find: \"")
-    + element + string("\" not found in \"") + file_name_ + "\".";
+        + element + string("\" not found in \"") + file_name_ + "\".";
 
     searching_ = "";
 
@@ -848,7 +890,7 @@ namespace Talos
       {
         length = element.find_first_of(delimiters_, index);
         length = length == string::npos ? element.size() - index
-      : length - index;
+          : length - index;
         element = element.substr(index, length);
       }
     else
@@ -1050,7 +1092,7 @@ namespace Talos
 
     if (element != name)
       throw string("Error in ExtStream::GetValue: \"")
-    + name + string("\" not found in \"") + file_name_ + "\".";
+        + name + string("\" not found in \"") + file_name_ + "\".";
 
     searching_ = "";
 
@@ -1095,14 +1137,14 @@ namespace Talos
 
     if (element != name)
       throw string("Error in ExtStream::GetValue: \"")
-    + name + string("\" not found in \"") + file_name_ + "\".";
+        + name + string("\" not found in \"") + file_name_ + "\".";
     if (!this->GetElement(element))
       throw string("Error in ExtStream::GetValue: unable to read value of \"")
-    + name + string("\" in \"") + file_name_ + "\".";
+        + name + string("\" in \"") + file_name_ + "\".";
     if (!is_num(element))
       throw string("Error in ExtStream::GetValue: the value of \"") + name
-    + string("\" in \"") + file_name_ + string("\" is \"") + element
-    + "\", but it should be a number.";
+        + string("\" in \"") + file_name_ + string("\" is \"") + element
+        + "\", but it should be a number.";
 
     value = to_num<T>(element);
 
@@ -1125,14 +1167,14 @@ namespace Talos
 
     if (element != name)
       throw string("Error in ExtStream::GetValue: \"")
-    + name + string("\" not found in \"") + file_name_ + "\".";
+        + name + string("\" not found in \"") + file_name_ + "\".";
     if (!this->GetElement(element))
       throw string("Error in ExtStream::GetValue: unable to read value of \"")
-    + name + string("\" in \"") + file_name_ + "\".";
+        + name + string("\" in \"") + file_name_ + "\".";
     if (!is_integer(element))
       throw string("Error in ExtStream::GetValue: the value of \"") + name
-    + string("\" in \"") + file_name_ + string("\" is \"") + element
-    + "\", but it should be an integer.";
+        + string("\" in \"") + file_name_ + string("\" is \"") + element
+        + "\", but it should be an integer.";
 
     value = to_num<int>(element);
 
@@ -1175,9 +1217,9 @@ namespace Talos
     GetValue(name, value);
     if (value < min || value > max)
       throw string("Error in ExtStream::GetValue: the value of \"")
-    + name + string("\" in \"") + file_name_ + "\" is "
-    + to_str(value) + " but it should be in [" + to_str(min)
-    + ", " + to_str(max) + "].";
+        + name + string("\" in \"") + file_name_ + "\" is "
+        + to_str(value) + " but it should be in [" + to_str(min)
+        + ", " + to_str(max) + "].";
   }
 
   /*! \brief Gets the value of a given variable without extracting them from
@@ -1221,9 +1263,9 @@ namespace Talos
     GetValue(name, value);
     if (!satisfies_constraint(value, constraint))
       throw string("Error in ExtStream::GetValue: the value of \"")
-    + name + string("\" in \"") + file_name_ + "\" is "
-    + to_str(value) + " but it should satisfy the following "
-    + "constraint(s):\n" + show_constraint(constraint);
+        + name + string("\" in \"") + file_name_ + "\" is "
+        + to_str(value) + " but it should satisfy the following "
+        + "constraint(s):\n" + show_constraint(constraint);
   }
 
   /*! \brief Gets the value of a given variable without extracting them from
@@ -1268,14 +1310,14 @@ namespace Talos
 
     if (element != name)
       throw string("Error in ExtStream::GetValue: \"")
-    + name + string("\" not found in \"") + file_name_ + "\".";
+        + name + string("\" not found in \"") + file_name_ + "\".";
 
     searching_ = "";
 
     if (!this->GetElement(value))
       throw string("Error in ExtStream::GetValue: ")
-    + string("unable to get a value for \"") + name + string("\" in \"")
-    + file_name_ + "\".";
+        + string("unable to get a value for \"") + name + string("\" in \"")
+        + file_name_ + "\".";
   }
 
   /*! \brief Gets the value of a given variable without extracting them from
@@ -1364,14 +1406,14 @@ namespace Talos
 
     if (element != name)
       throw string("Error in ExtStream::GetValue: \"")
-    + name + string("\" not found in \"") + file_name_ + "\".";
+        + name + string("\" not found in \"") + file_name_ + "\".";
 
     searching_ = "";
 
     if (!this->GetElement(value))
       throw string("Error in ExtStream::GetValue: ")
-    + string("unable to get a value for \"") + name + string("\" in \"")
-    + file_name_ + "\".";
+        + string("unable to get a value for \"") + name + string("\" in \"")
+        + file_name_ + "\".";
   }
 
   //! Gets the value of a given variable without extracting from the stream.
@@ -1419,8 +1461,8 @@ namespace Talos
         if (accepted_list.size() != 0)
           list += trim(accepted_list[accepted_list.size() - 1]) + "]";
         throw string("Error in ExtStream::GetValue: the value of \"")
-      + name + string("\" in \"") + file_name_ + "\" is \""
-      + to_str(value) + "\" but it should be in " + list + ".";
+          + name + string("\" in \"") + file_name_ + "\" is \""
+          + to_str(value) + "\" but it should be in " + list + ".";
       }
   }
 
@@ -1544,12 +1586,12 @@ namespace Talos
 
     if (section_ != "" && (elt == "" || IsSection(elt)))
       throw string("Error in ConfigStream::Find: end of section \"")
-    + section_ + string("\" has been reached in file \"")
-    + this->file_name_ + string("\".\nUnable to find \"")
-    + element + "\".";
+        + section_ + string("\" has been reached in file \"")
+        + this->file_name_ + string("\".\nUnable to find \"")
+        + element + "\".";
     if (elt == "")
       throw string("Error in ConfigStream::Find: \"")
-    + element + string("\" not found in \"") + this->file_name_ + "\".";
+        + element + string("\" not found in \"") + this->file_name_ + "\".";
 
     this->searching_ = "";
 
@@ -1604,9 +1646,9 @@ namespace Talos
             tmp = ExtStream::GetElement();
           if (tmp == "")
             throw string("Error in ConfigStream::GetElement:")
-          + string(" the value of the markup \"")
-          + elements[i] + string("\" was not found in \"")
-          + file_name_ + "\".";
+              + string(" the value of the markup \"")
+              + elements[i] + string("\" was not found in \"")
+              + file_name_ + "\".";
           element += this->GetElement();
         }
 
@@ -1616,11 +1658,11 @@ namespace Talos
     if (!section_.empty() && (element == "" || IsSection(element)))
       {
         string message = string("End of section \"") + section_
-      + string("\" has been reached in file \"") + this->file_name_
-      + "\".";
+          + string("\" has been reached in file \"") + this->file_name_
+          + "\".";
         if (this->searching_ != "")
           message += string("\nUnable to find \"")
-        + this->searching_ + string("\".");
+            + this->searching_ + string("\".");
         throw message;
       }
 
@@ -1660,9 +1702,9 @@ namespace Talos
             tmp = ExtStream::GetElement();
           if (tmp == "")
             throw string("Error in ConfigStream::GetLine:")
-          + string(" the value of the markup \"")
-          + elements[i] + string("\" was not found in \"")
-          + file_name_ + "\".";
+              + string(" the value of the markup \"")
+              + elements[i] + string("\" was not found in \"")
+              + file_name_ + "\".";
           element += this->GetElement();
         }
 
@@ -1705,9 +1747,9 @@ namespace Talos
             tmp = ExtStream::GetElement();
           if (tmp == "")
             throw string("Error in ConfigStream::GetLine:")
-          + string(" the value of the markup \"")
-          + elements[i] + string("\" was not found in \"")
-          + file_name_ + "\".";
+              + string(" the value of the markup \"")
+              + elements[i] + string("\" was not found in \"")
+              + file_name_ + "\".";
           line += this->GetElement();
         }
 
@@ -1876,7 +1918,7 @@ namespace Talos
 
     if (!found)
       throw string("Error in ConfigStreams::SetSection: section \"")
-    + section + string("\" was not found in ") + FileNames() + ".";
+        + section + string("\" was not found in ") + FileNames() + ".";
   }
 
   //! Returns the current section.
@@ -2138,9 +2180,9 @@ namespace Talos
             tmp = this->GetRawElement();
           if (tmp == "")
             throw string("Error in ConfigStreams::GetLine:")
-          + string(" the value of the markup \"")
-          + elements[i] + string("\" was not found in ")
-          + FileNames() + ".";
+              + string(" the value of the markup \"")
+              + elements[i] + string("\" was not found in ")
+              + FileNames() + ".";
           line += this->GetElement();
         }
 
@@ -2267,12 +2309,12 @@ namespace Talos
       }
     if (!found && !section_.empty())
       throw string("Error in ConfigStreams::Find: end of section \"")
-    + section_ + string("\" has been reached in ")
-    + FileNames() + string(".\nUnable to find \"")
-    + element + "\".";
+        + section_ + string("\" has been reached in ")
+        + FileNames() + string(".\nUnable to find \"")
+        + element + "\".";
     if (!found)
       throw string("Error in ConfigStreams::Find: \"")
-    + element + string("\" not found in ") + FileNames() + ".";
+        + element + string("\" not found in ") + FileNames() + ".";
 
     searching_ = "";
 
@@ -2341,9 +2383,9 @@ namespace Talos
             tmp = GetRawElement();
           if (tmp == "")
             throw string("Error in ConfigStreams::GetElement: ")
-          + string("the value of the markup \"")
-          + elements[i] + string("\" was not found in ")
-          + FileNames() + ".";
+              + string("the value of the markup \"")
+              + elements[i] + string("\" was not found in ")
+              + FileNames() + ".";
           element += this->GetElement();
         }
 
@@ -2355,10 +2397,10 @@ namespace Talos
     if (!section_.empty() && (element == "" || IsSection(element)))
       {
         string message = string("End of section \"") + section_
-      + string("\" has been reached in ") + FileNames() + ".";
+          + string("\" has been reached in ") + FileNames() + ".";
         if (searching_ != "")
           message += string("\nUnable to find \"")
-        + this->searching_ + string("\".");
+            + this->searching_ + string("\".");
         throw message;
       }
 
@@ -2538,7 +2580,7 @@ namespace Talos
 
     if (element != name)
       throw string("Error in ConfigStreams::GetValue: \"")
-    + name + string("\" not found in ") + FileNames() + ".";
+        + name + string("\" not found in ") + FileNames() + ".";
 
     searching_ = "";
 
@@ -2586,14 +2628,14 @@ namespace Talos
 
     if (element != name)
       throw string("Error in ConfigStreams::GetValue: \"")
-    + name + string("\" not found in ") + FileNames() + ".";
+        + name + string("\" not found in ") + FileNames() + ".";
     if (!this->GetElement(element))
       throw string("Error in ConfigStreams::GetValue: unable to read value")
-    + string(" of \"") + name + string("\" in ") + FileNames() + ".";
+        + string(" of \"") + name + string("\" in ") + FileNames() + ".";
     if (!is_num(element))
       throw string("Error in ConfigStreams::GetValue: the value of \"") + name
-    + string("\" in ") + FileNames() + string(" is \"") + element
-    + "\", but it should be a number.";
+        + string("\" in ") + FileNames() + string(" is \"") + element
+        + "\", but it should be a number.";
 
     value = to_num<T>(element);
 
@@ -2616,14 +2658,14 @@ namespace Talos
 
     if (element != name)
       throw string("Error in ConfigStreams::GetValue: \"")
-    + name + string("\" not found in ") + FileNames() + ".";
+        + name + string("\" not found in ") + FileNames() + ".";
     if (!this->GetElement(element))
       throw string("Error in ConfigStreams::GetValue: unable to read value")
-    + string(" of \"") + name + string("\" in ") + FileNames() + ".";
+        + string(" of \"") + name + string("\" in ") + FileNames() + ".";
     if (!is_integer(element))
       throw string("Error in ConfigStreams::GetValue: the value of \"") + name
-    + string("\" in ") + FileNames() + string(" is \"") + element
-    + "\", but it should be an integer.";
+        + string("\" in ") + FileNames() + string(" is \"") + element
+        + "\", but it should be an integer.";
 
     value = to_num<int>(element);
 
@@ -2669,9 +2711,9 @@ namespace Talos
     GetValue(name, value);
     if (value < min || value > max)
       throw string("Error in ConfigStreams::GetValue: the value of \"")
-    + name + string("\" in ") +  FileNames() + " is "
-    + to_str(value) + " but it should be in [" + to_str(min)
-    + ", " + to_str(max) + "].";
+        + name + string("\" in ") +  FileNames() + " is "
+        + to_str(value) + " but it should be in [" + to_str(min)
+        + ", " + to_str(max) + "].";
   }
 
   /*! \brief Gets the value of a given variable without extracting them from
@@ -2718,9 +2760,9 @@ namespace Talos
     GetValue(name, value);
     if (!satisfies_constraint(value, constraint))
       throw string("Error in ConfigStreams::GetValue: the value of \"")
-    + name + string("\" in ") + FileNames() + " is "
-    + to_str(value) + " but it should satisfy the following "
-    + "constraint(s):\n" + show_constraint(constraint);
+        + name + string("\" in ") + FileNames() + " is "
+        + to_str(value) + " but it should satisfy the following "
+        + "constraint(s):\n" + show_constraint(constraint);
   }
 
   /*! \brief Gets the value of a given variable without extracting them from
@@ -2768,14 +2810,14 @@ namespace Talos
 
     if (element != name)
       throw string("Error in ConfigStreams::GetValue: \"")
-    + name + string("\" not found in ") + FileNames() + ".";
+        + name + string("\" not found in ") + FileNames() + ".";
 
     searching_ = "";
 
     if (!this->GetElement(value))
       throw string("Error in ConfigStreams::GetValue: ")
-    + string("unable to get a value for \"") + name + string("\" in ")
-    + FileNames() + ".";
+        + string("unable to get a value for \"") + name + string("\" in ")
+        + FileNames() + ".";
   }
 
   /*! \brief Gets the value of a given variable without extracting them from
@@ -2862,14 +2904,14 @@ namespace Talos
 
     if (element != name)
       throw string("Error in ConfigStreams::GetValue: \"")
-    + name + string("\" not found in ") + FileNames() + ".";
+        + name + string("\" not found in ") + FileNames() + ".";
 
     searching_ = "";
 
     if (!this->GetElement(value))
       throw string("Error in ConfigStreams::GetValue: ")
-    + string("unable to get a value for \"") + name + string("\" in ")
-    + FileNames() + ".";
+        + string("unable to get a value for \"") + name + string("\" in ")
+        + FileNames() + ".";
   }
 
   //! Gets the value of a given variable without extracting from the stream.
@@ -2916,7 +2958,7 @@ namespace Talos
       output += string("\"") + streams_[i]->GetFileName() + "\", ";
     if (Nstream > 1)
       output += string("\"") + streams_[Nstream - 2]->GetFileName()
-    + "\" or ";
+        + "\" or ";
     if (Nstream > 0)
       output += string("\"") + streams_[Nstream - 1]->GetFileName() + "\"";
     return output;
@@ -2944,8 +2986,8 @@ namespace Talos
         if (accepted_list.size() != 0)
           list += trim(accepted_list[accepted_list.size() - 1]) + "]";
         throw string("Error in ConfigStreams::GetValue: the value of \"")
-      + name + string("\" in ") + FileNames() + " is \""
-      + to_str(value) + "\" but it should be in " + list + ".";
+          + name + string("\" in ") + FileNames() + " is \""
+          + to_str(value) + "\" but it should be in " + list + ".";
       }
   }
 

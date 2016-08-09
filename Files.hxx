@@ -50,6 +50,11 @@ namespace Talos
   bool satisfies_constraint(T value, string constraint);
   string show_constraint(string constraint);
 
+#ifndef SWIG
+  //! A scope opened when searching for a field.
+  class SearchScope;
+#endif
+
   //! Extended streams.
 #ifndef SWIG
   class ExtStream: public ifstream
@@ -67,6 +72,10 @@ namespace Talos
 
     //! Field currently searched.
     string searching_;
+
+#ifndef SWIG
+    friend class SearchScope;
+#endif
 
   public:
     ExtStream();
@@ -207,6 +216,9 @@ namespace Talos
     bool IsSection(string str) const;
 
     friend class ConfigStreams;
+#ifndef SWIG
+    friend class SearchScope;
+#endif
   };
 
   //! Streams associated with several configuration files.
@@ -220,6 +232,10 @@ namespace Talos
 
     //! Field currently searched.
     string searching_;
+
+#ifndef SWIG
+    friend class SearchScope;
+#endif
 
   public:
     ConfigStreams();
