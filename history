@@ -2,6 +2,11 @@ o---------------o
 | TALOS HISTORY |
 o---------------o
 
+Version 1.4.1 (2018-04-10)
+-------------
+
+- Fixed a bug: init_backtrace is available under gcc-4.8 or later.
+
 
 Version 1.4 (2016-08-22)
 -----------
