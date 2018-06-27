@@ -1669,6 +1669,34 @@ namespace Talos
     return !success || (section_ != "" && IsSection(element));
   }
 
+  //! Checks whether the element is given.
+  /*!
+    \param element the element to be found.
+    \return true if the element was found, false otherwise.
+    \note The scope of the search is only the current section if any.
+  */
+  bool ConfigStream::Check(string element)
+  {
+    SearchScope s(*this, element);
+
+    streampos initial_position = this->tellg();
+
+    string elt;
+    while (ExtStream::GetRawElement(elt) && elt != element
+           && (section_ == "" || !IsSection(elt)));
+
+    if (section_ != "" && (elt == "" || IsSection(elt)))
+      {
+        string message = string("Unable to find \"")
+          + element + "\".";
+        cout << message << endl;
+      }
+
+    this->seekg(initial_position);
+    return elt == element;
+  }
+
+
   //! Sets the position of the get pointer after a given element.
   /*!
     Sets the position of the get pointer exactly after a given element.

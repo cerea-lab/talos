@@ -203,6 +203,7 @@ namespace Talos
 
     bool IsEmpty();
 
+    bool Check(string element);
     bool Find(string element);
     bool FindFromBeginning(string element);
 
