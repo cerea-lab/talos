@@ -1685,13 +1685,6 @@ namespace Talos
     while (ExtStream::GetRawElement(elt) && elt != element
            && (section_ == "" || !IsSection(elt)));
 
-    if (section_ != "" && (elt == "" || IsSection(elt)))
-      {
-        string message = string("Unable to find \"")
-          + element + "\".";
-        cout << message << endl;
-      }
-
     this->seekg(initial_position);
     return elt == element;
   }
