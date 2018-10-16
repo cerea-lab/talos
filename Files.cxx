@@ -110,7 +110,7 @@ namespace Talos
     istream::iostate state = stream.rdstate();
 
     string element;
-    bool res = bool(stream >> element);
+    bool res = static_cast<bool>((stream >> element));
 
     stream.clear(state);
     stream.seekg(position);
@@ -742,7 +742,7 @@ namespace Talos
   */
   bool ExtStream::GetFullLine(string& line)
   {
-    return bool(std::getline(*this, line));
+    return static_cast<bool>(std::getline(*this, line));
   }
 
   //! Returns the next line without extracting it from the stream.
@@ -794,7 +794,7 @@ namespace Talos
     streampos position = this->tellg();
     iostate state = this->rdstate();
 
-    bool success = bool(std::getline(*this, line));
+    bool success = static_cast<bool>(std::getline(*this, line));
 
     this->clear(state);
     this->seekg(position);
@@ -2159,7 +2159,7 @@ namespace Talos
   */
   bool ConfigStreams::GetFullLine(string& line)
   {
-    bool success = bool(std::getline(**current_, line));
+    bool success = static_cast<bool>(std::getline(**current_, line));
 
     if (is_empty(**current_) && current_ != streams_.end() - 1)
       ++current_;
