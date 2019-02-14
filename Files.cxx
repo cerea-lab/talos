@@ -83,7 +83,7 @@ namespace Talos
     \param stream the stream.
     \return true if the stream is empty, false otherwise.
   */
-  bool is_empty(istream& stream)
+  bool is_emptystream(istream& stream)
   {
     streampos position = stream.tellg();
     istream::iostate state = stream.rdstate();
@@ -576,7 +576,7 @@ namespace Talos
   ExtStream& ExtStream::SkipDiscarded()
   {
     streampos position;
-    while ((!is_empty(*this)) && (Discard(PeekFullLine(position))))
+    while ((!is_emptystream(*this)) && (Discard(PeekFullLine(position))))
       this->seekg(position);
     return *this;
   }
@@ -997,7 +997,7 @@ namespace Talos
     string element;
     string::size_type index, length;
 
-    while ((!is_empty(*this)) && (Discard(PeekFullLine(position))))
+    while ((!is_emptystream(*this)) && (Discard(PeekFullLine(position))))
       this->seekg(position);
     element = PeekFullLine();
 
@@ -2147,7 +2147,7 @@ namespace Talos
     string line;
     std::getline(**current_, line);
 
-    if (is_empty(**current_) && current_ != streams_.end() - 1)
+    if (is_emptystream(**current_) && current_ != streams_.end() - 1)
       ++current_;
 
     return line;
@@ -2161,7 +2161,7 @@ namespace Talos
   {
     bool success = std::getline(**current_, line);
 
-    if (is_empty(**current_) && current_ != streams_.end() - 1)
+    if (is_emptystream(**current_) && current_ != streams_.end() - 1)
       ++current_;
 
     return success;
