@@ -83,7 +83,7 @@ namespace Talos
     \param stream the stream.
     \return true if the stream is empty, false otherwise.
   */
-  bool is_emptystream(istream& stream)
+  bool is_empty(istream& stream)
   {
     streampos position = stream.tellg();
     istream::iostate state = stream.rdstate();
@@ -110,7 +110,7 @@ namespace Talos
     istream::iostate state = stream.rdstate();
 
     string element;
-    bool res = (stream >> element);
+    bool res = bool(stream >> element);
 
     stream.clear(state);
     stream.seekg(position);
@@ -576,7 +576,7 @@ namespace Talos
   ExtStream& ExtStream::SkipDiscarded()
   {
     streampos position;
-    while ((!is_emptystream(*this)) && (Discard(PeekFullLine(position))))
+    while ((!is_empty(*this)) && (Discard(PeekFullLine(position))))
       this->seekg(position);
     return *this;
   }
@@ -742,7 +742,7 @@ namespace Talos
   */
   bool ExtStream::GetFullLine(string& line)
   {
-    return std::getline(*this, line);
+    return bool(std::getline(*this, line));
   }
 
   //! Returns the next line without extracting it from the stream.
@@ -794,7 +794,7 @@ namespace Talos
     streampos position = this->tellg();
     iostate state = this->rdstate();
 
-    bool success = std::getline(*this, line);
+    bool success = bool(std::getline(*this, line));
 
     this->clear(state);
     this->seekg(position);
@@ -997,7 +997,7 @@ namespace Talos
     string element;
     string::size_type index, length;
 
-    while ((!is_emptystream(*this)) && (Discard(PeekFullLine(position))))
+    while ((!is_empty(*this)) && (Discard(PeekFullLine(position))))
       this->seekg(position);
     element = PeekFullLine();
 
@@ -2147,7 +2147,7 @@ namespace Talos
     string line;
     std::getline(**current_, line);
 
-    if (is_emptystream(**current_) && current_ != streams_.end() - 1)
+    if (is_empty(**current_) && current_ != streams_.end() - 1)
       ++current_;
 
     return line;
@@ -2159,9 +2159,9 @@ namespace Talos
   */
   bool ConfigStreams::GetFullLine(string& line)
   {
-    bool success = std::getline(**current_, line);
+    bool success = bool(std::getline(**current_, line));
 
-    if (is_emptystream(**current_) && current_ != streams_.end() - 1)
+    if (is_empty(**current_) && current_ != streams_.end() - 1)
       ++current_;
 
     return success;

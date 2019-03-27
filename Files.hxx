@@ -42,7 +42,7 @@ namespace Talos
   unsigned long file_size(string file_name);
 #ifndef SWIG
   unsigned long stream_size(istream& stream);
-  bool is_emptystream(istream& stream);
+  bool is_empty(istream& stream);
   bool has_element(istream& stream);
 #endif
 
