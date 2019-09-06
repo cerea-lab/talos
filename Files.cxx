@@ -1428,6 +1428,36 @@ namespace Talos
         + file_name_ + "\".";
   }
 
+
+
+  /*! \brief Check if a given variable is found in the stream. */
+  /*!
+    Check if a given variable is found in the stream.
+    This is useful when the variable is not found and
+    a default variable needs to be set.
+    \param name the name of the variable.
+  */
+  bool ExtStream::CheckValue(string name)
+  {
+    SearchScope s(*this, name);
+
+    streampos initial_position = this->tellg();
+    iostate state = this->rdstate();
+
+    string element;
+    while (GetElement(element) && element != name);
+
+    if (element != name)
+      cout << string("Warning in ExtStream::CheckValue: \"")
+        + name + string("\" not found in \"") + file_name_ + "\"." << endl;
+
+    this->clear(state);
+    this->seekg(initial_position);
+
+    return (element == name);
+  }
+
+
   /*! \brief Gets the value of a given variable without extracting them from
     the stream. */
   /*!

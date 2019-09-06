@@ -175,6 +175,8 @@ namespace Talos
     void GetValue(string name, bool& value);
     void PeekValue(string name, bool& value);
 
+    bool CheckValue(string name);
+
   protected:
     void CheckAccepted(string name, string value, string accepted,
                        string delimiter) const;
