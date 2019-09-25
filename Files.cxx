@@ -970,6 +970,9 @@ namespace Talos
       throw string("Error in ExtStream::Find: \"")
         + element + string("\" not found in \"") + file_name_ + "\".";
 
+    searching_ = "";
+
+
     return elt == element;
   }
 
@@ -1210,6 +1213,8 @@ namespace Talos
       throw string("Error in ExtStream::GetValue: \"")
         + name + string("\" not found in \"") + file_name_ + "\".";
 
+    searching_ = "";
+
     return GetElement();
   }
 
@@ -1422,6 +1427,8 @@ namespace Talos
       throw string("Error in ExtStream::GetValue: \"")
         + name + string("\" not found in \"") + file_name_ + "\".";
 
+    searching_ = "";
+
     if (!this->GetElement(value))
       throw string("Error in ExtStream::GetValue: ")
         + string("unable to get a value for \"") + name + string("\" in \"")
@@ -1541,6 +1548,8 @@ namespace Talos
     if (element != name)
       throw string("Error in ExtStream::GetValue: \"")
         + name + string("\" not found in \"") + file_name_ + "\".";
+
+    searching_ = "";
 
     if (!this->GetElement(value))
       throw string("Error in ExtStream::GetValue: ")
@@ -1743,6 +1752,8 @@ namespace Talos
     if (elt == "")
       throw string("Error in ConfigStream::Find: \"")
         + element + string("\" not found in \"") + this->file_name_ + "\".";
+
+    this->searching_ = "";
 
     return elt == element;
   }
@@ -2465,6 +2476,8 @@ namespace Talos
       throw string("Error in ConfigStreams::Find: \"")
         + element + string("\" not found in ") + FileNames() + ".";
 
+    searching_ = "";
+
     return found;
   }
 
@@ -2729,6 +2742,8 @@ namespace Talos
       throw string("Error in ConfigStreams::GetValue: \"")
         + name + string("\" not found in ") + FileNames() + ".";
 
+    searching_ = "";
+
     return this->GetElement();
   }
 
@@ -2953,6 +2968,8 @@ namespace Talos
       throw string("Error in ConfigStreams::GetValue: \"")
         + name + string("\" not found in ") + FileNames() + ".";
 
+    searching_ = "";
+
     if (!this->GetElement(value))
       throw string("Error in ConfigStreams::GetValue: ")
         + string("unable to get a value for \"") + name + string("\" in ")
@@ -3044,6 +3061,8 @@ namespace Talos
     if (element != name)
       throw string("Error in ConfigStreams::GetValue: \"")
         + name + string("\" not found in ") + FileNames() + ".";
+
+    searching_ = "";
 
     if (!this->GetElement(value))
       throw string("Error in ConfigStreams::GetValue: ")
