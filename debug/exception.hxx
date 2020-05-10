@@ -49,8 +49,8 @@ namespace Talos
     exceptions.
   */
 #if defined(TRY) or defined(END)
-#  warning "'TRY'/'END' macros already defined, " \
-  " the Talos library cannot define its own version."
+/*#  warning "'TRY'/'END' macros already defined, "     \
+  " the Talos library cannot define its own version."*/
 #elif defined(TALOS_DEBUG)
   // A caught exception is considered as normal by the debugger. Only an uncaught
   // exception is considered as an error and make the debugger to stop on them.
