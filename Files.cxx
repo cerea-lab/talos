@@ -1454,9 +1454,9 @@ namespace Talos
     string element;
     while (GetElement(element) && element != name);
 
-    if (element != name)
-      cout << string("Warning in ExtStream::CheckValue: \"")
-        + name + string("\" not found in \"") + file_name_ + "\"." << endl;
+    // if (element != name)
+    //   cout << string("Warning in ExtStream::CheckValue: \"")
+    //     + name + string("\" not found in \"") + file_name_ + "\"." << endl;
 
     this->clear(state);
     this->seekg(initial_position);
