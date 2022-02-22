@@ -33,13 +33,14 @@
 
 #include "backtrace.h"
 
+/* removed for intel compatibility.
 #if __GNUC__ > 4 || ( __GNUC__ == 4 && __GNUC_MINOR__ >= 8 )
 #  include <backtrace-supported.h>
 #  if BACKTRACE_SUPPORTED && !BACKTRACE_USES_MALLOC
 #    define HAVE_LIBBACKTRACE
 #  endif
 #endif
-
+*/
 
 #ifdef HAVE_LIBBACKTRACE
 
