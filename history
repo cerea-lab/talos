@@ -2,6 +2,13 @@ o---------------o
 | TALOS HISTORY |
 o---------------o
 
+Version 1.4.2 (2022-09-22)
+-------------
+
+- Improved compatibility with Inter compiler.
+- streampos replaced by std::streampos
+
+
 Version 1.4.1 (2018-04-10)
 -------------
 
